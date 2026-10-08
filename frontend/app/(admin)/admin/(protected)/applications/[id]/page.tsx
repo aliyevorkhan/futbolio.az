@@ -150,7 +150,7 @@ export default function ApplicationDetailPage() {
             )}
           </>
         )}
-        {!headline && <p className="text-sm text-muted">—</p>}
+        {!headline && <p className="text-sm text-muted">{tc("noValue")}</p>}
       </Section>
 
       {app.availability && (

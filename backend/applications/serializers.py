@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.core.validators import MinLengthValidator
 from django.utils import timezone
 from rest_framework import serializers
@@ -8,9 +10,12 @@ from common.enums import (
     ConsentType,
     District,
     FileKind,
+    FirstAidEquipmentStatus,
     GameType,
     HourSlot,
     MainPosition,
+    MedicSpecialty,
+    PlayerExperienceLevel,
     Weekday,
 )
 from common.ip import get_client_ip, hash_ip
@@ -19,7 +24,7 @@ from common.validators import (
     az_phone_validator,
     full_name_validator,
     instagram_handle_validator,
-    validate_age,
+    validate_date_of_birth,
     validate_non_empty_list,
     validate_video_link_domain,
 )
@@ -33,6 +38,7 @@ from .models import (
     Consent,
     MedicDetails,
     PlayerDetails,
+    PlayerProfessionalPeriod,
     RefereeDetails,
     StatusChange,
 )
@@ -47,20 +53,36 @@ def headline_position(application: Application) -> str:
         return details.main_position if details else ""
     if application.role == ApplicationRole.REFEREE:
         details = getattr(application, "referee_details", None)
-        return details.license_status if details else ""
+        return details.years_refereeing if details else ""
     if application.role == ApplicationRole.MEDIC:
         details = getattr(application, "medic_details", None)
-        return details.specialty if details else ""
+        return ",".join(details.specialty) if details else ""
     return ""
 
 
 # --- Shared nested serializers (reused for both public write and admin read) ---
 
 
+class PlayerProfessionalPeriodSerializer(serializers.Serializer):
+    start_year = serializers.IntegerField(min_value=1960, max_value=date.today().year)
+    end_year = serializers.IntegerField(min_value=1960, max_value=date.today().year)
+    club = serializers.CharField(max_length=120, required=False, allow_blank=True, default="")
+
+    def validate(self, attrs):
+        if attrs["start_year"] > attrs["end_year"]:
+            raise serializers.ValidationError("start_year must be <= end_year.")
+        return attrs
+
+
 class PlayerDetailsSerializer(serializers.ModelSerializer):
     extra_positions = serializers.ListField(
         child=serializers.ChoiceField(choices=MainPosition.choices), required=False, default=list
     )
+    experience_level = serializers.ChoiceField(choices=PlayerExperienceLevel.choices)
+    has_pro_experience = serializers.BooleanField()
+    hourly_rate_azn = serializers.IntegerField(min_value=1)
+    is_university_student = serializers.BooleanField()
+    professional_periods = PlayerProfessionalPeriodSerializer(many=True, required=False, default=list)
 
     class Meta:
         model = PlayerDetails
@@ -70,30 +92,49 @@ class PlayerDetailsSerializer(serializers.ModelSerializer):
             "preferred_foot",
             "years_playing",
             "club_experience_text",
-            "self_rating",
+            "experience_level",
+            "has_pro_experience",
+            "hourly_rate_azn",
+            "is_university_student",
+            "professional_periods",
         ]
 
 
 class RefereeDetailsSerializer(serializers.ModelSerializer):
     game_types = serializers.ListField(child=serializers.ChoiceField(choices=GameType.choices))
+    has_official_certification = serializers.BooleanField()
+    certification_name = serializers.CharField(
+        max_length=200, required=False, allow_blank=True, default=""
+    )
 
     class Meta:
         model = RefereeDetails
-        fields = ["license_status", "years_refereeing", "game_types", "experience_text"]
+        fields = [
+            "has_official_certification",
+            "certification_name",
+            "years_refereeing",
+            "game_types",
+            "experience_text",
+        ]
 
 
 class MedicDetailsSerializer(serializers.ModelSerializer):
+    specialty = serializers.ListField(
+        child=serializers.ChoiceField(choices=MedicSpecialty.choices), validators=[validate_non_empty_list]
+    )
+    equipment_status = serializers.ChoiceField(choices=FirstAidEquipmentStatus.choices)
+    equipment_missing_text = serializers.CharField(
+        max_length=500, required=False, allow_blank=True, default=""
+    )
+
     class Meta:
         model = MedicDetails
-        fields = ["specialty", "first_aid_cert", "work_experience", "workplace"]
+        fields = ["specialty", "equipment_status", "equipment_missing_text", "work_experience", "workplace"]
 
 
 class AvailabilitySerializer(serializers.Serializer):
-    days = serializers.ListField(
-        child=serializers.ChoiceField(choices=Weekday.choices), validators=[validate_non_empty_list]
-    )
-    hours = serializers.ListField(
-        child=serializers.ChoiceField(choices=HourSlot.choices), validators=[validate_non_empty_list]
+    time_slots = serializers.ListField(
+        child=serializers.CharField(), validators=[validate_non_empty_list]
     )
     districts = serializers.ListField(
         child=serializers.ChoiceField(choices=District.choices), validators=[validate_non_empty_list]
@@ -125,7 +166,7 @@ class ApplicationCreateSerializer(serializers.Serializer):
     full_name = serializers.CharField(
         max_length=80, validators=[MinLengthValidator(3), full_name_validator]
     )
-    age = serializers.IntegerField(validators=[validate_age])
+    date_of_birth = serializers.DateField(validators=[validate_date_of_birth])
     phone = serializers.CharField(max_length=20, validators=[az_phone_validator])
     instagram_handle = serializers.CharField(
         max_length=30, required=False, allow_blank=True, default="", validators=[instagram_handle_validator]
@@ -172,6 +213,46 @@ class ApplicationCreateSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 {details_key: ["This field is required for the selected role."]}
             )
+
+        if role == ApplicationRole.REFEREE and attrs.get("instagram_handle"):
+            raise serializers.ValidationError(
+                {"instagram_handle": ["Instagram is not collected for the referee role."]}
+            )
+
+        if role == ApplicationRole.PLAYER:
+            player_data = attrs["player_details"]
+            if player_data["has_pro_experience"]:
+                if not player_data.get("professional_periods"):
+                    raise serializers.ValidationError(
+                        {"player_details": {"professional_periods": ["This field is required."]}}
+                    )
+            else:
+                player_data["professional_periods"] = []
+
+        if role == ApplicationRole.REFEREE:
+            ref_data = attrs["referee_details"]
+            if ref_data["has_official_certification"] and not ref_data.get(
+                "certification_name", ""
+            ).strip():
+                raise serializers.ValidationError(
+                    {"referee_details": {"certification_name": ["This field is required."]}}
+                )
+
+        if role == ApplicationRole.MEDIC:
+            medic_data = attrs["medic_details"]
+            if medic_data["equipment_status"] == FirstAidEquipmentStatus.PARTIAL and not medic_data.get(
+                "equipment_missing_text", ""
+            ).strip():
+                raise serializers.ValidationError(
+                    {"medic_details": {"equipment_missing_text": ["This field is required."]}}
+                )
+
+        for entry in attrs["availability"]["time_slots"]:
+            parts = entry.split(":")
+            if len(parts) != 2 or parts[0] not in Weekday.values or parts[1] not in HourSlot.values:
+                raise serializers.ValidationError(
+                    {"availability": {"time_slots": [f"'{entry}' is not a valid time slot."]}}
+                )
 
         consents = attrs["consents"]
         consent_by_type = {c["type"]: c["accepted"] for c in consents}
@@ -221,10 +302,15 @@ class ApplicationCreateSerializer(serializers.Serializer):
         elif role == ApplicationRole.REFEREE:
             if video_count > 3:
                 raise serializers.ValidationError({"file_ids": ["At most 3 videos are allowed."]})
+            document_count = len(files_by_kind.get(FileKind.DOCUMENT, []))
+            if document_count > 1:
+                raise serializers.ValidationError(
+                    {"file_ids": ["At most 1 certificate document is allowed."]}
+                )
         elif role == ApplicationRole.MEDIC:
             document_count = len(files_by_kind.get(FileKind.DOCUMENT, []))
-            if not (1 <= document_count <= 3):
-                raise serializers.ValidationError({"file_ids": ["1-3 documents are required."]})
+            if document_count > 3:
+                raise serializers.ValidationError({"file_ids": ["At most 3 documents are allowed."]})
 
         attrs["_resolved_files"] = resolved_files
         return attrs
@@ -247,14 +333,18 @@ class ApplicationCreateSerializer(serializers.Serializer):
 
         headline = ""
         if role == ApplicationRole.PLAYER and player_details_data:
+            periods_data = player_details_data.pop("professional_periods", [])
             details = PlayerDetails.objects.create(application=application, **player_details_data)
+            PlayerProfessionalPeriod.objects.bulk_create(
+                [PlayerProfessionalPeriod(player_details=details, **p) for p in periods_data]
+            )
             headline = details.main_position
         elif role == ApplicationRole.REFEREE and referee_details_data:
             details = RefereeDetails.objects.create(application=application, **referee_details_data)
-            headline = details.license_status
+            headline = details.years_refereeing
         elif role == ApplicationRole.MEDIC and medic_details_data:
             details = MedicDetails.objects.create(application=application, **medic_details_data)
-            headline = details.specialty
+            headline = ",".join(details.specialty)
 
         Availability.objects.create(application=application, **availability_data)
 
@@ -291,7 +381,7 @@ class ApplicationListSerializer(serializers.ModelSerializer):
             "id",
             "full_name",
             "role",
-            "age",
+            "date_of_birth",
             "district",
             "phone",
             "status",
@@ -356,7 +446,7 @@ class ApplicationDetailSerializer(serializers.ModelSerializer):
             "id",
             "role",
             "full_name",
-            "age",
+            "date_of_birth",
             "phone",
             "instagram_handle",
             "district",

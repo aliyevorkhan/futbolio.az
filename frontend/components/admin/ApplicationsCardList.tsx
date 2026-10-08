@@ -12,6 +12,7 @@ import type { ApplicationListItem } from "@/lib/api/admin/applications";
 export function ApplicationsCardList({ applications }: { applications: ApplicationListItem[] }) {
   const t = useTranslations("admin.applications.table");
   const tEnums = useTranslations("admin.enums");
+  const tc = useTranslations("admin.common");
 
   return (
     <div className="flex flex-col gap-3 md:hidden">
@@ -38,7 +39,7 @@ export function ApplicationsCardList({ applications }: { applications: Applicati
 
           <dl className="grid grid-cols-2 gap-x-3 gap-y-1 text-sm">
             <Row label={t("position")}>
-              {app.position ? tEnums(`${positionEnumCategory(app.role)}.${app.position}`) : "—"}
+              {app.position ? tEnums(`${positionEnumCategory(app.role)}.${app.position}`) : tc("noValue")}
             </Row>
             <Row label={t("age")}>{app.age}</Row>
             <Row label={t("district")}>{tEnums(`district.${app.district}`)}</Row>

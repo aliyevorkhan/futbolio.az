@@ -12,6 +12,43 @@ body {
   @apply bg-white text-foreground antialiased;
 }
 
+/* Registration wizard's Step 1 role-switch transition: a `key`-based
+   remount re-triggers this on every role change, no JS animation state
+   needed. Transform/opacity only, ~280ms — real but unobtrusive motion. */
+@keyframes wizard-role-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-role-fade-in {
+  animation: wizard-role-fade-in 280ms ease-out;
+}
+
+/* Hero illustration motion: one "ball" dot drifts and back, gated by
+   lib/hooks/useInViewAnimation.ts (in-view + !prefers-reduced-motion).
+   transform/opacity only, per the motion spec. */
+@keyframes ball-roll {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(18px, -12px);
+    opacity: 0.85;
+  }
+}
+
+.animate-ball-roll {
+  animation: ball-roll 8s ease-in-out infinite;
+}
+
 /* Accessibility: disable all animation/transition durations site-wide
    when the user has requested reduced motion. */
 @media (prefers-reduced-motion: reduce) {

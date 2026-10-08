@@ -8,7 +8,10 @@ import type { Step5Data } from "@/lib/validation/wizard/step5.schema";
  * version suffix if the shape changes incompatibly so old drafts are
  * ignored instead of crashing the restore logic.
  */
-export const DRAFT_STORAGE_KEY = "futbolio.registration.draft.v1";
+// Bumped to v2: the fix round changed age->date_of_birth, removed
+// self_rating/license_status/first_aid_cert, and replaced
+// days/hours with time_slots — all incompatible with any v1 draft.
+export const DRAFT_STORAGE_KEY = "futbolio.registration.draft.v2";
 
 export interface WizardDraftShape {
   currentStep: number;

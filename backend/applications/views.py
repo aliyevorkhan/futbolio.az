@@ -69,27 +69,20 @@ class CreateApplicationView(APIView):
 class ApplicationFilterSet(FilterSet):
     date_from = django_filters.DateFilter(field_name="created_at", lookup_expr="date__gte")
     date_to = django_filters.DateFilter(field_name="created_at", lookup_expr="date__lte")
-    self_rating = django_filters.NumberFilter(field_name="player_details__self_rating")
     position = django_filters.CharFilter(method="filter_position")
-    days = django_filters.CharFilter(method="filter_days")
-    hours = django_filters.CharFilter(method="filter_hours")
+    time_slot = django_filters.CharFilter(method="filter_time_slot")
 
     class Meta:
         model = Application
-        fields = ["role", "district", "status", "date_from", "date_to", "self_rating"]
+        fields = ["role", "district", "status", "date_from", "date_to"]
 
     def filter_position(self, queryset, name, value):
         return queryset.filter(
-            Q(player_details__main_position=value)
-            | Q(referee_details__license_status=value)
-            | Q(medic_details__specialty=value)
+            Q(player_details__main_position=value) | Q(medic_details__specialty__contains=[value])
         )
 
-    def filter_days(self, queryset, name, value):
-        return queryset.filter(availability__days__contains=[value])
-
-    def filter_hours(self, queryset, name, value):
-        return queryset.filter(availability__hours__contains=[value])
+    def filter_time_slot(self, queryset, name, value):
+        return queryset.filter(availability__time_slots__contains=[value])
 
 
 class ApplicationListView(generics.ListAPIView):
@@ -195,14 +188,13 @@ EXPORT_HEADER = [
     "id",
     "role",
     "full_name",
-    "age",
+    "date_of_birth",
     "phone",
     "district",
     "status",
     "is_duplicate",
     "position",
-    "availability_days",
-    "availability_hours",
+    "availability_time_slots",
     "availability_districts",
     "created_at",
     "photo_link",
@@ -250,14 +242,13 @@ class ApplicationExportView(APIView):
                     str(application.id),
                     application.role,
                     application.full_name,
-                    application.age,
+                    application.date_of_birth,
                     application.phone,
                     application.district,
                     application.status,
                     application.is_duplicate,
                     headline_position(application),
-                    ",".join(availability.days) if availability else "",
-                    ",".join(availability.hours) if availability else "",
+                    ",".join(availability.time_slots) if availability else "",
                     ",".join(availability.districts) if availability else "",
                     application.created_at.isoformat(),
                     photo_link,

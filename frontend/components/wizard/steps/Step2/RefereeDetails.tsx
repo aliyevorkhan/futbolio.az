@@ -5,12 +5,12 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { ChipSingleSelect, ChipMultiSelect } from "@/components/wizard/fields/ChipGroup";
 import { StepFooter } from "@/components/wizard/StepFooter";
 import { useFocusFirstInvalidField } from "@/lib/validation/useFocusFirstInvalidField";
 import {
   refereeDetailsSchema,
-  LICENSE_STATUS_VALUES,
   EXPERIENCE_YEARS_VALUES,
   GAME_TYPE_VALUES,
   REFEREE_STEP2_FIELD_ORDER,
@@ -27,12 +27,14 @@ interface RefereeDetailsProps {
 export function RefereeDetails({ defaultValues, onValid, onChange, onBack }: RefereeDetailsProps) {
   const t = useTranslations("wizard.step2.referee");
   const tErrors = useTranslations("wizard.errors");
+  const tCommon = useTranslations("wizard.common");
 
   const form = useForm<RefereeDetailsData>({
     resolver: zodResolver(refereeDetailsSchema),
     mode: "onSubmit",
     defaultValues: {
-      license_status: defaultValues.license_status,
+      has_official_certification: defaultValues.has_official_certification,
+      certification_name: defaultValues.certification_name ?? "",
       years_refereeing: defaultValues.years_refereeing,
       game_types: defaultValues.game_types ?? [],
       experience_text: defaultValues.experience_text ?? "",
@@ -55,9 +57,14 @@ export function RefereeDetails({ defaultValues, onValid, onChange, onBack }: Ref
     return message ? tErrors(message as string) : undefined;
   };
 
-  const licenseOptions = LICENSE_STATUS_VALUES.map((value) => ({ value, label: t(`license.${value}`) }));
   const yearsOptions = EXPERIENCE_YEARS_VALUES.map((value) => ({ value, label: t(`years.${value}`) }));
   const gameTypeOptions = GAME_TYPE_VALUES.map((value) => ({ value, label: t(`gameTypes.${value}`) }));
+  const yesNoOptions = [
+    { value: "true", label: tCommon("yes") },
+    { value: "false", label: tCommon("no") },
+  ];
+
+  const hasOfficialCertification = form.watch("has_official_certification");
 
   return (
     <form noValidate onSubmit={form.handleSubmit(onValid)} className="space-y-6">
@@ -65,19 +72,38 @@ export function RefereeDetails({ defaultValues, onValid, onChange, onBack }: Ref
 
       <Controller
         control={form.control}
-        name="license_status"
+        name="has_official_certification"
         render={({ field }) => (
           <ChipSingleSelect
-            name="license_status"
-            label={t("licenseStatusLabel")}
-            value={field.value}
-            onChange={field.onChange}
-            options={licenseOptions}
-            error={errorMessage("license_status")}
-            registerRef={registerField("license_status")}
+            name="has_official_certification"
+            label={t("hasOfficialCertificationLabel")}
+            value={field.value === undefined ? undefined : String(field.value)}
+            onChange={(value) => field.onChange(value === "true")}
+            options={yesNoOptions}
+            error={errorMessage("has_official_certification")}
+            registerRef={registerField("has_official_certification")}
           />
         )}
       />
+
+      {hasOfficialCertification ? (
+        <div>
+          <Label htmlFor="certification_name">{t("certificationNameLabel")}</Label>
+          <Input
+            id="certification_name"
+            placeholder={t("certificationNamePlaceholder")}
+            aria-invalid={Boolean(form.formState.errors.certification_name)}
+            {...form.register("certification_name")}
+            ref={(el) => {
+              form.register("certification_name").ref(el);
+              registerField("certification_name")(el);
+            }}
+          />
+          {errorMessage("certification_name") ? (
+            <p className="mt-1.5 text-sm text-red-600">{errorMessage("certification_name")}</p>
+          ) : null}
+        </div>
+      ) : null}
 
       <Controller
         control={form.control}

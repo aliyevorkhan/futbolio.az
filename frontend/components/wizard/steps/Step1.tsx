@@ -1,17 +1,19 @@
 "use client";
 
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import { useTranslations } from "next-intl";
+import { Goal, Flag, Stethoscope, type LucideIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DistrictSelect } from "@/components/wizard/fields/DistrictSelect";
 import { StepFooter } from "@/components/wizard/StepFooter";
 import { cn } from "@/lib/utils";
 import { formatPhoneInput, toCanonicalPhone } from "@/lib/validation/shared/phone";
+import { getMinBirthDateString, getMaxBirthDateString } from "@/lib/validation/shared/dateOfBirth";
 import {
   step1Schema,
   ROLE_VALUES,
@@ -27,10 +29,33 @@ interface Step1Props {
   onChange: (values: Partial<Step1Data>) => void;
 }
 
+// Tentative role icon choices — pick your own reasonable mapping if the
+// home page's design-system rebuild settles on different lucide icons
+// for the "Xidmətlər" cards; this is a low-stakes cosmetic detail worth
+// unifying later, not a blocker now. No lucide icon named "whistle"
+// exists in the installed version, hence `Flag` for referee.
+const ROLE_ICONS: Record<Role, LucideIcon> = {
+  player: Goal,
+  referee: Flag,
+  medic: Stethoscope,
+};
+
 export function Step1({ defaultValues, onValid, onChange }: Step1Props) {
   const t = useTranslations("wizard.step1");
+  const tRoot = useTranslations("wizard");
   const tRoles = useTranslations("wizard.roles");
   const tErrors = useTranslations("wizard.errors");
+
+  // Client-only min/max bounds for the date-of-birth picker — computed
+  // from `new Date()`, so they must only be applied post-mount to avoid
+  // an SSR/hydration mismatch (same caution as this codebase's
+  // localStorage-restore pattern elsewhere).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const [minBirthDate, maxBirthDate] = useMemo(() => {
+    const today = new Date();
+    return [getMinBirthDateString(today), getMaxBirthDateString(today)];
+  }, []);
 
   const form = useForm<Step1Data>({
     resolver: zodResolver(step1Schema),
@@ -38,12 +63,14 @@ export function Step1({ defaultValues, onValid, onChange }: Step1Props) {
     defaultValues: {
       role: defaultValues.role,
       full_name: defaultValues.full_name ?? "",
-      age: defaultValues.age,
+      date_of_birth: defaultValues.date_of_birth ?? "",
       phone: defaultValues.phone ?? "",
       instagram_handle: defaultValues.instagram_handle ?? "",
       district: defaultValues.district,
     } as Step1Data,
   });
+
+  const role = form.watch("role");
 
   useEffect(() => {
     const subscription = form.watch((values) => onChange(values as Partial<Step1Data>));
@@ -51,19 +78,31 @@ export function Step1({ defaultValues, onValid, onChange }: Step1Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form]);
 
+  // Referee submissions must never include an Instagram handle — the
+  // backend actively rejects a non-blank value for this role — so clear
+  // any stray value the moment the user switches away from it.
+  useEffect(() => {
+    if (role === "referee" && form.getValues("instagram_handle")) {
+      form.setValue("instagram_handle", "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [role]);
+
   const { registerField, liveRegionRef } = useFocusFirstInvalidField(
     form.formState.errors as Record<string, { message?: unknown } | undefined>,
     STEP1_FIELD_ORDER,
   );
 
   const fullNameField = form.register("full_name");
-  const ageField = form.register("age");
+  const dateOfBirthField = form.register("date_of_birth");
   const districtField = form.register("district");
 
   const errorMessage = (field: keyof Step1Data) => {
     const message = form.formState.errors[field]?.message;
     return message ? tErrors(message as string) : undefined;
   };
+
+  const RoleIcon = role ? ROLE_ICONS[role] : null;
 
   return (
     <form
@@ -72,6 +111,20 @@ export function Step1({ defaultValues, onValid, onChange }: Step1Props) {
       className="space-y-6"
     >
       <div ref={liveRegionRef} aria-live="assertive" role="alert" className="sr-only" />
+
+      {/* Role-dependent visual region: icon + role-aware title, remounted
+          (and so CSS-animated) on every role change via `key={role}`. */}
+      <div
+        key={role ?? "none"}
+        className="animate-role-fade-in flex items-center gap-3 rounded-xl bg-brand-green/10 px-4 py-3"
+      >
+        {RoleIcon ? (
+          <RoleIcon className="h-6 w-6 shrink-0 text-brand-dark" aria-hidden="true" />
+        ) : null}
+        <p className="font-heading text-base font-semibold text-foreground">
+          {tRoot(role ? `roleTitles.${role}` : "meta.title")}
+        </p>
+      </div>
 
       <div>
         <p className="mb-2 text-sm font-medium text-foreground">{t("roleLabel")}</p>
@@ -87,15 +140,15 @@ export function Step1({ defaultValues, onValid, onChange }: Step1Props) {
               tabIndex={-1}
               className="grid grid-cols-1 gap-3 sm:grid-cols-3"
             >
-              {ROLE_VALUES.map((role: Role) => (
+              {ROLE_VALUES.map((roleValue: Role) => (
                 <RadioGroupPrimitive.Item
-                  key={role}
-                  value={role}
+                  key={roleValue}
+                  value={roleValue}
                   className={cn(
                     "flex min-h-11 flex-col items-center justify-center gap-1 rounded-xl border-2 border-brand-dark/15 bg-white px-4 py-5 text-center transition-colors hover:bg-brand-dark/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark focus-visible:ring-offset-2 data-[state=checked]:border-brand-green data-[state=checked]:bg-brand-green/10",
                   )}
                 >
-                  <span className="text-base font-semibold text-foreground">{tRoles(role)}</span>
+                  <span className="text-base font-semibold text-foreground">{tRoles(roleValue)}</span>
                 </RadioGroupPrimitive.Item>
               ))}
             </RadioGroupPrimitive.Root>
@@ -125,21 +178,21 @@ export function Step1({ defaultValues, onValid, onChange }: Step1Props) {
 
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
-          <Label htmlFor="age">{t("ageLabel")}</Label>
+          <Label htmlFor="date_of_birth">{t("dateOfBirthLabel")}</Label>
           <Input
-            id="age"
-            type="number"
-            inputMode="numeric"
-            placeholder={t("agePlaceholder")}
-            aria-invalid={Boolean(form.formState.errors.age)}
-            {...ageField}
+            id="date_of_birth"
+            type="date"
+            min={mounted ? minBirthDate : undefined}
+            max={mounted ? maxBirthDate : undefined}
+            aria-invalid={Boolean(form.formState.errors.date_of_birth)}
+            {...dateOfBirthField}
             ref={(el) => {
-              ageField.ref(el);
-              registerField("age")(el);
+              dateOfBirthField.ref(el);
+              registerField("date_of_birth")(el);
             }}
           />
-          {errorMessage("age") ? (
-            <p className="mt-1.5 text-sm text-red-600">{errorMessage("age")}</p>
+          {errorMessage("date_of_birth") ? (
+            <p className="mt-1.5 text-sm text-red-600">{errorMessage("date_of_birth")}</p>
           ) : null}
         </div>
 
@@ -171,30 +224,32 @@ export function Step1({ defaultValues, onValid, onChange }: Step1Props) {
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">
-        <div>
-          <Label htmlFor="instagram_handle">{t("instagramLabel")}</Label>
-          <Controller
-            control={form.control}
-            name="instagram_handle"
-            render={({ field }) => (
-              <Input
-                id="instagram_handle"
-                placeholder={t("instagramPlaceholder")}
-                aria-invalid={Boolean(form.formState.errors.instagram_handle)}
-                value={field.value ?? ""}
-                onChange={(event) => field.onChange(event.target.value.replace(/^@/, ""))}
-                onBlur={field.onBlur}
-                ref={(el) => {
-                  field.ref(el);
-                  registerField("instagram_handle")(el);
-                }}
-              />
-            )}
-          />
-          {errorMessage("instagram_handle") ? (
-            <p className="mt-1.5 text-sm text-red-600">{errorMessage("instagram_handle")}</p>
-          ) : null}
-        </div>
+        {role !== "referee" ? (
+          <div key={role ?? "none"} className="animate-role-fade-in">
+            <Label htmlFor="instagram_handle">{t("instagramLabel")}</Label>
+            <Controller
+              control={form.control}
+              name="instagram_handle"
+              render={({ field }) => (
+                <Input
+                  id="instagram_handle"
+                  placeholder={t("instagramPlaceholder")}
+                  aria-invalid={Boolean(form.formState.errors.instagram_handle)}
+                  value={field.value ?? ""}
+                  onChange={(event) => field.onChange(event.target.value.replace(/^@/, ""))}
+                  onBlur={field.onBlur}
+                  ref={(el) => {
+                    field.ref(el);
+                    registerField("instagram_handle")(el);
+                  }}
+                />
+              )}
+            />
+            {errorMessage("instagram_handle") ? (
+              <p className="mt-1.5 text-sm text-red-600">{errorMessage("instagram_handle")}</p>
+            ) : null}
+          </div>
+        ) : null}
 
         <div>
           <Label htmlFor="district">{t("districtLabel")}</Label>

@@ -4,6 +4,8 @@ RegexValidator/callables) so they can be imported by DRF serializers without
 pulling in model-specific concerns.
 """
 
+from datetime import date
+
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 
@@ -56,9 +58,15 @@ def validate_video_link_domain(url: str) -> None:
         )
 
 
-def validate_age(age: int) -> None:
-    if age < 18 or age > 70:
-        raise ValidationError("Age must be between 18 and 70.")
+MIN_AGE = 18
+MAX_AGE = 45
+
+
+def validate_date_of_birth(dob: date) -> None:
+    today = date.today()
+    age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+    if age < MIN_AGE or age > MAX_AGE:
+        raise ValidationError("Qeydiyyat 18-45 yaş arası şəxslər üçündür.")
 
 
 def validate_non_empty_list(value: list) -> None:

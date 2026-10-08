@@ -2,7 +2,6 @@ import { apiFetch } from "@/lib/api/client";
 import type { Role } from "@/lib/validation/wizard/step1.schema";
 import type { DistrictCode } from "@/lib/validation/shared/districts";
 import type { PlayerDetails, RefereeDetails, MedicDetails } from "@/lib/validation/wizard/step2.schema";
-import type { DayValue, HourValue } from "@/lib/validation/wizard/step3.schema";
 
 /**
  * Real contract for `POST /api/public/applications/` — the final atomic
@@ -21,7 +20,7 @@ export interface ConsentEntry {
 export interface ApplicationSubmitPayload {
   role: Role;
   full_name: string;
-  age: number;
+  date_of_birth: string;
   phone: string;
   instagram_handle?: string;
   district: DistrictCode;
@@ -30,8 +29,7 @@ export interface ApplicationSubmitPayload {
   medic_details?: MedicDetails;
   video_link_url?: string;
   availability: {
-    days: DayValue[];
-    hours: HourValue[];
+    time_slots: string[];
     districts: DistrictCode[];
   };
   upload_session_id: string;

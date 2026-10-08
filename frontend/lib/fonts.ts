@@ -1,19 +1,21 @@
-import { Montserrat } from "next/font/google";
+import { Inter, Manrope } from "next/font/google";
 
-// NOTE — documented deviation from spec: the brand spec calls for
-// Montserrat self-hosted via static .woff2 files, but no real font
-// binary is available/fetchable in this build environment. We use
-// `next/font/google` as a pragmatic stand-in: it downloads and
-// self-hosts the font at BUILD time, so there is zero runtime request
-// to Google's CDN at request time (same performance/privacy property
-// the spec is after), it just isn't a literal static file the design
-// team controls yet. Swap this for real self-hosted `.woff2` files via
-// `next/font/local` once the design team provides them — the exported
-// `montserrat.variable` class name should stay the same so no other
-// file needs to change.
-export const montserrat = Montserrat({
-  subsets: ["latin", "latin-ext"],
+// Self-hosted at build time via next/font/google (zero runtime request to
+// Google's CDN — same pragmatic stand-in this project used for Montserrat
+// before; swap to next/font/local with real .woff2 files once the design
+// team supplies them). Inter (body) + Manrope (headings) replace
+// Montserrat per the fix-round design-system update — both carry
+// `cyrillic` subsets, needed now that Russian is a supported locale.
+export const inter = Inter({
+  subsets: ["latin", "latin-ext", "cyrillic"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-montserrat",
+  variable: "--font-inter",
+  display: "swap",
+});
+
+export const manrope = Manrope({
+  subsets: ["latin", "latin-ext", "cyrillic"],
+  weight: ["700", "800"],
+  variable: "--font-manrope",
   display: "swap",
 });

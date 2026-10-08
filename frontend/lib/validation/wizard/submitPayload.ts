@@ -34,12 +34,11 @@ export function buildSubmitPayload(input: BuildSubmitPayloadInput): ApplicationS
   const payload: ApplicationSubmitPayload = {
     role: input.role,
     full_name: input.step1.full_name,
-    age: input.step1.age,
+    date_of_birth: input.step1.date_of_birth,
     phone: input.step1.phone,
     district: input.step1.district,
     availability: {
-      days: input.step3.days,
-      hours: input.step3.hours,
+      time_slots: input.step3.time_slots,
       districts: input.step3.districts,
     },
     upload_session_id: input.uploadSessionId,

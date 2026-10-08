@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
+import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -31,25 +32,16 @@ const AccordionTrigger = React.forwardRef<
     <AccordionPrimitive.Trigger
       ref={ref}
       className={cn(
-        "flex flex-1 items-center justify-between gap-4 py-4 text-left font-semibold transition-all [&[data-state=open]>svg]:rotate-180",
+        "flex flex-1 items-center justify-between gap-4 py-4 text-left font-semibold transition-all [&[data-state=open]>span>svg]:rotate-45",
         className,
       )}
       {...props}
     >
       {children}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={2}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="h-5 w-5 shrink-0 transition-transform duration-200"
-        aria-hidden="true"
-      >
-        <path d="m6 9 6 6 6-6" />
-      </svg>
+      {/* A "+" rotated 45deg reads as a "x" on open — no second icon needed. */}
+      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface text-foreground">
+        <Plus className="h-4 w-4 transition-transform duration-200" aria-hidden="true" />
+      </span>
     </AccordionPrimitive.Trigger>
   </AccordionPrimitive.Header>
 ));

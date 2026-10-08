@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('role', models.CharField(choices=[('player', 'Player'), ('referee', 'Referee'), ('medic', 'Medic')], max_length=20)),
                 ('full_name', models.CharField(max_length=80, validators=[django.core.validators.MinLengthValidator(3), django.core.validators.RegexValidator(message='Name may only contain letters, spaces and hyphens.', regex='^[A-Za-zÇçƏəĞğIıİiÖöŞşÜü\\s-]+$')])),
-                ('age', models.PositiveSmallIntegerField(validators=[common.validators.validate_age])),
+                ('date_of_birth', models.DateField(validators=[common.validators.validate_date_of_birth])),
                 ('phone', models.CharField(db_index=True, max_length=20, validators=[django.core.validators.RegexValidator(message='Enter a valid Azerbaijani WhatsApp number, e.g. +994501234567.', regex='^\\+994(10|50|51|55|60|70|77|99)\\d{7}$')])),
                 ('instagram_handle', models.CharField(blank=True, max_length=30, validators=[django.core.validators.RegexValidator(message='Enter an Instagram handle without the leading @.', regex='^[A-Za-z0-9_.]{1,30}$')])),
                 ('district', models.CharField(choices=[('binegedi', 'Binəqədi'), ('xetai', 'Xətai'), ('xezer', 'Xəzər'), ('qaradag', 'Qaradağ'), ('nerimanov', 'Nərimanov'), ('nesimi', 'Nəsimi'), ('nizami', 'Nizami'), ('pirallahi', 'Pirallahı'), ('sabuncu', 'Sabunçu'), ('sebail', 'Səbail'), ('suraxani', 'Suraxanı'), ('yasamal', 'Yasamal')], db_index=True, max_length=20)),
@@ -60,8 +60,7 @@ class Migration(migrations.Migration):
             name='Availability',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('days', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(choices=[('monday', 'Monday'), ('tuesday', 'Tuesday'), ('wednesday', 'Wednesday'), ('thursday', 'Thursday'), ('friday', 'Friday'), ('saturday', 'Saturday'), ('sunday', 'Sunday')], max_length=20), default=list, size=None)),
-                ('hours', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(choices=[('18_20', '18:00-20:00'), ('20_22', '20:00-22:00'), ('22_00', '22:00-00:00'), ('weekend_daytime', 'Weekend daytime')], max_length=20), default=list, size=None)),
+                ('time_slots', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=20), default=list, size=None)),
                 ('districts', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(choices=[('binegedi', 'Binəqədi'), ('xetai', 'Xətai'), ('xezer', 'Xəzər'), ('qaradag', 'Qaradağ'), ('nerimanov', 'Nərimanov'), ('nesimi', 'Nəsimi'), ('nizami', 'Nizami'), ('pirallahi', 'Pirallahı'), ('sabuncu', 'Sabunçu'), ('sebail', 'Səbail'), ('suraxani', 'Suraxanı'), ('yasamal', 'Yasamal')], max_length=20), default=list, size=None)),
                 ('application', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='availability', to='applications.application')),
             ],
@@ -82,8 +81,9 @@ class Migration(migrations.Migration):
             name='MedicDetails',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('specialty', models.CharField(choices=[('sports_doctor', 'Sports doctor'), ('doctor', 'Doctor'), ('paramedic', 'Paramedic'), ('physiotherapist', 'Physiotherapist'), ('nurse', 'Nurse')], max_length=30)),
-                ('first_aid_cert', models.BooleanField()),
+                ('specialty', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(choices=[('sports_doctor', 'Sports doctor'), ('doctor', 'Doctor'), ('paramedic', 'Paramedic'), ('physiotherapist', 'Physiotherapist'), ('nurse', 'Nurse'), ('first_aid_specialist', 'İlk yardım mütəxəssisi')], max_length=30), default=list, size=None)),
+                ('equipment_status', models.CharField(choices=[('yes', 'Bəli'), ('partial', 'Qismən'), ('no', 'Xeyr')], max_length=20)),
+                ('equipment_missing_text', models.CharField(blank=True, max_length=500)),
                 ('work_experience', models.CharField(choices=[('under_1', '< 1 year'), ('1_3', '1-3 years'), ('3_5', '3-5 years'), ('over_5', '5+ years')], max_length=20)),
                 ('workplace', models.CharField(blank=True, max_length=300)),
                 ('application', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='medic_details', to='applications.application')),
@@ -98,15 +98,29 @@ class Migration(migrations.Migration):
                 ('preferred_foot', models.CharField(choices=[('right', 'Right'), ('left', 'Left'), ('both', 'Both')], max_length=20)),
                 ('years_playing', models.CharField(choices=[('under_1', '< 1 year'), ('1_3', '1-3 years'), ('3_5', '3-5 years'), ('over_5', '5+ years')], max_length=20)),
                 ('club_experience_text', models.CharField(blank=True, max_length=500)),
-                ('self_rating', models.PositiveSmallIntegerField(validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(5)])),
+                ('experience_level', models.CharField(choices=[('amateur', 'Həvəskar'), ('semi_pro', 'Yarı-peşəkar'), ('former_pro', 'Keçmiş peşəkar')], max_length=20)),
+                ('has_pro_experience', models.BooleanField()),
+                ('hourly_rate_azn', models.PositiveIntegerField()),
+                ('is_university_student', models.BooleanField()),
                 ('application', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='player_details', to='applications.application')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='PlayerProfessionalPeriod',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('start_year', models.PositiveSmallIntegerField()),
+                ('end_year', models.PositiveSmallIntegerField()),
+                ('club', models.CharField(blank=True, max_length=120)),
+                ('player_details', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='professional_periods', to='applications.playerdetails')),
             ],
         ),
         migrations.CreateModel(
             name='RefereeDetails',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('license_status', models.CharField(choices=[('licensed', 'Licensed'), ('course_completed', 'Course completed'), ('experienced_unlicensed', 'Experienced, unlicensed')], max_length=30)),
+                ('has_official_certification', models.BooleanField()),
+                ('certification_name', models.CharField(blank=True, max_length=200)),
                 ('years_refereeing', models.CharField(choices=[('under_1', '< 1 year'), ('1_3', '1-3 years'), ('3_5', '3-5 years'), ('over_5', '5+ years')], max_length=20)),
                 ('game_types', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(choices=[('mini_football', 'Mini football'), ('big_football', 'Big football'), ('futsal', 'Futsal'), ('tournaments', 'Tournaments')], max_length=20), default=list, size=None)),
                 ('experience_text', models.CharField(blank=True, max_length=500)),
@@ -130,15 +144,15 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name='availability',
-            constraint=models.CheckConstraint(check=models.Q(('days__len__gt', 0)), name='availability_days_non_empty'),
-        ),
-        migrations.AddConstraint(
-            model_name='availability',
-            constraint=models.CheckConstraint(check=models.Q(('hours__len__gt', 0)), name='availability_hours_non_empty'),
+            constraint=models.CheckConstraint(check=models.Q(('time_slots__len__gt', 0)), name='availability_time_slots_non_empty'),
         ),
         migrations.AddConstraint(
             model_name='availability',
             constraint=models.CheckConstraint(check=models.Q(('districts__len__gt', 0)), name='availability_districts_non_empty'),
+        ),
+        migrations.AddConstraint(
+            model_name='playerprofessionalperiod',
+            constraint=models.CheckConstraint(check=models.Q(('start_year__lte', models.F('end_year'))), name='pro_period_start_before_end'),
         ),
         migrations.AddConstraint(
             model_name='consent',

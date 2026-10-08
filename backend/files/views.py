@@ -62,13 +62,14 @@ class UploadPresignView(APIView):
         )
 
         if data["size"] <= MULTIPART_THRESHOLD_BYTES:
-            url = presign_put(storage_key, data["content_type"])
             file_obj.save()
+            url = presign_put(storage_key, data["content_type"])
             return Response({"mode": "single", "file_id": str(file_id), "url": url})
 
+        file_obj.save()
         upload = create_multipart_upload(storage_key, data["content_type"], data["size"])
         file_obj.multipart_upload_id = upload.upload_id
-        file_obj.save()
+        file_obj.save(update_fields=["multipart_upload_id"])
         return Response(
             {
                 "mode": "multipart",

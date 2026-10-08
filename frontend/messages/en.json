@@ -1,0 +1,938 @@
+{
+  "meta": {
+    "home": {
+      "title": "Futbolio · Find a player, goalkeeper, referee and medic in Baku",
+      "description": "Futbolio quickly connects Baku's amateur football teams with a missing player, goalkeeper, referee or medic over WhatsApp."
+    },
+    "mexfilik": {
+      "title": "Privacy Policy · Futbolio",
+      "description": "Information about the data Futbolio collects through its registration form, how long it's kept, and how it's deleted."
+    },
+    "notFound": {
+      "title": "Page not found · Futbolio"
+    },
+    "about": {
+      "title": "About us · Futbolio",
+      "description": "About the Futbolio team, our mission, and the work we do for amateur football in Baku."
+    }
+  },
+  "nav": {
+    "primaryNavigation": "Primary navigation",
+    "biz": "About us",
+    "xidmetler": "Services",
+    "nece": "How it works",
+    "suallar": "FAQ",
+    "cta": "Sign up",
+    "skipToContent": "Skip to main content"
+  },
+  "footer": {
+    "privacyLink": "Privacy policy",
+    "aboutLink": "About us",
+    "joinLink": "Join our team",
+    "instagramLink": "Instagram",
+    "tiktokLink": "TikTok",
+    "locationLine": "futbolio.az · Baku, Azerbaijan · © {year}"
+  },
+  "home": {
+    "hero": {
+      "badge": "Baku's amateur football platform",
+      "titlePrefix": "Every team has a ",
+      "titleHighlight": "12th player",
+      "titleSuffix": ".",
+      "subtitle": "Futbolio quickly connects Baku's amateur teams with a missing player, goalkeeper, referee or medic over WhatsApp and Instagram.",
+      "checklistPlayers": "Players",
+      "checklistGoalkeepers": "Goalkeepers",
+      "checklistReferees": "Referees",
+      "checklistMedics": "Medics",
+      "findPlayerCta": "Find a player",
+      "joinCta": "Join our team",
+      "notificationTitle": "Your 12th player is on the way",
+      "notificationMeta": "Goalkeeper · Pro · 9:00 PM",
+      "illustrationAlt": "Simple illustration of a football pitch"
+    },
+    "biz": {
+      "eyebrow": "About us",
+      "title": "When a team is short a player, Futbolio fills the gap.",
+      "description": "Missing a player, goalkeeper, referee or medic on game day? Futbolio connects Baku's amateur teams with reliable candidates within minutes, no long searches needed.",
+      "benefit1Title": "Fast solution",
+      "benefit1Desc": "Send a message, we find a suitable candidate in a short time.",
+      "benefit2Title": "Vetted candidates",
+      "benefit2Desc": "Every candidate submits their key details, we check they're a good fit.",
+      "benefit3Title": "Flexible arrangements",
+      "benefit3Desc": "Whether it's one game or a whole season, we match the format to you."
+    },
+    "xidmetler": {
+      "eyebrow": "Services",
+      "title": "What do you need?",
+      "description": "We find vetted candidates that match the position within minutes.",
+      "orderCta": "Order",
+      "futbolcu": {
+        "title": "Player",
+        "desc": "We find an amateur player who matches the position."
+      },
+      "qapici": {
+        "title": "Goalkeeper",
+        "desc": "A fast solution for teams scrambling for a goalkeeper."
+      },
+      "hakim": {
+        "title": "Referee",
+        "desc": "We provide a referee for friendly and practice games."
+      },
+      "hekim": {
+        "title": "Medic",
+        "desc": "We arrange a medic for first aid during the game."
+      }
+    },
+    "tiers": {
+      "standart": "Standard",
+      "pro": "Pro",
+      "elit": "Elite",
+      "prinsipial": "Principled"
+    },
+    "nece": {
+      "eyebrow": "How it works",
+      "title": "Ready in three steps",
+      "step1Title": "Message",
+      "step1Desc": "Tell us your team's need over WhatsApp.",
+      "step2Title": "Choose",
+      "step2Desc": "Futbolio offers a suitable, vetted candidate.",
+      "step3Title": "Play",
+      "step3Desc": "The candidate joins your team, the game goes on.",
+      "previewSlot": "Today 9:00 PM, Yasamal · 1 goalkeeper needed.",
+      "previewConfirmed": "Player confirmed",
+      "cta": "Message us now"
+    },
+    "seviyyeler": {
+      "eyebrow": "Levels",
+      "title": "A candidate for every level",
+      "standartDesc": "Amateur-level players who play regularly.",
+      "proDesc": "Experienced players who've played in competitive leagues.",
+      "elitDesc": "High-level candidates, carefully selected.",
+      "prinsipialDesc": "Players who play to win and take it seriously."
+    },
+    "videolar": {
+      "eyebrow": "Videos",
+      "title": "Moments from the pitch",
+      "description": "Real moments from the pitch, from our community."
+    },
+    "zemanet": {
+      "eyebrow": "Guarantee",
+      "title": "Rest assured",
+      "point1": "Every candidate is vetted.",
+      "point2": "An unsuitable candidate is replaced quickly.",
+      "point3": "Your satisfaction is our priority.",
+      "badgeLabel": "The Futbolio guarantee",
+      "moneyBackSubline": "money back",
+      "moneyBackDesc": "If you're not satisfied, we refund your money."
+    },
+    "cta": {
+      "heading": "Want to join our team?",
+      "text": "18 and over · Baku only",
+      "button": "Sign up"
+    },
+    "suallar": {
+      "eyebrow": "FAQ",
+      "title": "Frequently asked questions",
+      "helper": "You'll find answers to the most common questions here.",
+      "items": {
+        "q1": {
+          "question": "What is Futbolio?",
+          "answer": "Futbolio is a service that finds players, goalkeepers, referees and medics for amateur football games in Baku. You can order a missing player for your team, an entire opposing team, or a referee for your game, all in one place."
+        },
+        "q2": {
+          "question": "How do I place an order?",
+          "answer": "Press the \"Order\" button, choose who you need, the game's time, the stadium and your price range. The details turn into a ready WhatsApp message, and our team gets in touch with you."
+        },
+        "q3": {
+          "question": "Can I order just a goalkeeper?",
+          "answer": "Yes. You can choose just a goalkeeper, just a player, or both together."
+        },
+        "q4": {
+          "question": "Can I find a whole opposing team?",
+          "answer": "Yes. Select \"Whole opposing team\" in your order and specify the team's format (e.g. 6x6)."
+        },
+        "q5": {
+          "question": "How much does it cost?",
+          "answer": "The price depends on the player's level, the game's duration, and the size of your order. You choose a price range when ordering, the exact amount is agreed with you directly."
+        },
+        "q6": {
+          "question": "How are players selected?",
+          "answer": "Every player submits their position, experience, available times, photo and video during registration. Players matching your order's level are selected."
+        },
+        "q7": {
+          "question": "How can I become a player, referee or medic on Futbolio?",
+          "answer": "Press the \"Sign up\" button, choose your role, and fill out the form. Registration is free."
+        },
+        "q8": {
+          "question": "Is there an age limit for registration?",
+          "answer": "Yes, people between 18 and 45 years old can register."
+        },
+        "q9": {
+          "question": "Can I order a referee or medic too?",
+          "answer": "Yes. A referee, sports doctor or nurse can be ordered separately or together with players for your games."
+        },
+        "q10": {
+          "question": "Can I find players for student tournaments?",
+          "answer": "Yes. During registration, players indicate whether they're university students, which helps us find suitable players for tournaments open only to students."
+        },
+        "q11": {
+          "question": "Which areas do you serve?",
+          "answer": "We currently operate in Baku."
+        }
+      }
+    },
+    "elaqe": {
+      "title": "Contact us",
+      "whatsapp": "Message on WhatsApp",
+      "instagramDirekt": "Instagram DM"
+    }
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "intro": "This page explains the rules around the data Futbolio collects through its registration form. Note: this text is not legal advice and should be reviewed by a lawyer before final publication.",
+    "dataTitle": "What data we collect",
+    "dataBody": "We only collect the data you provide in the registration form: name, contact details, position/experience information, and (where applicable) any files you upload. ID numbers, addresses, or banking details are never requested or stored.",
+    "purposeTitle": "Why we collect it",
+    "purposeBody": "We use this data only to connect you with a suitable team or candidate.",
+    "retentionTitle": "How long we keep it",
+    "retentionBody": "Rejected or archived applications are, by default, deleted 12 months after the last activity.",
+    "sharingTitle": "Who we share it with",
+    "sharingBody": "None of this data is shared with anyone outside Futbolio.",
+    "deletionTitle": "How to request deletion of your data",
+    "deletionBody": "You can contact us via WhatsApp or email to request deletion of your data."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you're looking for doesn't exist or has moved.",
+    "backHome": "Back to home"
+  },
+  "about": {
+    "title": "About us",
+    "paragraph1": "Futbolio was created for people who play amateur football in Baku. It's a situation everyone knows: the game is set, the pitch is ready, but at the last minute a player doesn't show up, no goalkeeper can be found, or the opposing team doesn't turn up. We're here to solve that problem.",
+    "paragraph2": "Futbolio brings players, goalkeepers, referees and medics together on one platform. The person ordering specifies who they need and the game's time and location, and we find people who match the level and time needed. One player, several players, or a whole opposing team, all through a single order.",
+    "paragraph3": "Everyone who registers on our platform submits their position, experience, the times they can play, and a photo and video. This lets us pick the right person for each order.",
+    "paragraph4": "Our goal is simple: no game should be cancelled for lack of players, and football should be easier for everyone to organize."
+  },
+  "wizard": {
+    "meta": {
+      "title": "Registration",
+      "description": "Register with Futbolio as a player, referee or medic, in a few steps, in just a few minutes."
+    },
+    "sidebar": {
+      "step1": "Basic info",
+      "step2": "Details",
+      "step3": "Availability",
+      "step4": "Files",
+      "step5": "Confirmation",
+      "progressLabel": "Step {current} / {total}",
+      "step2For": {
+        "player": "Player details",
+        "referee": "Referee details",
+        "medic": "Medic details"
+      }
+    },
+    "nav": {
+      "back": "Back",
+      "continue": "Continue",
+      "submit": "Submit",
+      "submitting": "Submitting..."
+    },
+    "common": {
+      "remove": "Remove",
+      "retry": "Retry",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "errors": {
+      "required": "This field is required",
+      "invalidFullName": "Enter your full name correctly (letters, spaces and hyphens only, 3-80 characters)",
+      "invalidPhone": "Enter the number in the correct format (+994 50 123 45 67)",
+      "invalidInstagramHandle": "Enter a valid Instagram username",
+      "tooLong": "This text is too long",
+      "minSelectionGameTypes": "Choose at least one game type",
+      "minSelectionDistricts": "Choose at least one district",
+      "invalidVideoUrl": "Enter a valid Instagram, TikTok, YouTube or Google Drive link",
+      "videoRequired": "At least one video file or video link is required",
+      "filesRequired": "Upload the required files",
+      "consentRequired": "You must confirm this to continue",
+      "invalidFileType": "This file type isn't accepted",
+      "fileTooLarge": "This file is too large",
+      "uploadFailed": "The file didn't upload, try again",
+      "genericSubmitError": "Please check your details",
+      "dateOfBirthRange": "Registration is for people aged 18 to 45.",
+      "minSelectionTimeSlots": "Select at least one time slot",
+      "minSelectionSpecialty": "Select at least one specialty",
+      "professionalPeriodsRequired": "Add at least one period",
+      "professionalPeriodOrder": "The end year can't be before the start year",
+      "certificationNameRequired": "Enter the certificate name",
+      "equipmentMissingTextRequired": "Describe what's missing"
+    },
+    "roles": {
+      "player": "Player",
+      "referee": "Referee",
+      "medic": "Medic"
+    },
+    "step1": {
+      "roleLabel": "Which role are you joining as?",
+      "fullNameLabel": "Full name",
+      "fullNamePlaceholder": "E.g. Elvin Mammadov",
+      "phoneLabel": "WhatsApp number",
+      "phonePlaceholder": "+994 50 123 45 67",
+      "instagramLabel": "Instagram (optional)",
+      "instagramPlaceholder": "username",
+      "districtLabel": "District you live in",
+      "districtPlaceholder": "Choose a district",
+      "dateOfBirthLabel": "Date of birth"
+    },
+    "districts": {
+      "binegedi": "Binagadi",
+      "xetai": "Khatai",
+      "xezer": "Khazar",
+      "qaradag": "Qaradagh",
+      "nerimanov": "Narimanov",
+      "nesimi": "Nasimi",
+      "nizami": "Nizami",
+      "pirallahi": "Pirallahi",
+      "sabuncu": "Sabunchu",
+      "sebail": "Sabail",
+      "suraxani": "Surakhani",
+      "yasamal": "Yasamal"
+    },
+    "step2": {
+      "player": {
+        "title": "About the player",
+        "mainPositionLabel": "Main position",
+        "positions": {
+          "goalkeeper": "Goalkeeper",
+          "defender": "Defender",
+          "midfielder": "Midfielder",
+          "forward": "Forward"
+        },
+        "extraPositionsLabel": "Other positions you can play (optional)",
+        "preferredFootLabel": "Preferred foot",
+        "foot": {
+          "right": "Right",
+          "left": "Left",
+          "both": "Both"
+        },
+        "yearsPlayingLabel": "How many years have you been playing football?",
+        "years": {
+          "under_1": "Less than 1 year",
+          "1_3": "1-3 years",
+          "3_5": "3-5 years",
+          "over_5": "More than 5 years"
+        },
+        "clubExperienceLabel": "Club experience (optional)",
+        "clubExperiencePlaceholder": "Which clubs/leagues have you played in...",
+        "experienceLevelLabel": "Your experience level",
+        "experienceLevel": {
+          "amateur": "Amateur",
+          "semi_pro": "Semi-professional",
+          "former_pro": "Former professional"
+        },
+        "isUniversityStudentLabel": "Are you a university student?",
+        "isUniversityStudentHint": "Some tournaments are only open to students. This question helps match you to those tournaments.",
+        "hasPlayedProfessionallyLabel": "Have you played at a professional level?",
+        "professionalPeriods": {
+          "label": "Your professional periods",
+          "fromLabel": "Start year",
+          "toLabel": "End year",
+          "clubLabel": "Club (optional)",
+          "clubPlaceholder": "Club name",
+          "addAnother": "Add another period",
+          "remove": "Remove"
+        },
+        "hourlyRateLabel": "Your hourly rate (AZN)",
+        "hourlyRatePlaceholder": "E.g. 15",
+        "hourlyRateHint": "This amount is not shown to the person ordering, it is used only to match suitable orders.",
+        "mainPositionDisabledTitle": "This is your main position"
+      },
+      "referee": {
+        "title": "About the referee",
+        "yearsRefereeingLabel": "How many years have you been refereeing?",
+        "years": {
+          "under_1": "Less than 1 year",
+          "1_3": "1-3 years",
+          "3_5": "3-5 years",
+          "over_5": "More than 5 years"
+        },
+        "gameTypesLabel": "Which game types can you referee?",
+        "gameTypes": {
+          "mini_football": "Mini football",
+          "big_football": "11-a-side football",
+          "futsal": "Futsal",
+          "tournaments": "Tournaments"
+        },
+        "experienceLabel": "About your experience (optional)",
+        "experiencePlaceholder": "Which leagues/tournaments have you refereed...",
+        "hasOfficialCertificationLabel": "Do you hold an official refereeing certificate?",
+        "certificationNameLabel": "Certificate name",
+        "certificationNamePlaceholder": "E.g. AFFA referee course certificate"
+      },
+      "medic": {
+        "title": "About the medic",
+        "specialtyLabel": "Specialty",
+        "specialty": {
+          "sports_doctor": "Sports doctor",
+          "doctor": "Doctor",
+          "paramedic": "Paramedic",
+          "physiotherapist": "Physiotherapist",
+          "nurse": "Nurse",
+          "first_aid_specialist": "First aid specialist"
+        },
+        "workExperienceLabel": "How many years have you worked in this field?",
+        "years": {
+          "under_1": "Less than 1 year",
+          "1_3": "1-3 years",
+          "3_5": "3-5 years",
+          "over_5": "More than 5 years"
+        },
+        "workplaceLabel": "Workplace (optional)",
+        "workplacePlaceholder": "E.g. hospital/clinic name",
+        "equipmentStatusLabel": "Do you have first-aid equipment?",
+        "equipmentStatus": {
+          "yes": "Yes",
+          "partial": "Partially",
+          "no": "No"
+        },
+        "equipmentMissingLabel": "What's missing?",
+        "equipmentMissingPlaceholder": "Describe the missing equipment"
+      }
+    },
+    "step3": {
+      "title": "When are you available?",
+      "description": "Which days, hours and districts can you join a game in, you can choose more than one.",
+      "districtsLabel": "Districts you're available in",
+      "timeSlotsLabel": "When are you available?"
+    },
+    "days": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "step4": {
+      "title": "Photo and video",
+      "description": "Upload the files below to verify your profile.",
+      "photo": {
+        "label": "Profile photo",
+        "hint": "JPG, PNG or WEBP/HEIC, max 10 MB"
+      },
+      "video": {
+        "label": "Video",
+        "hint": "MP4 or MOV, max 200 MB each. At least one video file or video link is enough.",
+        "linkLabel": "Video link (Instagram, TikTok, YouTube or Google Drive)",
+        "linkPlaceholder": "https://..."
+      },
+      "document": {
+        "label": "Certificate / document",
+        "hint": "PDF, JPG or PNG, max 10 MB each"
+      },
+      "dropzone": {
+        "instructions": "Drag a file here",
+        "browseButton": "or browse from your computer"
+      },
+      "status": {
+        "uploading": "uploading",
+        "uploaded": "uploaded",
+        "error": "error"
+      }
+    },
+    "step5": {
+      "title": "Final step",
+      "description": "Confirm the following before submitting.",
+      "dataProcessingLabel": "I agree to my personal data being used in accordance with Futbolio's <link>Privacy Policy</link>.",
+      "socialShareLabel": "I agree that my profile (including photo/video) may be shared on Futbolio's social media accounts.",
+      "ageConfirmationLabel": "I confirm that I am 18 years of age or older."
+    },
+    "thankYou": {
+      "title": "Your application has been received!",
+      "description": "We're reviewing your details. If you're a good match, we'll contact you via WhatsApp or Instagram.",
+      "backHome": "Back to home"
+    },
+    "roleTitles": {
+      "player": "Player registration",
+      "referee": "Referee registration",
+      "medic": "Medic registration"
+    },
+    "hourSlots": {
+      "09_12": "09:00 - 12:00",
+      "12_15": "12:00 - 15:00",
+      "15_18": "15:00 - 18:00",
+      "18_21": "18:00 - 21:00",
+      "21_24": "21:00 - 24:00"
+    }
+  },
+  "admin": {
+    "common": {
+      "save": "Yadda saxla",
+      "saving": "Saxlanılır...",
+      "cancel": "İmtina et",
+      "delete": "Sil",
+      "edit": "Redaktə et",
+      "create": "Yarat",
+      "add": "Əlavə et",
+      "loading": "Yüklənir...",
+      "error": "Xəta baş verdi",
+      "confirm": "Təsdiqlə",
+      "actions": "Əməliyyatlar",
+      "close": "Bağla",
+      "yes": "Bəli",
+      "no": "Xeyr",
+      "back": "Geri",
+      "search": "Axtar",
+      "noResults": "Nəticə tapılmadı",
+      "required": "Bu sahə mütləqdir",
+      "optional": "istəyə bağlı",
+      "active": "Aktiv",
+      "inactive": "Qeyri-aktiv",
+      "copy": "Kopyala",
+      "copied": "Kopyalandı",
+      "noValue": "yoxdur"
+    },
+    "nav": {
+      "brand": "Futbolio Admin",
+      "applications": "Müraciətlər",
+      "settings": "Tənzimləmələr",
+      "adminUsers": "Adminlər",
+      "logout": "Çıxış"
+    },
+    "login": {
+      "title": "Admin girişi",
+      "subtitle": "Davam etmək üçün hesabına daxil ol.",
+      "emailLabel": "E-poçt",
+      "passwordLabel": "Parol",
+      "submit": "Daxil ol",
+      "submitting": "Yoxlanılır...",
+      "forgotPassword": "Parolu unutmusan?",
+      "totpEnrollTitle": "İki addımlı doğrulamanı aktivləşdir",
+      "totpEnrollInstructions": "Aşağıdakı gizli açarı Google Authenticator (və ya oxşar tətbiq) proqramına əl ilə daxil et, sonra tətbiqin göstərdiyi 6 rəqəmli kodu aşağı yaz.",
+      "secretLabel": "Gizli açar",
+      "codeLabel": "6 rəqəmli kod",
+      "totpVerifyTitle": "Doğrulama kodu",
+      "totpVerifyInstructions": "Authenticator tətbiqindəki 6 rəqəmli kodu daxil et.",
+      "verify": "Təsdiqlə",
+      "verifying": "Yoxlanılır...",
+      "backToLogin": "Girişə qayıt",
+      "codePlaceholder": "123456"
+    },
+    "resetPassword": {
+      "requestTitle": "Parolu bərpa et",
+      "requestSubtitle": "E-poçt ünvanını daxil et, sənə bərpa keçidi göndərək.",
+      "emailLabel": "E-poçt",
+      "submit": "Keçid göndər",
+      "submitting": "Göndərilir...",
+      "requestSuccess": "Əgər bu e-poçt sistemdə mövcuddursa, parolu sıfırlamaq üçün keçid göndərildi.",
+      "confirmTitle": "Yeni parol təyin et",
+      "newPasswordLabel": "Yeni parol",
+      "confirmSubmit": "Parolu təyin et",
+      "confirmSubmitting": "Yadda saxlanılır...",
+      "confirmSuccess": "Parolun uğurla yeniləndi. İndi daxil ola bilərsən.",
+      "invalidToken": "Keçid tapılmadı. Bərpa keçidini yenidən tələb et.",
+      "goToLogin": "Girişə get"
+    },
+    "dashboard": {
+      "redirecting": "Yönləndirilir..."
+    },
+    "guard": {
+      "checkingSession": "Sessiya yoxlanılır..."
+    },
+    "applications": {
+      "title": "Müraciətlər",
+      "searchPlaceholder": "Ad və ya telefon üzrə axtar",
+      "filters": {
+        "title": "Filtrlər",
+        "role": "Rol",
+        "district": "Rayon",
+        "status": "Status",
+        "dateFrom": "Tarixdən",
+        "dateTo": "Tarixədək",
+        "selfRating": "Özünüqiymətləndirmə",
+        "position": "Mövqe",
+        "days": "Günlər",
+        "hours": "Saatlar",
+        "allRoles": "Bütün rollar",
+        "allDistricts": "Bütün rayonlar",
+        "allStatuses": "Bütün statuslar",
+        "apply": "Tətbiq et",
+        "reset": "Sıfırla"
+      },
+      "sort": {
+        "label": "Sırala",
+        "newest": "Ən yeni",
+        "oldest": "Ən köhnə",
+        "nameAsc": "Ad (A-Z)",
+        "statusAsc": "Status"
+      },
+      "export": {
+        "label": "İxrac et",
+        "csv": "CSV",
+        "xlsx": "Excel"
+      },
+      "table": {
+        "name": "Ad",
+        "role": "Rol",
+        "position": "Mövqe",
+        "age": "Yaş",
+        "district": "Rayon",
+        "phone": "Telefon",
+        "status": "Status",
+        "date": "Tarix",
+        "duplicate": "Təkrar"
+      },
+      "pagination": {
+        "pageInfo": "{count} nəticədən {from}-{to}",
+        "previous": "Əvvəlki",
+        "next": "Növbəti"
+      },
+      "empty": "Heç bir müraciət tapılmadı.",
+      "loadError": "Müraciətlər yüklənə bilmədi.",
+      "viewDetail": "Bax"
+    },
+    "applicationDetail": {
+      "back": "Müraciətlərə qayıt",
+      "sections": {
+        "personal": "Şəxsi məlumatlar",
+        "roleDetails": "Rol üzrə məlumatlar",
+        "availability": "Uyğunluq",
+        "files": "Fayllar",
+        "consents": "Razılıqlar",
+        "statusHistory": "Status tarixçəsi",
+        "notes": "Qeydlər"
+      },
+      "fields": {
+        "fullName": "Ad, soyad",
+        "role": "Rol",
+        "age": "Yaş",
+        "phone": "Telefon",
+        "instagram": "Instagram",
+        "district": "Rayon",
+        "createdAt": "Göndərilmə tarixi",
+        "updatedAt": "Yenilənmə tarixi",
+        "videoLink": "Video keçidi",
+        "duplicate": "Təkrar müraciət",
+        "mainPosition": "Əsas mövqe",
+        "extraPositions": "Əlavə mövqelər",
+        "preferredFoot": "Üstün ayaq",
+        "yearsPlaying": "Təcrübə",
+        "clubExperience": "Klub təcrübəsi",
+        "selfRating": "Özünüqiymətləndirmə",
+        "licenseStatus": "Lisenziya statusu",
+        "yearsRefereeing": "Hakimlik təcrübəsi",
+        "gameTypes": "Oyun növləri",
+        "refereeExperience": "Təcrübə qeydi",
+        "specialty": "İxtisas",
+        "firstAidCert": "İlk yardım sertifikatı",
+        "workExperience": "İş təcrübəsi",
+        "workplace": "İş yeri",
+        "days": "Günlər",
+        "hours": "Saatlar",
+        "districts": "Rayonlar"
+      },
+      "status": {
+        "label": "Status",
+        "updateSuccess": "Status yeniləndi.",
+        "updateError": "Statusu yeniləmək mümkün olmadı."
+      },
+      "files": {
+        "view": "Bax",
+        "download": "Yüklə",
+        "noFiles": "Fayl yoxdur.",
+        "loadingUrl": "Yüklənir...",
+        "forbidden": "Bu fayla baxmaq üçün icazəniz yoxdur.",
+        "loadError": "Fayl açıla bilmədi.",
+        "scanClean": "təmiz",
+        "scanPending": "yoxlanılır",
+        "scanInfected": "yoluxmuş, silinib",
+        "scanError": "xəta"
+      },
+      "consents": {
+        "accepted": "Qəbul edilib",
+        "declined": "Qəbul edilməyib",
+        "acceptedAt": "Tarix"
+      },
+      "statusHistory": {
+        "empty": "Status dəyişikliyi yoxdur.",
+        "entry": "{from} → {to}",
+        "by": "{email} tərəfindən",
+        "systemActor": "Sistem",
+        "reason": "Səbəb"
+      },
+      "notes": {
+        "empty": "Qeyd yoxdur.",
+        "placeholder": "Qeyd yaz...",
+        "add": "Qeyd əlavə et",
+        "adding": "Əlavə edilir...",
+        "addError": "Qeyd əlavə edilə bilmədi."
+      },
+      "delete": {
+        "trigger": "Müraciəti sil",
+        "title": "Müraciəti silmək istədiyinə əminsən?",
+        "description": "Bu əməliyyat geri qaytarıla bilməz. {name} adlı müraciət və ona aid bütün fayllar həmişəlik silinəcək.",
+        "confirm": "Bəli, sil",
+        "success": "Müraciət silindi.",
+        "error": "Müraciəti silmək mümkün olmadı."
+      },
+      "loadError": "Müraciət tapılmadı."
+    },
+    "settings": {
+      "title": "Tənzimləmələr",
+      "tabs": {
+        "general": "Əsas",
+        "videoCards": "Video kartları",
+        "faq": "Suallar"
+      },
+      "general": {
+        "whatsappNumber": "WhatsApp nömrəsi",
+        "whatsappDefaultText": "WhatsApp standart mesajı",
+        "phoneNumber": "Telefon nömrəsi",
+        "instagramUrl": "Instagram linki",
+        "instagramDmUrl": "Instagram DM linki",
+        "tiktokUrl": "TikTok linki",
+        "save": "Yadda saxla",
+        "saveSuccess": "Tənzimləmələr yadda saxlanıldı.",
+        "saveError": "Tənzimləmələri yadda saxlamaq mümkün olmadı."
+      },
+      "videoCards": {
+        "addTitle": "Yeni video kartı",
+        "editTitle": "Video kartını redaktə et",
+        "link": "Video keçidi",
+        "coverImageKey": "Üz qabığı şəkli (storage key)",
+        "coverImageHint": "MVP qeydi: bu sahə birbaşa storage açarıdır, fayl yükləmə alətı hələ qoşulmayıb.",
+        "caption": "Başlıq",
+        "order": "Sıra",
+        "isActive": "Aktiv",
+        "empty": "Hələ video kartı yoxdur.",
+        "createSuccess": "Video kartı yaradıldı.",
+        "updateSuccess": "Video kartı yeniləndi.",
+        "deleteSuccess": "Video kartı silindi.",
+        "deleteConfirmTitle": "Video kartını silmək istədiyinə əminsən?",
+        "error": "Əməliyyat uğursuz oldu."
+      },
+      "faq": {
+        "addTitle": "Yeni sual",
+        "editTitle": "Sualı redaktə et",
+        "question": "Sual",
+        "answer": "Cavab",
+        "order": "Sıra",
+        "isActive": "Aktiv",
+        "empty": "Hələ sual yoxdur.",
+        "createSuccess": "Sual yaradıldı.",
+        "updateSuccess": "Sual yeniləndi.",
+        "deleteSuccess": "Sual silindi.",
+        "deleteConfirmTitle": "Sualı silmək istədiyinə əminsən?",
+        "error": "Əməliyyat uğursuz oldu."
+      }
+    },
+    "adminUsers": {
+      "title": "Adminlər",
+      "addTitle": "Yeni admin əlavə et",
+      "email": "E-poçt",
+      "fullName": "Ad, soyad",
+      "role": "Rol",
+      "canViewSensitiveFiles": "Həssas faylları görə bilər",
+      "status": "Status",
+      "lastLogin": "Son giriş",
+      "never": "Heç vaxt",
+      "create": "Admin yarat",
+      "createSuccess": "Admin yaradıldı. Parol təyini üçün e-poçt göndərildi.",
+      "createError": "Admin yaratmaq mümkün olmadı.",
+      "disable": "Deaktiv et",
+      "disableConfirmTitle": "Bu adminin hesabını deaktiv etmək istədiyinə əminsən?",
+      "disableSuccess": "Admin deaktiv edildi.",
+      "disableError": "Admini deaktiv etmək mümkün olmadı.",
+      "resetPassword": "Parolu sıfırla",
+      "resetPasswordConfirmTitle": "Bu admin üçün parol sıfırlama keçidi göndərilsin?",
+      "resetPasswordSuccess": "Parol sıfırlama keçidi göndərildi.",
+      "resetPasswordError": "Keçid göndərilə bilmədi.",
+      "empty": "Hələ admin yoxdur.",
+      "forbidden": "Bu səhifəyə yalnız super adminlər daxil ola bilər."
+    },
+    "enums": {
+      "role": {
+        "player": "Futbolçu",
+        "referee": "Hakim",
+        "medic": "Həkim"
+      },
+      "status": {
+        "new": "Yeni",
+        "reviewed": "Baxılıb",
+        "contacted": "Əlaqə saxlanılıb",
+        "accepted": "Qəbul edilib",
+        "rejected": "Rədd edilib",
+        "archived": "Arxivləşdirilib"
+      },
+      "district": {
+        "binegedi": "Binəqədi",
+        "xetai": "Xətai",
+        "xezer": "Xəzər",
+        "qaradag": "Qaradağ",
+        "nerimanov": "Nərimanov",
+        "nesimi": "Nəsimi",
+        "nizami": "Nizami",
+        "pirallahi": "Pirallahı",
+        "sabuncu": "Sabunçu",
+        "sebail": "Səbail",
+        "suraxani": "Suraxanı",
+        "yasamal": "Yasamal"
+      },
+      "mainPosition": {
+        "goalkeeper": "Qapıçı",
+        "defender": "Müdafiəçi",
+        "midfielder": "Yarımmüdafiəçi",
+        "forward": "Hücumçu"
+      },
+      "preferredFoot": {
+        "right": "Sağ",
+        "left": "Sol",
+        "both": "Hər ikisi"
+      },
+      "duration": {
+        "under_1": "1 ildən az",
+        "1_3": "1-3 il",
+        "3_5": "3-5 il",
+        "over_5": "5+ il"
+      },
+      "licenseStatus": {
+        "licensed": "Lisenziyalı",
+        "course_completed": "Kurs bitirib",
+        "experienced_unlicensed": "Təcrübəli (lisenziyasız)"
+      },
+      "gameType": {
+        "mini_football": "Mini-futbol",
+        "big_football": "Böyük futbol",
+        "futsal": "Futzal",
+        "tournaments": "Turnirlər"
+      },
+      "specialty": {
+        "sports_doctor": "İdman həkimi",
+        "doctor": "Həkim",
+        "paramedic": "Feldşer/Paramedik",
+        "physiotherapist": "Fizioterapevt",
+        "nurse": "Tibb bacısı"
+      },
+      "weekday": {
+        "monday": "Bazar ertəsi",
+        "tuesday": "Çərşənbə axşamı",
+        "wednesday": "Çərşənbə",
+        "thursday": "Cümə axşamı",
+        "friday": "Cümə",
+        "saturday": "Şənbə",
+        "sunday": "Bazar"
+      },
+      "hourSlot": {
+        "18_20": "18:00-20:00",
+        "20_22": "20:00-22:00",
+        "22_00": "22:00-00:00",
+        "weekend_daytime": "Həftə sonu gündüz"
+      },
+      "fileKind": {
+        "photo": "Şəkil",
+        "video": "Video",
+        "document": "Sənəd"
+      },
+      "consentType": {
+        "data_processing": "Məlumatların işlənməsi",
+        "social_share": "Sosial media paylaşımı",
+        "age_18_confirmation": "18 yaş təsdiqi"
+      },
+      "adminRole": {
+        "admin": "Admin",
+        "super_admin": "Super admin"
+      }
+    }
+  },
+  "order": {
+    "modalTitle": "Order",
+    "stepper": "Step {current}/{total}",
+    "nav": {
+      "back": "Back",
+      "continue": "Continue"
+    },
+    "roles": {
+      "title": "Who do you need?",
+      "description": "You can pick one option or several.",
+      "player": "Player",
+      "goalkeeper": "Goalkeeper",
+      "referee": "Referee",
+      "medic": "Medic",
+      "full_rival_team": "Whole opposing team"
+    },
+    "levels": {
+      "title": "Level",
+      "description": "What level of player/team are you looking for?",
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "former_pro": "Former professional"
+    },
+    "durations": {
+      "1h": "1 hour",
+      "1_5h": "1.5 hours",
+      "2h": "2 hours"
+    },
+    "priceRanges": {
+      "title": "Price range",
+      "description": "Choose your approximate budget.",
+      "10_15": "10-15 AZN",
+      "15_20": "15-20 AZN",
+      "20_30": "20-30 AZN",
+      "30_plus": "30+ AZN",
+      "any": "No preference"
+    },
+    "counts": {
+      "title": "Count",
+      "description": "How many people do you need for each role?",
+      "countLabel": "{role} count",
+      "teamSizeLabel": "What team format?",
+      "decrease": "Decrease",
+      "increase": "Increase"
+    },
+    "gameDetails": {
+      "title": "Game details",
+      "description": "Share the date, time, and venue.",
+      "dateLabel": "Date",
+      "timeLabel": "Start time",
+      "durationLabel": "Duration",
+      "stadiumLabel": "Venue name/address",
+      "stadiumPlaceholder": "E.g. Atlet Arena, Yasamal",
+      "mapLinkLabel": "Map link (optional)",
+      "mapLinkPlaceholder": "https://maps.google.com/...",
+      "mapLinkInvalid": "Enter a valid link"
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Share your name so we can reach you.",
+      "nameLabel": "Name",
+      "namePlaceholder": "Enter your name",
+      "noteLabel": "Note (optional)",
+      "notePlaceholder": "Add any extra notes",
+      "reviewButton": "Review order"
+    },
+    "summary": {
+      "title": "Order summary",
+      "description": "Check everything before sending.",
+      "rolesLabel": "Needed",
+      "levelLabel": "Level",
+      "dateTimeLabel": "Date and time",
+      "stadiumLabel": "Venue",
+      "priceLabel": "Price range",
+      "nameLabel": "Name",
+      "noteLabel": "Note",
+      "sendButton": "Send via WhatsApp"
+    },
+    "whatsapp": {
+      "greeting": "Hi Futbolio! I'd like to place an order.",
+      "needLabel": "Needed",
+      "levelLabel": "Level",
+      "dateTimeLabel": "Date and time",
+      "stadiumLabel": "Venue",
+      "priceLabel": "Price range",
+      "nameLabel": "Name",
+      "noteLabel": "Note"
+    }
+  }
+}

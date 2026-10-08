@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Checkbox } from "@/components/ui/checkbox";
+import { StepHeader } from "@/components/wizard/StepHeader";
 import { StepFooter } from "@/components/wizard/StepFooter";
 import { TurnstileWidget, honeypotFieldProps } from "@/components/wizard/TurnstileWidget";
 import { useFocusFirstInvalidField } from "@/lib/validation/useFocusFirstInvalidField";
@@ -66,7 +67,7 @@ export function Step5Consents({
 
   return (
     <div>
-      <h2 className="mb-2 text-xl font-bold tracking-tight text-foreground">{t("title")}</h2>
+      <StepHeader title={t("title")} onBack={onBack} />
       <p className="mb-6 text-muted">{t("description")}</p>
 
       <form

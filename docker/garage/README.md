@@ -54,6 +54,15 @@ docker compose exec garage /garage bucket allow --read --write futbolio-uploads 
 Re-running these is safe (idempotent) except `layout apply` — if you ever
 re-assign the layout, bump `--version` each time.
 
+## CORS is automatic
+
+Bucket CORS (needed for the frontend's direct-to-storage presigned uploads)
+is no longer a manual step here — the backend container runs
+`python manage.py configure_storage_cors` on every boot (see the `backend`
+service's `command:` in docker-compose.yml/docker-compose.prod.yml), which
+idempotently applies the policy from `CORS_ALLOWED_ORIGINS`. Nothing to do
+in this bootstrap beyond the bucket/key steps above.
+
 ## 4. Verify
 
 ```

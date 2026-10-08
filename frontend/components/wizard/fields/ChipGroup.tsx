@@ -68,12 +68,15 @@ interface ChipMultiSelectProps {
   error?: string;
   registerRef?: (el: HTMLElement | null) => void;
   className?: string;
+  /** Option values rendered disabled (with a tooltip via `disabledTitle`) — e.g. a player's main position inside the "extra positions" picker. */
+  disabledValues?: string[];
+  disabledTitle?: string;
 }
 
 /**
  * Multi-select chip group (checkbox semantics) — used for extra
- * positions, game types, and every Step 3 availability field (days,
- * hours, districts).
+ * positions, game types, medic specialties, and (pre-Availability-grid)
+ * Step 3's old flat days/hours/districts fields.
  */
 export function ChipMultiSelect({
   label,
@@ -83,6 +86,8 @@ export function ChipMultiSelect({
   error,
   registerRef,
   className,
+  disabledValues,
+  disabledTitle,
 }: ChipMultiSelectProps) {
   const toggle = (optionValue: string, checked: boolean) => {
     onChange(
@@ -100,15 +105,20 @@ export function ChipMultiSelect({
         tabIndex={-1}
         className={cn("flex flex-wrap gap-2")}
       >
-        {options.map((option) => (
-          <ChipCheckbox
-            key={option.value}
-            checked={values.includes(option.value)}
-            onCheckedChange={(checked) => toggle(option.value, checked)}
-          >
-            {option.label}
-          </ChipCheckbox>
-        ))}
+        {options.map((option) => {
+          const isDisabled = disabledValues?.includes(option.value) ?? false;
+          return (
+            <ChipCheckbox
+              key={option.value}
+              checked={values.includes(option.value)}
+              onCheckedChange={(checked) => toggle(option.value, checked)}
+              disabled={isDisabled}
+              title={isDisabled ? disabledTitle : undefined}
+            >
+              {option.label}
+            </ChipCheckbox>
+          );
+        })}
       </div>
       {error ? <p className="mt-2 text-sm text-red-600">{error}</p> : null}
     </div>

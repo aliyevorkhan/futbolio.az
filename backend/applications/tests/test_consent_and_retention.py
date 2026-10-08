@@ -1,5 +1,5 @@
 import uuid
-from datetime import timedelta
+from datetime import date, timedelta
 
 import pytest
 from django.utils import timezone
@@ -51,7 +51,7 @@ def test_purge_task_stages_stale_rejected_application():
     application = Application.objects.create(
         role="player",
         full_name="Kamran Aslanov",
-        age=30,
+        date_of_birth=date(1996, 1, 1),
         phone="+994551234567",
         district="yasamal",
         status=ApplicationStatus.REJECTED,

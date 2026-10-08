@@ -1,18 +1,28 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { Check } from "lucide-react";
 import { useSettingsQuery } from "@/lib/queries/useSettingsQuery";
 import { buildWhatsAppUrl } from "@/lib/utils";
 import { Container } from "@/components/shared/Container";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { ExternalLink } from "@/components/shared/ExternalLink";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+// Centralized here AND in SeviyyelerSection.tsx via the shared
+// `home.tiers` i18n namespace, so the 4 tier names never drift between
+// the two sections.
+const TIER_KEYS = ["standart", "pro", "elit", "prinsipial"] as const;
 
 /**
- * "Necə işləyir" section (`#nece`): 3 steps + a WhatsApp CTA, sourced
- * from the shared `useSettingsQuery()` result.
+ * "Necə işləyir" section (`#nece`): full-bleed green band, 3 steps each
+ * with a small static "preview chip", + a WhatsApp CTA next to the
+ * heading. Sourced from the shared `useSettingsQuery()` result.
  */
 export function NeceIsleyirSection() {
   const t = useTranslations("home.nece");
+  const tTiers = useTranslations("home.tiers");
   const { data: settings } = useSettingsQuery();
 
   const whatsappUrl = settings
@@ -26,36 +36,67 @@ export function NeceIsleyirSection() {
   ];
 
   return (
-    <section id="nece" className="py-16 sm:py-24">
+    <section id="nece" className="bg-brand-green py-16 text-brand-dark sm:py-24">
       <Container>
-        <SectionHeading eyebrow={t("eyebrow")} title={t("title")} />
-
-        <ol className="mt-10 grid gap-6 sm:grid-cols-3">
-          {steps.map((step, index) => (
-            <li
-              key={step.title}
-              className="rounded-xl border border-brand-dark/10 p-6"
-            >
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-green text-sm font-bold text-brand-dark">
-                {index + 1}
-              </span>
-              <h3 className="mt-4 font-semibold">{step.title}</h3>
-              <p className="mt-2 text-sm text-muted">{step.desc}</p>
-            </li>
-          ))}
-        </ol>
-
-        {whatsappUrl ? (
-          <div className="mt-8">
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <SectionHeading
+            eyebrow={t("eyebrow")}
+            title={t("title")}
+            eyebrowClassName="text-brand-dark/70"
+          />
+          {whatsappUrl ? (
             <ExternalLink
               href={whatsappUrl}
               analyticsLabel="nece_cta"
-              className="inline-flex h-11 items-center justify-center rounded-full bg-brand-green px-5 text-sm font-semibold text-brand-dark transition-colors hover:bg-brand-green/90"
+              className={cn(buttonVariants({ variant: "dark-solid" }), "shrink-0")}
             >
               {t("cta")}
             </ExternalLink>
-          </div>
-        ) : null}
+          ) : null}
+        </div>
+
+        <ol className="mt-10 grid gap-6 sm:grid-cols-3">
+          {steps.map((step, index) => (
+            <li key={step.title} className="flex flex-col rounded-xl bg-white p-6 text-foreground">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-green text-sm font-bold text-brand-dark">
+                {index + 1}
+              </span>
+              <h3 className="mt-4 font-heading font-semibold">{step.title}</h3>
+              <p className="mt-2 flex-1 text-sm text-muted">{step.desc}</p>
+
+              {index === 0 ? (
+                <span className="mt-4 inline-flex w-fit items-center rounded-full bg-surface px-3 py-1.5 text-xs font-medium text-foreground">
+                  {t("previewSlot")}
+                </span>
+              ) : null}
+
+              {index === 1 ? (
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {TIER_KEYS.map((key) => (
+                    <span
+                      key={key}
+                      className={cn(
+                        "rounded-full px-2.5 py-1 text-xs font-medium",
+                        key === "pro"
+                          ? "bg-brand-green text-brand-dark"
+                          : "bg-surface text-foreground",
+                      )}
+                    >
+                      {tTiers(key)}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+
+              {index === 2 ? (
+                <span className="mt-4 inline-flex w-fit items-center gap-1.5 rounded-full bg-surface px-3 py-1.5 text-xs font-medium text-foreground">
+                  <Check className="h-3.5 w-3.5 text-brand-green" aria-hidden="true" />
+                  {t("previewConfirmed")}
+                </span>
+              ) : null}
+            </li>
+          ))}
+        </ol>
       </Container>
     </section>
   );

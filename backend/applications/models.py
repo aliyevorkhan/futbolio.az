@@ -2,22 +2,21 @@ import uuid
 
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
-from django.core.validators import MaxValueValidator, MinLengthValidator, MinValueValidator
+from django.core.validators import MinLengthValidator
 from django.db import models
-from django.db.models import Q
+from django.db.models import F, Q
 
 from common.enums import (
     ApplicationRole,
     ApplicationStatus,
     ConsentType,
     District,
+    FirstAidEquipmentStatus,
     GameType,
-    HourSlot,
-    LicenseStatus,
     MainPosition,
     MedicSpecialty,
+    PlayerExperienceLevel,
     PreferredFoot,
-    Weekday,
     WorkExperience,
     YearsPlaying,
     YearsRefereeing,
@@ -26,7 +25,7 @@ from common.validators import (
     az_phone_validator,
     full_name_validator,
     instagram_handle_validator,
-    validate_age,
+    validate_date_of_birth,
     validate_video_link_domain,
 )
 
@@ -37,7 +36,7 @@ class Application(models.Model):
     full_name = models.CharField(
         max_length=80, validators=[MinLengthValidator(3), full_name_validator]
     )
-    age = models.PositiveSmallIntegerField(validators=[validate_age])
+    date_of_birth = models.DateField(validators=[validate_date_of_birth])
     phone = models.CharField(max_length=20, validators=[az_phone_validator], db_index=True)
     instagram_handle = models.CharField(
         max_length=30, blank=True, validators=[instagram_handle_validator]
@@ -81,16 +80,35 @@ class PlayerDetails(models.Model):
     preferred_foot = models.CharField(max_length=20, choices=PreferredFoot.choices)
     years_playing = models.CharField(max_length=20, choices=YearsPlaying.choices)
     club_experience_text = models.CharField(max_length=500, blank=True)
-    self_rating = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    experience_level = models.CharField(max_length=20, choices=PlayerExperienceLevel.choices)
+    has_pro_experience = models.BooleanField()
+    # Admin-facing only — never serialized on a public-facing serializer.
+    hourly_rate_azn = models.PositiveIntegerField()
+    is_university_student = models.BooleanField()
+
+
+class PlayerProfessionalPeriod(models.Model):
+    player_details = models.ForeignKey(
+        PlayerDetails, on_delete=models.CASCADE, related_name="professional_periods"
     )
+    start_year = models.PositiveSmallIntegerField()
+    end_year = models.PositiveSmallIntegerField()
+    club = models.CharField(max_length=120, blank=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=Q(start_year__lte=F("end_year")), name="pro_period_start_before_end"
+            ),
+        ]
 
 
 class RefereeDetails(models.Model):
     application = models.OneToOneField(
         Application, on_delete=models.CASCADE, related_name="referee_details"
     )
-    license_status = models.CharField(max_length=30, choices=LicenseStatus.choices)
+    has_official_certification = models.BooleanField()
+    certification_name = models.CharField(max_length=200, blank=True)
     years_refereeing = models.CharField(max_length=20, choices=YearsRefereeing.choices)
     game_types = ArrayField(models.CharField(max_length=20, choices=GameType.choices), default=list)
     experience_text = models.CharField(max_length=500, blank=True)
@@ -100,8 +118,9 @@ class MedicDetails(models.Model):
     application = models.OneToOneField(
         Application, on_delete=models.CASCADE, related_name="medic_details"
     )
-    specialty = models.CharField(max_length=30, choices=MedicSpecialty.choices)
-    first_aid_cert = models.BooleanField()
+    specialty = ArrayField(models.CharField(max_length=30, choices=MedicSpecialty.choices), default=list)
+    equipment_status = models.CharField(max_length=20, choices=FirstAidEquipmentStatus.choices)
+    equipment_missing_text = models.CharField(max_length=500, blank=True)
     work_experience = models.CharField(max_length=20, choices=WorkExperience.choices)
     workplace = models.CharField(max_length=300, blank=True)
 
@@ -110,16 +129,17 @@ class Availability(models.Model):
     application = models.OneToOneField(
         Application, on_delete=models.CASCADE, related_name="availability"
     )
-    days = ArrayField(models.CharField(max_length=20, choices=Weekday.choices), default=list)
-    hours = ArrayField(models.CharField(max_length=20, choices=HourSlot.choices), default=list)
+    # Composite "weekday:hour_slot" strings, e.g. "monday:09_12".
+    time_slots = ArrayField(models.CharField(max_length=20), default=list)
     districts = ArrayField(models.CharField(max_length=20, choices=District.choices), default=list)
 
     class Meta:
         constraints = [
             # Defense in depth only — the real min-1 enforcement is in the
             # serializer; these are a DB-level backstop.
-            models.CheckConstraint(check=Q(days__len__gt=0), name="availability_days_non_empty"),
-            models.CheckConstraint(check=Q(hours__len__gt=0), name="availability_hours_non_empty"),
+            models.CheckConstraint(
+                check=Q(time_slots__len__gt=0), name="availability_time_slots_non_empty"
+            ),
             models.CheckConstraint(
                 check=Q(districts__len__gt=0), name="availability_districts_non_empty"
             ),

@@ -10,6 +10,10 @@
     },
     "notFound": {
       "title": "Səhifə tapılmadı · Futbolio"
+    },
+    "about": {
+      "title": "Haqqımızda · Futbolio",
+      "description": "Futbolio komandası, missiyası və Bakıda həvəskar futbol üçün gördüyü iş haqqında."
     }
   },
   "nav": {
@@ -18,35 +22,49 @@
     "xidmetler": "Xidmətlər",
     "nece": "Necə işləyir",
     "suallar": "Suallar",
-    "cta": "Oyunçu ol",
+    "cta": "Qeydiyyatdan keç",
     "skipToContent": "Əsas məzmuna keç"
   },
   "footer": {
     "privacyLink": "Məxfilik siyasəti",
-    "copyright": "© {year} Futbolio. Bütün hüquqlar qorunur."
+    "aboutLink": "Haqqımızda",
+    "joinLink": "Komandamıza qoşul",
+    "instagramLink": "Instagram",
+    "tiktokLink": "TikTok",
+    "locationLine": "futbolio.az · Bakı, Azərbaycan · © {year}"
   },
   "home": {
     "hero": {
-      "title": "Hər komandanın 12-ci oyunçusu var.",
+      "badge": "Bakının həvəskar futbol platforması",
+      "titlePrefix": "Hər komandanın ",
+      "titleHighlight": "12-ci oyunçusu",
+      "titleSuffix": " var.",
       "subtitle": "Futbolio Bakıdakı həvəskar komandaları çatışmayan oyunçu, qapıçı, hakim və ya həkimlə WhatsApp və Instagram üzərindən sürətlə birləşdirir.",
+      "checklistPlayers": "Futbolçular",
+      "checklistGoalkeepers": "Qapıçılar",
+      "checklistReferees": "Hakimlər",
+      "checklistMedics": "Həkimlər",
       "findPlayerCta": "Oyunçu tap",
       "joinCta": "Komandamıza qoşul",
+      "notificationTitle": "12-ci oyunçu yoldadır",
+      "notificationMeta": "Qapıçı · Pro · 21:00",
       "illustrationAlt": "Futbol meydançasının sadə illüstrasiyası"
     },
     "biz": {
       "eyebrow": "Biz kimik",
       "title": "Komanda natamam olanda, Futbolio tamamlayır.",
-      "description": "Oyun günü oyunçu, qapıçı, hakim və ya həkim çatışmır? Futbolio Bakıdakı həvəskar komandaları etibarlı namizədlərlə bir neçə dəqiqəyə əlaqələndirir — uzun axtarışlara ehtiyac qalmır.",
+      "description": "Oyun günü oyunçu, qapıçı, hakim və ya həkim çatışmır? Futbolio Bakıdakı həvəskar komandaları etibarlı namizədlərlə bir neçə dəqiqəyə əlaqələndirir, uzun axtarışlara ehtiyac qalmır.",
       "benefit1Title": "Sürətli həll",
       "benefit1Desc": "Mesaj yazırsan, qısa müddətdə uyğun namizəd tapırıq.",
       "benefit2Title": "Yoxlanılmış namizədlər",
       "benefit2Desc": "Hər namizəd əsas məlumatlarını təqdim edir, uyğunluğu biz yoxlayırıq.",
       "benefit3Title": "Çevik razılaşma",
-      "benefit3Desc": "İstər bir oyun, istər bütün mövsüm üçün — sənə uyğun formatda."
+      "benefit3Desc": "İstər bir oyun, istər bütün mövsüm üçün, sənə uyğun formatda."
     },
     "xidmetler": {
       "eyebrow": "Xidmətlər",
       "title": "Nəyə ehtiyacın var?",
+      "description": "Mövqeyinə uyğun, yoxlanılmış namizədləri bir neçə dəqiqəyə tapırıq.",
       "orderCta": "Sifariş et",
       "futbolcu": {
         "title": "Futbolçu",
@@ -63,16 +81,13 @@
       "hekim": {
         "title": "Həkim",
         "desc": "Oyun zamanı ilk tibbi yardım üçün həkim təşkil edirik."
-      },
-      "howMany": {
-        "title": "Neçə nəfər lazımdır?",
-        "oneTitle": "Bir oyunçu",
-        "oneDesc": "Tək bir mövqe üçün sürətli həll.",
-        "manyTitle": "Bir neçə oyunçu",
-        "manyDesc": "Bir neçə mövqe eyni anda doldurulur.",
-        "rivalTitle": "Rəqib komanda",
-        "rivalDesc": "Məşq oyunu üçün rəqib komanda da tapırıq."
       }
+    },
+    "tiers": {
+      "standart": "Standart",
+      "pro": "Pro",
+      "elit": "Elit",
+      "prinsipial": "Prinsipial"
     },
     "nece": {
       "eyebrow": "Necə işləyir",
@@ -83,23 +98,22 @@
       "step2Desc": "Futbolio uyğun, yoxlanılmış namizədi təklif edir.",
       "step3Title": "Oyna",
       "step3Desc": "Namizəd komandaya qoşulur, oyun davam edir.",
+      "previewSlot": "Bu gün 21:00, Yasamal · 1 qapıçı lazımdır.",
+      "previewConfirmed": "Oyunçu təsdiqlədi",
       "cta": "İndi yaz"
     },
     "seviyyeler": {
       "eyebrow": "Səviyyələr",
       "title": "Hər səviyyəyə uyğun namizəd",
-      "standartTitle": "Standart",
       "standartDesc": "Həvəskar səviyyədə, mütəmadi oynayan oyunçular.",
-      "proTitle": "Pro",
       "proDesc": "Təcrübəli, rəqabətli liqalarda oynamış oyunçular.",
-      "elitTitle": "Elit",
       "elitDesc": "Yüksək səviyyəli, diqqətlə seçilmiş namizədlər.",
-      "prinsipialTitle": "Prinsipial",
       "prinsipialDesc": "Qalib gəlmək istəyən, ciddi yanaşan oyunçular."
     },
     "videolar": {
       "eyebrow": "Videolar",
-      "title": "Meydandan anlar"
+      "title": "Meydandan anlar",
+      "description": "Meydanda baş verən həqiqi anlar, bizim icmamızdan."
     },
     "zemanet": {
       "eyebrow": "Zəmanət",
@@ -107,24 +121,70 @@
       "point1": "Bütün namizədlər yoxlanılır.",
       "point2": "Uyğun gəlməyən namizəd sürətlə əvəzlənir.",
       "point3": "Məmnuniyyətini əsas tuturuq.",
-      "moneyBackTitle": "100% pul geri",
+      "badgeLabel": "Futbolio zəmanəti",
+      "moneyBackSubline": "pul geri",
       "moneyBackDesc": "Məmnun qalmasan, pulunu geri qaytarırıq."
     },
     "cta": {
+      "heading": "Komandaya qoşulmaq istəyirsən?",
       "text": "18 yaş və yuxarı · yalnız Bakı",
       "button": "Qeydiyyatdan keç"
     },
     "suallar": {
       "eyebrow": "Suallar",
-      "title": "Tez-tez verilən suallar"
+      "title": "Tez-tez verilən suallar",
+      "helper": "Tez-tez soruşulan sualların cavablarını burada tapa bilərsən.",
+      "items": {
+        "q1": {
+          "question": "Futbolio nədir?",
+          "answer": "Futbolio Bakıda həvəskar futbol oyunları üçün oyunçu, qapıçı, hakim və həkim tapan xidmətdir. Komandanızda çatışmayan oyunçunu, bütöv rəqib komandanı və ya oyun üçün hakimi bir yerdən sifariş edə bilərsiniz."
+        },
+        "q2": {
+          "question": "Necə sifariş verə bilərəm?",
+          "answer": "\"Sifariş et\" düyməsini basın, kimin lazım olduğunu, oyunun vaxtını, stadionu və qiymət aralığını seçin. Məlumatlar WhatsApp-a hazır mesaj kimi keçir, komandamız sizinlə əlaqə saxlayır."
+        },
+        "q3": {
+          "question": "Yalnız qapıçı sifariş edə bilərəm?",
+          "answer": "Bəli. Yalnız qapıçı, yalnız oyunçu və ya hər ikisini birlikdə seçə bilərsiniz."
+        },
+        "q4": {
+          "question": "Bütöv rəqib komanda tapmaq olar?",
+          "answer": "Bəli. Sifarişdə \"Bütöv rəqib komanda\" seçin və komandanın formatını göstərin (məsələn, 6x6)."
+        },
+        "q5": {
+          "question": "Qiymət nə qədərdir?",
+          "answer": "Qiymət oyunçunun səviyyəsinə, oyunun müddətinə və sifarişin həcminə görə dəyişir. Sifariş zamanı qiymət aralığını seçirsiniz, dəqiq məbləğ sizinlə razılaşdırılır."
+        },
+        "q6": {
+          "question": "Oyunçular necə seçilir?",
+          "answer": "Hər oyunçu qeydiyyat zamanı mövqeyini, təcrübəsini, oynaya bildiyi vaxtları, foto və videosunu təqdim edir. Sifarişə uyğun səviyyəli oyunçular seçilir."
+        },
+        "q7": {
+          "question": "Futbolio-da necə oyunçu, hakim və ya həkim ola bilərəm?",
+          "answer": "\"Qeydiyyatdan keç\" düyməsini basın, rolunuzu seçin və formu doldurun. Qeydiyyat pulsuzdur."
+        },
+        "q8": {
+          "question": "Qeydiyyat üçün yaş həddi var?",
+          "answer": "Bəli, 18 ilə 45 yaş arasında olan şəxslər qeydiyyatdan keçə bilər."
+        },
+        "q9": {
+          "question": "Hakim və həkim də sifariş etmək olar?",
+          "answer": "Bəli. Hakim, idman həkimi və ya tibb bacısı oyunlar üçün ayrıca və ya oyunçularla birlikdə sifariş edilə bilər."
+        },
+        "q10": {
+          "question": "Tələbə turnirləri üçün oyunçu tapmaq mümkündür?",
+          "answer": "Bəli. Qeydiyyat zamanı oyunçular universitet tələbəsi olub-olmadıqlarını qeyd edirlər, bu da yalnız tələbələrin oynaya bildiyi turnirlər üçün uyğun oyunçu tapmağa kömək edir."
+        },
+        "q11": {
+          "question": "Hansı ərazilərdə xidmət göstərirsiniz?",
+          "answer": "Hazırda Bakıda fəaliyyət göstəririk."
+        }
+      }
     },
     "elaqe": {
       "title": "Bizimlə əlaqə",
       "whatsapp": "WhatsApp yaz",
-      "instagramProfile": "Instagram profili",
-      "instagramDm": "Instagram-da yaz",
-      "tiktok": "TikTok",
-      "copyright": "© {year} Futbolio. Bütün hüquqlar qorunur."
+      "instagramDirekt": "Instagram direkt"
     }
   },
   "privacy": {
@@ -146,10 +206,17 @@
     "description": "Axtardığınız səhifə mövcud deyil və ya başqa ünvana köçürülüb.",
     "backHome": "Ana səhifəyə qayıt"
   },
+  "about": {
+    "title": "Biz kimik",
+    "paragraph1": "Futbolio Bakıda həvəskar futbol oynayanlar üçün yaradılıb. Hər kəsə tanış vəziyyətdir: oyun təyin olunub, stadion hazırdır, amma son anda bir oyunçu gəlmir, qapıçı tapılmır və ya rəqib komanda çatmır. Biz bu problemi həll etmək üçün buradayıq.",
+    "paragraph2": "Futbolio oyunçu, qapıçı, hakim və həkimləri bir platformada birləşdirir. Sifarişçi kimin lazım olduğunu, oyunun vaxtını və yerini qeyd edir, biz isə səviyyəyə və vaxta uyğun insanları tapırıq. Tək oyunçu, bir neçə oyunçu və ya bütöv rəqib komanda, hamısı bir sifarişlə.",
+    "paragraph3": "Platformamızda qeydiyyatdan keçən hər kəs mövqeyini, təcrübəsini, oynaya bildiyi vaxtları, foto və videosunu təqdim edir. Bu, sifarişə uyğun insanı düzgün seçməyə imkan verir.",
+    "paragraph4": "Məqsədimiz sadədir: heç bir oyun çatışmayan oyunçu səbəbindən ləğv olunmasın, futbol isə hər kəs üçün daha rahat təşkil olunsun."
+  },
   "wizard": {
     "meta": {
       "title": "Qeydiyyat",
-      "description": "Futbolio-da futbolçu, hakim və ya həkim kimi qeydiyyatdan keç — bir neçə addımda, bir neçə dəqiqəyə."
+      "description": "Futbolio-da futbolçu, hakim və ya həkim kimi qeydiyyatdan keç, bir neçə addımda, bir neçə dəqiqəyə."
     },
     "sidebar": {
       "step1": "Əsas məlumat",
@@ -157,7 +224,12 @@
       "step3": "Uyğunluq",
       "step4": "Fayllar",
       "step5": "Təsdiq",
-      "progressLabel": "Addım {current} / {total}"
+      "progressLabel": "Addım {current} / {total}",
+      "step2For": {
+        "player": "Futbolçu təfərrüatları",
+        "referee": "Hakim təfərrüatları",
+        "medic": "Həkim təfərrüatları"
+      }
     },
     "nav": {
       "back": "Geri",
@@ -174,14 +246,10 @@
     "errors": {
       "required": "Bu sahə tələb olunur",
       "invalidFullName": "Ad və soyadı düzgün daxil edin (yalnız hərflər, boşluq və defis, 3-80 simvol)",
-      "invalidAge": "Yaş 18 ilə 70 arasında olmalıdır",
       "invalidPhone": "Nömrəni düzgün formatda daxil edin (+994 50 123 45 67)",
       "invalidInstagramHandle": "Instagram istifadəçi adını düzgün daxil edin",
       "tooLong": "Mətn həddindən artıq uzundur",
-      "selfRatingRequired": "Qiymətini seç",
       "minSelectionGameTypes": "Ən azı bir oyun növü seç",
-      "minSelectionDays": "Ən azı bir gün seç",
-      "minSelectionHours": "Ən azı bir vaxt aralığı seç",
       "minSelectionDistricts": "Ən azı bir rayon seç",
       "invalidVideoUrl": "Keçərli Instagram, TikTok, YouTube və ya Google Drive linki daxil et",
       "videoRequired": "Ən azı bir video fayl və ya video linki tələb olunur",
@@ -190,7 +258,14 @@
       "invalidFileType": "Bu fayl növü qəbul olunmur",
       "fileTooLarge": "Fayl həddindən artıq böyükdür",
       "uploadFailed": "Fayl yüklənmədi, yenidən cəhd et",
-      "genericSubmitError": "Məlumatları yoxlayın"
+      "genericSubmitError": "Məlumatları yoxlayın",
+      "dateOfBirthRange": "Qeydiyyat 18-45 yaş arası şəxslər üçündür.",
+      "minSelectionTimeSlots": "Ən azı bir vaxt aralığı seç",
+      "minSelectionSpecialty": "Ən azı bir ixtisas seç",
+      "professionalPeriodsRequired": "Ən azı bir dövr əlavə et",
+      "professionalPeriodOrder": "Son il başlanğıc ildən əvvəl ola bilməz",
+      "certificationNameRequired": "Sertifikatın adını daxil et",
+      "equipmentMissingTextRequired": "Nələrin çatışmadığını qeyd et"
     },
     "roles": {
       "player": "Futbolçu",
@@ -201,8 +276,7 @@
       "roleLabel": "Hansı rolda qoşulursan?",
       "fullNameLabel": "Ad və soyad",
       "fullNamePlaceholder": "Məs. Elvin Məmmədov",
-      "ageLabel": "Yaş",
-      "agePlaceholder": "Məs. 25",
+      "dateOfBirthLabel": "Doğum tarixi",
       "phoneLabel": "WhatsApp nömrəsi",
       "phonePlaceholder": "+994 50 123 45 67",
       "instagramLabel": "Instagram (istəyə bağlı)",
@@ -250,16 +324,34 @@
         },
         "clubExperienceLabel": "Komanda təcrübən (istəyə bağlı)",
         "clubExperiencePlaceholder": "Hansı komandalarda oynamısan, hansı liqalarda...",
-        "selfRatingLabel": "Özünü 1-5 arasında necə qiymətləndirərdin?"
+        "experienceLevelLabel": "Təcrübə səviyyən",
+        "experienceLevel": {
+          "amateur": "Həvəskar",
+          "semi_pro": "Yarı-peşəkar",
+          "former_pro": "Keçmiş peşəkar"
+        },
+        "isUniversityStudentLabel": "Tələbəsən?",
+        "isUniversityStudentHint": "Bəzi turnirlərdə yalnız tələbələr oynaya bilir. Bu sual belə turnirlər üçün uyğun oyunçu tapmaq üçündür.",
+        "hasPlayedProfessionallyLabel": "Peşəkar səviyyədə oynamısan?",
+        "professionalPeriods": {
+          "label": "Peşəkar oynadığın dövrlər",
+          "fromLabel": "Başlanğıc il",
+          "toLabel": "Son il",
+          "clubLabel": "Klub (istəyə bağlı)",
+          "clubPlaceholder": "Klubun adı",
+          "addAnother": "Başqa dövr əlavə et",
+          "remove": "Sil"
+        },
+        "hourlyRateLabel": "Saatlıq qiymətin (AZN)",
+        "hourlyRatePlaceholder": "Məs. 15",
+        "hourlyRateHint": "Bu qiymət sifarişçiyə göstərilmir, uyğun sifarişləri seçmək üçün istifadə olunur.",
+        "mainPositionDisabledTitle": "Bu, əsas mövqeyinizdir"
       },
       "referee": {
         "title": "Hakim haqqında",
-        "licenseStatusLabel": "Lisenziya statusu",
-        "license": {
-          "licensed": "Lisenziyalı",
-          "course_completed": "Hakim kursunu bitirmişəm",
-          "experienced_unlicensed": "Təcrübəliyəm, amma lisenziyam yoxdur"
-        },
+        "hasOfficialCertificationLabel": "Rəsmi hakimlik sertifikatın var?",
+        "certificationNameLabel": "Sertifikatın adı",
+        "certificationNamePlaceholder": "Məs. AFFA hakim kursu sertifikatı",
         "yearsRefereeingLabel": "Neçə ildir hakimlik edirsən?",
         "years": {
           "under_1": "1 ildən az",
@@ -275,7 +367,7 @@
           "tournaments": "Turnirlər"
         },
         "experienceLabel": "Təcrüban haqqında (istəyə bağlı)",
-        "experiencePlaceholder": "Hansı liqa/turnirlərdə hakimlik etmisən..."
+        "experiencePlaceholder": "Məsələn: hansı turnirlərdə və liqalarda hakimlik etmisiniz, neçə oyun"
       },
       "medic": {
         "title": "Həkim haqqında",
@@ -285,9 +377,17 @@
           "doctor": "Həkim",
           "paramedic": "Feldşer",
           "physiotherapist": "Fizioterapevt",
-          "nurse": "Tibb bacısı"
+          "nurse": "Tibb bacısı",
+          "first_aid_specialist": "İlk yardım mütəxəssisi"
         },
-        "firstAidCertLabel": "İlk yardım sertifikatın var?",
+        "equipmentStatusLabel": "İlk yardım avadanlığın var?",
+        "equipmentStatus": {
+          "yes": "Bəli",
+          "partial": "Qismən",
+          "no": "Xeyr"
+        },
+        "equipmentMissingLabel": "Nələr çatışmır?",
+        "equipmentMissingPlaceholder": "Çatışmayan avadanlıqları yaz",
         "workExperienceLabel": "Neçə ildir bu sahədə çalışırsan?",
         "years": {
           "under_1": "1 ildən az",
@@ -301,9 +401,8 @@
     },
     "step3": {
       "title": "Nə vaxt uyğunsan?",
-      "description": "Hansı günlər, saatlar və rayonlarda oyuna qoşula bilərsən — bir neçəsini seçə bilərsən.",
-      "daysLabel": "Günlər",
-      "hoursLabel": "Vaxt aralığı",
+      "description": "Hansı günlər, saatlar və rayonlarda oyuna qoşula bilərsən, bir neçəsini seçə bilərsən.",
+      "timeSlotsLabel": "Nə vaxt uyğunsan?",
       "districtsLabel": "Uyğun olduğun rayonlar"
     },
     "days": {
@@ -314,12 +413,6 @@
       "friday": "Cümə",
       "saturday": "Şənbə",
       "sunday": "Bazar"
-    },
-    "hours": {
-      "18_20": "18:00 - 20:00",
-      "20_22": "20:00 - 22:00",
-      "22_00": "22:00 - 00:00",
-      "weekend_daytime": "Həftə sonu, gündüz"
     },
     "step4": {
       "title": "Şəkil və video",
@@ -359,6 +452,18 @@
       "title": "Müraciətin qəbul olundu!",
       "description": "Məlumatlarını nəzərdən keçiririk. Uyğun gəldikdə səninlə WhatsApp və ya Instagram üzərindən əlaqə saxlayacağıq.",
       "backHome": "Ana səhifəyə qayıt"
+    },
+    "roleTitles": {
+      "player": "Futbolçu kimi qeydiyyat",
+      "referee": "Hakim kimi qeydiyyat",
+      "medic": "Həkim kimi qeydiyyat"
+    },
+    "hourSlots": {
+      "09_12": "09:00 - 12:00",
+      "12_15": "12:00 - 15:00",
+      "15_18": "15:00 - 18:00",
+      "18_21": "18:00 - 21:00",
+      "21_24": "21:00 - 24:00"
     }
   },
   "admin": {
@@ -385,7 +490,8 @@
       "active": "Aktiv",
       "inactive": "Qeyri-aktiv",
       "copy": "Kopyala",
-      "copied": "Kopyalandı"
+      "copied": "Kopyalandı",
+      "noValue": "yoxdur"
     },
     "nav": {
       "brand": "Futbolio Admin",
@@ -540,7 +646,7 @@
         "loadError": "Fayl açıla bilmədi.",
         "scanClean": "təmiz",
         "scanPending": "yoxlanılır",
-        "scanInfected": "yoluxmuş — silinib",
+        "scanInfected": "yoluxmuş, silinib",
         "scanError": "xəta"
       },
       "consents": {
@@ -595,7 +701,7 @@
         "editTitle": "Video kartını redaktə et",
         "link": "Video keçidi",
         "coverImageKey": "Üz qabığı şəkli (storage key)",
-        "coverImageHint": "MVP qeydi: bu sahə birbaşa storage açarıdır — fayl yükləmə alətı hələ qoşulmayıb.",
+        "coverImageHint": "MVP qeydi: bu sahə birbaşa storage açarıdır, fayl yükləmə alətı hələ qoşulmayıb.",
         "caption": "Başlıq",
         "order": "Sıra",
         "isActive": "Aktiv",
@@ -737,6 +843,96 @@
         "admin": "Admin",
         "super_admin": "Super admin"
       }
+    }
+  },
+  "order": {
+    "modalTitle": "Sifariş",
+    "stepper": "Addım {current}/{total}",
+    "nav": {
+      "back": "Geri",
+      "continue": "Davam et"
+    },
+    "roles": {
+      "title": "Kimlər lazımdır?",
+      "description": "Bir və ya bir neçəsini seçə bilərsən.",
+      "player": "Oyunçu",
+      "goalkeeper": "Qapıçı",
+      "referee": "Hakim",
+      "medic": "Həkim",
+      "full_rival_team": "Bütöv rəqib komanda"
+    },
+    "levels": {
+      "title": "Səviyyə",
+      "description": "Hansı səviyyədə oyunçu/komanda axtarırsan?",
+      "beginner": "Başlanğıc",
+      "intermediate": "Orta",
+      "advanced": "Yüksək",
+      "former_pro": "Keçmiş peşəkar"
+    },
+    "durations": {
+      "1h": "1 saat",
+      "1_5h": "1.5 saat",
+      "2h": "2 saat"
+    },
+    "priceRanges": {
+      "title": "Qiymət aralığı",
+      "description": "Təxmini büdcəni seç.",
+      "10_15": "10-15 AZN",
+      "15_20": "15-20 AZN",
+      "20_30": "20-30 AZN",
+      "30_plus": "30+ AZN",
+      "any": "Fərq etmir"
+    },
+    "counts": {
+      "title": "Say",
+      "description": "Hər rol üçün neçə nəfər lazımdır?",
+      "countLabel": "{role} sayı",
+      "teamSizeLabel": "Neçə nəfərlik komanda?",
+      "decrease": "Azalt",
+      "increase": "Artır"
+    },
+    "gameDetails": {
+      "title": "Oyun təfərrüatları",
+      "description": "Tarix, saat və məkan haqqında məlumat ver.",
+      "dateLabel": "Tarix",
+      "timeLabel": "Başlama saatı",
+      "durationLabel": "Davametmə müddəti",
+      "stadiumLabel": "Stadion adı/ünvanı",
+      "stadiumPlaceholder": "Məs. Atlet Arena, Yasamal",
+      "mapLinkLabel": "Xəritə linki (istəyə bağlı)",
+      "mapLinkPlaceholder": "https://maps.google.com/...",
+      "mapLinkInvalid": "Keçərli link daxil et"
+    },
+    "contact": {
+      "title": "Əlaqə",
+      "description": "Sənə geri dönmək üçün adını yaz.",
+      "nameLabel": "Ad",
+      "namePlaceholder": "Adını daxil et",
+      "noteLabel": "Qeyd (istəyə bağlı)",
+      "notePlaceholder": "Əlavə qeydin varsa yaz",
+      "reviewButton": "Nəzərdən keçir"
+    },
+    "summary": {
+      "title": "Sifarişin xülasəsi",
+      "description": "Göndərmədən əvvəl yoxla.",
+      "rolesLabel": "Lazımdır",
+      "levelLabel": "Səviyyə",
+      "dateTimeLabel": "Tarix və saat",
+      "stadiumLabel": "Stadion",
+      "priceLabel": "Qiymət aralığı",
+      "nameLabel": "Ad",
+      "noteLabel": "Qeyd",
+      "sendButton": "WhatsApp-da göndər"
+    },
+    "whatsapp": {
+      "greeting": "Salam, Futbolio! Sifariş vermək istəyirəm.",
+      "needLabel": "Lazımdır",
+      "levelLabel": "Səviyyə",
+      "dateTimeLabel": "Tarix və saat",
+      "stadiumLabel": "Stadion",
+      "priceLabel": "Qiymət aralığı",
+      "nameLabel": "Ad",
+      "noteLabel": "Qeyd"
     }
   }
 }

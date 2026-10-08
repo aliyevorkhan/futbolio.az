@@ -20,9 +20,10 @@ const config: Config = {
         "muted-2": "#4F5653",
       },
       fontFamily: {
-        sans: [
-          "var(--font-montserrat)",
-          "Montserrat",
+        sans: ["var(--font-inter)", "Inter", "-apple-system", "sans-serif"],
+        heading: [
+          "var(--font-manrope)",
+          "Manrope",
           "-apple-system",
           "sans-serif",
         ],

@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { StepHeader } from "@/components/wizard/StepHeader";
 import type { Role } from "@/lib/validation/wizard/step1.schema";
 import type {
   PlayerDetails as PlayerDetailsData,
@@ -43,7 +44,7 @@ export function Step2({
 
   return (
     <div>
-      <h2 className="mb-6 text-xl font-bold tracking-tight text-foreground">{t("title")}</h2>
+      <StepHeader title={t("title")} onBack={onBack} />
       {role === "player" ? (
         <PlayerDetails defaultValues={playerDefaults} onValid={onValidPlayer} onChange={onChangePlayer} onBack={onBack} />
       ) : role === "referee" ? (

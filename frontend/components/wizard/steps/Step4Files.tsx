@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, type FormEvent, type Ref } from "react";
+import { useEffect, useState, type FormEvent, type Ref } from "react";
 import { useTranslations } from "next-intl";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { StepHeader } from "@/components/wizard/StepHeader";
 import { StepFooter } from "@/components/wizard/StepFooter";
 import { FileDropzone } from "@/components/wizard/fields/FileDropzone";
 import { useFileUpload } from "@/lib/upload/useFileUpload";
@@ -15,8 +16,12 @@ interface Step4Props {
   role: Role;
   uploadSessionId: string;
   videoLinkUrlDefault: string;
+  /** Referee-only: Step 2's `has_official_certification` flag, threaded down to gate the certificate-document slot. */
+  hasOfficialCertification?: boolean;
   onValid: (result: { fileIds: string[]; videoLinkUrl: string }) => void;
   onBack: () => void;
+  /** Lets the parent mirror file-slot counts into its own status map (step-status derivation), without ever lifting file bytes themselves. */
+  onFileSummaryChange?: (summary: { photoUploaded: boolean; videoCount: number; documentCount: number }) => void;
 }
 
 const STEP4_FIELD_ORDER = [
@@ -26,7 +31,15 @@ const STEP4_FIELD_ORDER = [
   "document_uploaded_count",
 ];
 
-export function Step4Files({ role, uploadSessionId, videoLinkUrlDefault, onValid, onBack }: Step4Props) {
+export function Step4Files({
+  role,
+  uploadSessionId,
+  videoLinkUrlDefault,
+  hasOfficialCertification,
+  onValid,
+  onBack,
+  onFileSummaryChange,
+}: Step4Props) {
   const t = useTranslations("wizard.step4");
   const tErrors = useTranslations("wizard.errors");
   const tCommon = useTranslations("wizard.common");
@@ -42,9 +55,28 @@ export function Step4Files({ role, uploadSessionId, videoLinkUrlDefault, onValid
   const documentUpload1 = useFileUpload({ kind: "document", role, uploadSessionId });
   const documentUpload2 = useFileUpload({ kind: "document", role, uploadSessionId });
   const videoUploads = [videoUpload0, videoUpload1, videoUpload2];
-  const documentUploads = [documentUpload0, documentUpload1, documentUpload2];
+  // Referee's certificate-document slot is capped at 1 (vs. medic's 3).
+  const documentUploads =
+    role === "referee" ? [documentUpload0] : [documentUpload0, documentUpload1, documentUpload2];
 
   const { registerField, liveRegionRef } = useFocusFirstInvalidField(errors, STEP4_FIELD_ORDER);
+
+  useEffect(() => {
+    onFileSummaryChange?.({
+      photoUploaded: photoUpload.state.status === "uploaded",
+      videoCount: videoUploads.filter((v) => v.state.status === "uploaded").length,
+      documentCount: documentUploads.filter((d) => d.state.status === "uploaded").length,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    photoUpload.state.status,
+    videoUpload0.state.status,
+    videoUpload1.state.status,
+    videoUpload2.state.status,
+    documentUpload0.state.status,
+    documentUpload1.state.status,
+    documentUpload2.state.status,
+  ]);
 
   const statusLabels = {
     uploading: t("status.uploading"),
@@ -95,7 +127,7 @@ export function Step4Files({ role, uploadSessionId, videoLinkUrlDefault, onValid
 
   return (
     <div>
-      <h2 className="mb-2 text-xl font-bold tracking-tight text-foreground">{t("title")}</h2>
+      <StepHeader title={t("title")} onBack={onBack} />
       <p className="mb-6 text-muted">{t("description")}</p>
 
       <form noValidate onSubmit={handleContinue} className="space-y-8">
@@ -165,7 +197,13 @@ export function Step4Files({ role, uploadSessionId, videoLinkUrlDefault, onValid
               ) : null}
             </div>
           </div>
-        ) : (
+        ) : null}
+
+        {/* Medic: document slot always shown (now optional 0-3, relaxed
+            from required 1-3). Referee: new conditional 0-1 certificate
+            slot, only meaningful (and shown) when Step 2's
+            `has_official_certification` is true. */}
+        {role === "medic" || (role === "referee" && hasOfficialCertification) ? (
           <div>
             <p className="mb-2 text-sm font-medium text-foreground">{t("document.label")}</p>
             <p className="mb-3 text-xs text-muted">{t("document.hint")}</p>
@@ -196,7 +234,7 @@ export function Step4Files({ role, uploadSessionId, videoLinkUrlDefault, onValid
               <p className="mt-2 text-sm text-red-600">{errorMessage("document_uploaded_count")}</p>
             ) : null}
           </div>
-        )}
+        ) : null}
 
         <StepFooter onBack={onBack} />
       </form>

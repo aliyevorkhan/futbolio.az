@@ -1,29 +1,29 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { MessageCircle } from "lucide-react";
 import { useSettingsQuery } from "@/lib/queries/useSettingsQuery";
 import { buildWhatsAppUrl, formatPhone } from "@/lib/utils";
 import { Container } from "@/components/shared/Container";
 import { ExternalLink } from "@/components/shared/ExternalLink";
 
 /**
- * "Əlaqə" contact section (`#elaqe`) — the rich contact block with
- * phone/WhatsApp/Instagram/TikTok, all sourced from the shared
- * `useSettingsQuery()` result (never a hardcoded duplicate of any of
- * these values). This is the last content section on the home page,
- * distinct from the generic site-wide `components/layout/Footer.tsx`
- * that wraps every marketing page.
+ * "Əlaqə" CTA band (`#elaqe`) — big heading, standalone phone number,
+ * WhatsApp + "Instagram direkt" pills, sourced from the shared
+ * `useSettingsQuery()` result. The generic Instagram-profile/TikTok
+ * pills and the copyright line moved to the site-wide
+ * `components/layout/Footer.tsx` bottom bar, so this section stays
+ * purely the CTA band.
  */
 export function ElaqeFooterSection() {
   const t = useTranslations("home.elaqe");
   const { data: settings } = useSettingsQuery();
-  const year = new Date().getFullYear();
 
   if (!settings) {
     return (
-      <section id="elaqe" className="bg-brand-dark py-16 text-white">
+      <section id="elaqe" className="bg-brand-dark py-16 text-white sm:py-24">
         <Container>
-          <h2 className="text-2xl font-bold">{t("title")}</h2>
+          <h2 className="font-heading text-4xl font-bold sm:text-5xl">{t("title")}</h2>
         </Container>
       </section>
     );
@@ -35,61 +35,34 @@ export function ElaqeFooterSection() {
   );
 
   return (
-    <section id="elaqe" className="bg-brand-dark py-16 text-white">
+    <section id="elaqe" className="bg-brand-dark py-16 text-white sm:py-24">
       <Container>
-        <h2 className="text-2xl font-bold">{t("title")}</h2>
+        <h2 className="font-heading text-4xl font-bold sm:text-5xl">{t("title")}</h2>
 
-        <div className="mt-6 flex flex-wrap gap-3">
-          <ExternalLink
-            href={`tel:${settings.phone_number}`}
-            analyticsLabel="footer_phone"
-            className="inline-flex h-11 items-center justify-center rounded-full border border-white/20 px-5 text-sm font-semibold hover:bg-white/10"
-          >
-            {formatPhone(settings.phone_number)}
-          </ExternalLink>
+        <p className="mt-6 text-3xl font-bold text-brand-green sm:text-4xl">
+          {formatPhone(settings.phone_number)}
+        </p>
 
+        <div className="mt-8 flex flex-wrap gap-3">
           <ExternalLink
             href={whatsappUrl}
             analyticsLabel="footer_whatsapp"
-            className="inline-flex h-11 items-center justify-center rounded-full bg-brand-green px-5 text-sm font-semibold text-brand-dark hover:bg-brand-green/90"
+            className="inline-flex h-11 items-center gap-2 rounded-full bg-brand-green px-5 text-sm font-semibold text-brand-dark transition-colors duration-150 hover:bg-brand-green/90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
           >
+            <MessageCircle className="h-4 w-4" aria-hidden="true" />
             {t("whatsapp")}
           </ExternalLink>
-
-          {settings.instagram_url ? (
-            <ExternalLink
-              href={settings.instagram_url}
-              analyticsLabel="footer_instagram_profile"
-              className="inline-flex h-11 items-center justify-center rounded-full border border-white/20 px-5 text-sm font-semibold hover:bg-white/10"
-            >
-              {t("instagramProfile")}
-            </ExternalLink>
-          ) : null}
 
           {settings.instagram_dm_url ? (
             <ExternalLink
               href={settings.instagram_dm_url}
-              analyticsLabel="footer_instagram_dm"
-              className="inline-flex h-11 items-center justify-center rounded-full border border-white/20 px-5 text-sm font-semibold hover:bg-white/10"
+              analyticsLabel="footer_instagram_direkt"
+              className="inline-flex h-11 items-center justify-center rounded-full border border-white/30 px-5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-white/10 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
             >
-              {t("instagramDm")}
-            </ExternalLink>
-          ) : null}
-
-          {settings.tiktok_url ? (
-            <ExternalLink
-              href={settings.tiktok_url}
-              analyticsLabel="footer_tiktok"
-              className="inline-flex h-11 items-center justify-center rounded-full border border-white/20 px-5 text-sm font-semibold hover:bg-white/10"
-            >
-              {t("tiktok")}
+              {t("instagramDirekt")}
             </ExternalLink>
           ) : null}
         </div>
-
-        <p className="mt-10 text-sm text-white/60">
-          {t("copyright", { year })}
-        </p>
       </Container>
     </section>
   );

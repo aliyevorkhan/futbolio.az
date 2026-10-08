@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMutation } from "@tanstack/react-query";
-import { WizardSidebar, type WizardStepMeta } from "@/components/wizard/WizardSidebar";
+import { WizardSidebar, type WizardStepMeta, type StepStatus } from "@/components/wizard/WizardSidebar";
 import { ThankYouScreen } from "@/components/wizard/ThankYouScreen";
 import { Step1 } from "@/components/wizard/steps/Step1";
 import { Step2 } from "@/components/wizard/steps/Step2";
@@ -21,10 +21,16 @@ import {
   type WizardDraftShape,
 } from "@/lib/draft/wizardDraft";
 import { buildSubmitPayload } from "@/lib/validation/wizard/submitPayload";
-import { ROLE_QUERY_PARAM_MAP, type Role, type Step1Data } from "@/lib/validation/wizard/step1.schema";
-import type { PlayerDetails, RefereeDetails, MedicDetails } from "@/lib/validation/wizard/step2.schema";
-import type { Step3Data } from "@/lib/validation/wizard/step3.schema";
-import type { Step5Data } from "@/lib/validation/wizard/step5.schema";
+import { step1Schema, ROLE_QUERY_PARAM_MAP, type Role, type Step1Data } from "@/lib/validation/wizard/step1.schema";
+import {
+  getStep2Schema,
+  type PlayerDetails,
+  type RefereeDetails,
+  type MedicDetails,
+} from "@/lib/validation/wizard/step2.schema";
+import { step3Schema, type Step3Data } from "@/lib/validation/wizard/step3.schema";
+import { getStep4Schema, type Step4Input } from "@/lib/validation/wizard/step4.schema";
+import { step5Schema, type Step5Data } from "@/lib/validation/wizard/step5.schema";
 
 const TOTAL_STEPS = 5;
 const AUTOSAVE_DEBOUNCE_MS = 500;
@@ -33,7 +39,7 @@ const AUTOSAVE_DEBOUNCE_MS = 500;
 const FIELD_TO_STEP: Record<string, number> = {
   role: 1,
   full_name: 1,
-  age: 1,
+  date_of_birth: 1,
   phone: 1,
   instagram_handle: 1,
   district: 1,
@@ -58,6 +64,15 @@ function determineErrorStep(fieldErrors: Record<string, string[]>): number {
   return earliest;
 }
 
+/** Minimal summary of Step 4's upload-slot state, lifted up purely for `stepStatus` derivation — file bytes themselves never leave Step4Files/never enter the persisted draft. */
+interface FileSummary {
+  photoUploaded: boolean;
+  videoCount: number;
+  documentCount: number;
+}
+
+const EMPTY_FILE_SUMMARY: FileSummary = { photoUploaded: false, videoCount: 0, documentCount: 0 };
+
 export function RegistrationWizard() {
   const t = useTranslations("wizard");
   const searchParams = useSearchParams();
@@ -67,9 +82,15 @@ export function RegistrationWizard() {
   const [role, setRole] = useState<Role | null>(null);
   const [draft, setDraft] = useState<WizardDraftShape>(EMPTY_DRAFT);
   const [fileIds, setFileIds] = useState<string[]>([]);
+  const [fileSummary, setFileSummary] = useState<FileSummary>(EMPTY_FILE_SUMMARY);
   const [bannerStep, setBannerStep] = useState<number | null>(null);
   const [bannerMessage, setBannerMessage] = useState<string | null>(null);
   const [submitState, setSubmitState] = useState<"idle" | "success">("idle");
+
+  // Steps the user has actually reached — a step only ever shows an
+  // "error" status if it's in this set AND its current data fails
+  // validation; an untouched step never flashes a false error.
+  const [visitedSteps, setVisitedSteps] = useState<Set<number>>(new Set([1]));
 
   const [uploadSessionId] = useState(() =>
     typeof crypto !== "undefined" && "randomUUID" in crypto
@@ -89,9 +110,11 @@ export function RegistrationWizard() {
     if (saved) {
       // Files never survive a reload — always land back on Step 4 to
       // re-pick them rather than resuming on Step 5.
-      setCurrentStep(saved.currentStep >= 4 ? 4 : saved.currentStep);
+      const restoredStep = saved.currentStep >= 4 ? 4 : saved.currentStep;
+      setCurrentStep(restoredStep);
       setRole(saved.role ?? mappedRole ?? null);
       setDraft(saved);
+      setVisitedSteps(new Set(Array.from({ length: restoredStep }, (_, index) => index + 1)));
     } else if (mappedRole) {
       setRole(mappedRole);
     }
@@ -115,6 +138,7 @@ export function RegistrationWizard() {
 
   const goToStep = (step: number) => {
     setCurrentStep(step);
+    setVisitedSteps((prev) => (prev.has(step) ? prev : new Set(prev).add(step)));
     scrollToTop();
   };
 
@@ -131,12 +155,46 @@ export function RegistrationWizard() {
     [searchParams],
   );
 
+  // Derived per-step validity (safe-parse only, no side effects) — a
+  // step reads "error" only if it's in `visitedSteps` AND currently
+  // fails its own zod schema; the step the user is actively on always
+  // shows as "current" regardless of in-progress validity.
+  const stepStatus: Record<number, StepStatus> = useMemo(() => {
+    const step4Input: Step4Input = {
+      photo_uploaded: fileSummary.photoUploaded,
+      video_uploaded_count: fileSummary.videoCount,
+      video_link_url: draft.videoLinkUrl ?? "",
+      document_uploaded_count: fileSummary.documentCount,
+    };
+
+    const isValid: Record<number, boolean> = {
+      1: step1Schema.safeParse(draft.step1).success,
+      2: role ? getStep2Schema(role).safeParse(draft.step2[role]).success : false,
+      3: step3Schema.safeParse(draft.step3).success,
+      4: role ? getStep4Schema(role).safeParse(step4Input).success : false,
+      5: step5Schema.safeParse(draft.step5).success,
+    };
+
+    const result: Record<number, StepStatus> = {};
+    for (let step = 1; step <= TOTAL_STEPS; step += 1) {
+      if (step === currentStep) {
+        result[step] = "current";
+      } else if (visitedSteps.has(step)) {
+        result[step] = isValid[step] ? "complete" : "error";
+      } else {
+        result[step] = "upcoming";
+      }
+    }
+    return result;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draft, role, currentStep, visitedSteps, fileSummary]);
+
   const steps: WizardStepMeta[] = [
-    { step: 1, title: t("sidebar.step1") },
-    { step: 2, title: t("sidebar.step2") },
-    { step: 3, title: t("sidebar.step3") },
-    { step: 4, title: t("sidebar.step4") },
-    { step: 5, title: t("sidebar.step5") },
+    { step: 1, title: t("sidebar.step1"), status: stepStatus[1] },
+    { step: 2, title: role ? t(`sidebar.step2For.${role}`) : t("sidebar.step2"), status: stepStatus[2] },
+    { step: 3, title: t("sidebar.step3"), status: stepStatus[3] },
+    { step: 4, title: t("sidebar.step4"), status: stepStatus[4] },
+    { step: 5, title: t("sidebar.step5"), status: stepStatus[5] },
   ];
 
   if (submitState === "success") {
@@ -205,6 +263,7 @@ export function RegistrationWizard() {
           steps={steps}
           currentStep={currentStep}
           progressLabel={t("sidebar.progressLabel", { current: currentStep, total: TOTAL_STEPS })}
+          onStepClick={goToStep}
         />
 
         <div ref={formTopRef} className="min-w-0 flex-1 scroll-mt-20">
@@ -273,6 +332,8 @@ export function RegistrationWizard() {
               role={role}
               uploadSessionId={uploadSessionId}
               videoLinkUrlDefault={draft.videoLinkUrl}
+              hasOfficialCertification={draft.step2.referee?.has_official_certification}
+              onFileSummaryChange={setFileSummary}
               onValid={({ fileIds: nextFileIds, videoLinkUrl }) => {
                 setFileIds(nextFileIds);
                 setDraft((prev) => ({ ...prev, videoLinkUrl }));

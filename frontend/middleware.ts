@@ -1,46 +1,40 @@
+import createIntlMiddleware from "next-intl/middleware";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { DEFAULT_LOCALE, LOCALE_COOKIE_NAME } from "@/i18n/request";
+import { routing } from "@/i18n/routing";
 
 /**
- * Sets the NEXT_LOCALE cookie on first visit so next-intl's cookie-based
- * (not path-prefixed) locale resolution in i18n/request.ts has something
- * to read. Only one locale (az) exists today, so this is mostly
- * scaffolding for when a second locale is added.
+ * Two unrelated concerns share this one middleware file, branched BEFORE
+ * either runs rather than merged into one pipeline:
  *
- * Admin-auth guard: redirect unauthenticated requests to `/admin/*`
- * (other than `/admin/login` and `/admin/reset-password`) to the login
- * page by checking for Django's default session cookie (`sessionid`).
- * This is a cheap UX fast-path only (avoids a flash of admin chrome) —
- * the real enforcement is every API call's 401 from the backend, since
- * cookie *presence* says nothing about whether the session is still
- * valid server-side.
+ * 1. Admin auth guard — `/admin/*` (except login/reset-password) redirects
+ *    to `/admin/login` when Django's session cookie is absent. Cheap
+ *    UX fast-path only; real enforcement is every API call's 401, since
+ *    cookie *presence* says nothing about server-side session validity.
+ *    Admin is NOT locale-prefixed, so these paths never reach next-intl.
+ * 2. Everything else (marketing routes) goes through next-intl's own
+ *    locale-detection/redirect middleware (az default un-prefixed,
+ *    ru/en prefixed — see i18n/routing.ts).
  */
 const SESSION_COOKIE_NAME = "sessionid";
 const PUBLIC_ADMIN_PATHS = ["/admin/login", "/admin/reset-password"];
+const intlMiddleware = createIntlMiddleware(routing);
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isAdminPath = pathname === "/admin" || pathname.startsWith("/admin/");
-  const isPublicAdminPath = PUBLIC_ADMIN_PATHS.some(
-    (path) => pathname === path || pathname.startsWith(`${path}/`),
-  );
 
-  if (isAdminPath && !isPublicAdminPath && !request.cookies.has(SESSION_COOKIE_NAME)) {
-    return NextResponse.redirect(new URL("/admin/login", request.url));
+  if (isAdminPath) {
+    const isPublicAdminPath = PUBLIC_ADMIN_PATHS.some(
+      (path) => pathname === path || pathname.startsWith(`${path}/`),
+    );
+    if (!isPublicAdminPath && !request.cookies.has(SESSION_COOKIE_NAME)) {
+      return NextResponse.redirect(new URL("/admin/login", request.url));
+    }
+    return NextResponse.next();
   }
 
-  const response = NextResponse.next();
-
-  if (!request.cookies.has(LOCALE_COOKIE_NAME)) {
-    response.cookies.set(LOCALE_COOKIE_NAME, DEFAULT_LOCALE, {
-      path: "/",
-      maxAge: 60 * 60 * 24 * 365,
-      sameSite: "lax",
-    });
-  }
-
-  return response;
+  return intlMiddleware(request);
 }
 
 export const config = {

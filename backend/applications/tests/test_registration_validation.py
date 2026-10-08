@@ -1,3 +1,5 @@
+from datetime import date
+
 import pytest
 
 from applications.models import Application
@@ -9,8 +11,20 @@ pytestmark = pytest.mark.django_db
 REGISTER_URL = "/api/public/applications/"
 
 
+def _dob_for_age(age):
+    today = date.today()
+    return today.replace(year=today.year - age).isoformat()
+
+
 def test_underage_rejected_even_if_client_bypassed(api_client):
-    payload = valid_player_payload(age=17)
+    payload = valid_player_payload(date_of_birth=_dob_for_age(17))
+    resp = api_client.post(REGISTER_URL, payload, format="json")
+    assert resp.status_code == 400
+    assert not Application.objects.exists()
+
+
+def test_overage_rejected_even_if_client_bypassed(api_client):
+    payload = valid_player_payload(date_of_birth=_dob_for_age(46))
     resp = api_client.post(REGISTER_URL, payload, format="json")
     assert resp.status_code == 400
     assert not Application.objects.exists()

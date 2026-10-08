@@ -6,12 +6,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { ChipSingleSelect } from "@/components/wizard/fields/ChipGroup";
+import { ChipSingleSelect, ChipMultiSelect } from "@/components/wizard/fields/ChipGroup";
 import { StepFooter } from "@/components/wizard/StepFooter";
 import { useFocusFirstInvalidField } from "@/lib/validation/useFocusFirstInvalidField";
 import {
   medicDetailsSchema,
   SPECIALTY_VALUES,
+  EQUIPMENT_STATUS_VALUES,
   EXPERIENCE_YEARS_VALUES,
   MEDIC_STEP2_FIELD_ORDER,
   type MedicDetails as MedicDetailsData,
@@ -27,14 +28,14 @@ interface MedicDetailsProps {
 export function MedicDetails({ defaultValues, onValid, onChange, onBack }: MedicDetailsProps) {
   const t = useTranslations("wizard.step2.medic");
   const tErrors = useTranslations("wizard.errors");
-  const tCommon = useTranslations("wizard.common");
 
   const form = useForm<MedicDetailsData>({
     resolver: zodResolver(medicDetailsSchema),
     mode: "onSubmit",
     defaultValues: {
-      specialty: defaultValues.specialty,
-      first_aid_cert: defaultValues.first_aid_cert,
+      specialty: defaultValues.specialty ?? [],
+      equipment_status: defaultValues.equipment_status,
+      equipment_missing_text: defaultValues.equipment_missing_text ?? "",
       work_experience: defaultValues.work_experience,
       workplace: defaultValues.workplace ?? "",
     } as MedicDetailsData,
@@ -58,10 +59,12 @@ export function MedicDetails({ defaultValues, onValid, onChange, onBack }: Medic
 
   const specialtyOptions = SPECIALTY_VALUES.map((value) => ({ value, label: t(`specialty.${value}`) }));
   const yearsOptions = EXPERIENCE_YEARS_VALUES.map((value) => ({ value, label: t(`years.${value}`) }));
-  const yesNoOptions = [
-    { value: "true", label: tCommon("yes") },
-    { value: "false", label: tCommon("no") },
-  ];
+  const equipmentStatusOptions = EQUIPMENT_STATUS_VALUES.map((value) => ({
+    value,
+    label: t(`equipmentStatus.${value}`),
+  }));
+
+  const equipmentStatus = form.watch("equipment_status");
 
   return (
     <form noValidate onSubmit={form.handleSubmit(onValid)} className="space-y-6">
@@ -71,10 +74,9 @@ export function MedicDetails({ defaultValues, onValid, onChange, onBack }: Medic
         control={form.control}
         name="specialty"
         render={({ field }) => (
-          <ChipSingleSelect
-            name="specialty"
+          <ChipMultiSelect
             label={t("specialtyLabel")}
-            value={field.value}
+            values={field.value ?? []}
             onChange={field.onChange}
             options={specialtyOptions}
             error={errorMessage("specialty")}
@@ -85,19 +87,40 @@ export function MedicDetails({ defaultValues, onValid, onChange, onBack }: Medic
 
       <Controller
         control={form.control}
-        name="first_aid_cert"
+        name="equipment_status"
         render={({ field }) => (
           <ChipSingleSelect
-            name="first_aid_cert"
-            label={t("firstAidCertLabel")}
-            value={field.value === undefined ? undefined : String(field.value)}
-            onChange={(value) => field.onChange(value === "true")}
-            options={yesNoOptions}
-            error={errorMessage("first_aid_cert")}
-            registerRef={registerField("first_aid_cert")}
+            name="equipment_status"
+            label={t("equipmentStatusLabel")}
+            value={field.value}
+            onChange={field.onChange}
+            options={equipmentStatusOptions}
+            error={errorMessage("equipment_status")}
+            registerRef={registerField("equipment_status")}
           />
         )}
       />
+
+      {equipmentStatus === "partial" ? (
+        <div>
+          <Label htmlFor="equipment_missing_text">{t("equipmentMissingLabel")}</Label>
+          <textarea
+            id="equipment_missing_text"
+            placeholder={t("equipmentMissingPlaceholder")}
+            rows={3}
+            aria-invalid={Boolean(form.formState.errors.equipment_missing_text)}
+            className="flex w-full rounded-lg border border-brand-dark/15 bg-white px-3.5 py-2 text-sm text-foreground placeholder:text-muted-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark focus-visible:ring-offset-2 aria-[invalid=true]:border-red-500"
+            {...form.register("equipment_missing_text")}
+            ref={(el) => {
+              form.register("equipment_missing_text").ref(el);
+              registerField("equipment_missing_text")(el);
+            }}
+          />
+          {errorMessage("equipment_missing_text") ? (
+            <p className="mt-1.5 text-sm text-red-600">{errorMessage("equipment_missing_text")}</p>
+          ) : null}
+        </div>
+      ) : null}
 
       <Controller
         control={form.control}

@@ -20,6 +20,7 @@ import type { ApplicationListItem } from "@/lib/api/admin/applications";
 export function ApplicationsTable({ applications }: { applications: ApplicationListItem[] }) {
   const t = useTranslations("admin.applications.table");
   const tEnums = useTranslations("admin.enums");
+  const tc = useTranslations("admin.common");
 
   return (
     <div className="hidden overflow-x-auto rounded-xl border border-brand-dark/10 bg-white md:block">
@@ -51,7 +52,7 @@ export function ApplicationsTable({ applications }: { applications: ApplicationL
               </TableCell>
               <TableCell>{tEnums(`role.${app.role}`)}</TableCell>
               <TableCell>
-                {app.position ? tEnums(`${positionEnumCategory(app.role)}.${app.position}`) : "—"}
+                {app.position ? tEnums(`${positionEnumCategory(app.role)}.${app.position}`) : tc("noValue")}
               </TableCell>
               <TableCell>{app.age}</TableCell>
               <TableCell>{tEnums(`district.${app.district}`)}</TableCell>

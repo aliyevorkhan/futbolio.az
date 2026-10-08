@@ -63,10 +63,10 @@ class YearsPlaying(models.TextChoices):
     OVER_FIVE = "over_5", "5+ years"
 
 
-class LicenseStatus(models.TextChoices):
-    LICENSED = "licensed", "Licensed"
-    COURSE_COMPLETED = "course_completed", "Course completed"
-    EXPERIENCED_UNLICENSED = "experienced_unlicensed", "Experienced, unlicensed"
+class PlayerExperienceLevel(models.TextChoices):
+    AMATEUR = "amateur", "Həvəskar"
+    SEMI_PRO = "semi_pro", "Yarı-peşəkar"
+    FORMER_PRO = "former_pro", "Keçmiş peşəkar"
 
 
 class YearsRefereeing(models.TextChoices):
@@ -89,6 +89,7 @@ class MedicSpecialty(models.TextChoices):
     PARAMEDIC = "paramedic", "Paramedic"
     PHYSIOTHERAPIST = "physiotherapist", "Physiotherapist"
     NURSE = "nurse", "Nurse"
+    FIRST_AID_SPECIALIST = "first_aid_specialist", "İlk yardım mütəxəssisi"
 
 
 class WorkExperience(models.TextChoices):
@@ -96,6 +97,12 @@ class WorkExperience(models.TextChoices):
     ONE_TO_THREE = "1_3", "1-3 years"
     THREE_TO_FIVE = "3_5", "3-5 years"
     OVER_FIVE = "over_5", "5+ years"
+
+
+class FirstAidEquipmentStatus(models.TextChoices):
+    YES = "yes", "Bəli"
+    PARTIAL = "partial", "Qismən"
+    NO = "no", "Xeyr"
 
 
 class Weekday(models.TextChoices):
@@ -109,10 +116,11 @@ class Weekday(models.TextChoices):
 
 
 class HourSlot(models.TextChoices):
-    EVENING_18_20 = "18_20", "18:00-20:00"
-    EVENING_20_22 = "20_22", "20:00-22:00"
-    NIGHT_22_00 = "22_00", "22:00-00:00"
-    WEEKEND_DAYTIME = "weekend_daytime", "Weekend daytime"
+    SLOT_09_12 = "09_12", "09:00-12:00"
+    SLOT_12_15 = "12_15", "12:00-15:00"
+    SLOT_15_18 = "15_18", "15:00-18:00"
+    SLOT_18_21 = "18_21", "18:00-21:00"
+    SLOT_21_24 = "21_24", "21:00-24:00"
 
 
 class FileKind(models.TextChoices):

@@ -14,18 +14,24 @@ export function ChipCheckbox({
   onCheckedChange,
   children,
   className,
+  disabled,
+  title,
 }: {
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
   children: React.ReactNode;
   className?: string;
+  disabled?: boolean;
+  title?: string;
 }) {
   return (
     <CheckboxPrimitive.Root
       checked={checked}
       onCheckedChange={(value) => onCheckedChange(value === true)}
+      disabled={disabled}
+      title={title}
       className={cn(
-        "inline-flex min-h-11 min-w-11 items-center gap-1.5 rounded-full border border-brand-dark/15 bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-brand-dark/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark focus-visible:ring-offset-2 data-[state=checked]:border-brand-green data-[state=checked]:bg-brand-green data-[state=checked]:text-brand-dark",
+        "inline-flex min-h-11 min-w-11 items-center gap-1.5 rounded-full border border-brand-dark/15 bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-brand-dark/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark focus-visible:ring-offset-2 data-[state=checked]:border-brand-green data-[state=checked]:bg-brand-green data-[state=checked]:text-brand-dark disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white",
         className,
       )}
     >

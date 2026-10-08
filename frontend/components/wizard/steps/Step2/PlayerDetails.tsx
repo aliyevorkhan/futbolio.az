@@ -5,7 +5,9 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { ChipSingleSelect, ChipMultiSelect } from "@/components/wizard/fields/ChipGroup";
+import { ProfessionalPeriodsRepeater } from "@/components/wizard/fields/ProfessionalPeriodsRepeater";
 import { StepFooter } from "@/components/wizard/StepFooter";
 import { useFocusFirstInvalidField } from "@/lib/validation/useFocusFirstInvalidField";
 import {
@@ -13,6 +15,7 @@ import {
   POSITION_VALUES,
   FOOT_VALUES,
   EXPERIENCE_YEARS_VALUES,
+  PLAYER_EXPERIENCE_LEVEL_VALUES,
   PLAYER_STEP2_FIELD_ORDER,
   type PlayerDetails as PlayerDetailsData,
 } from "@/lib/validation/wizard/step2.schema";
@@ -27,6 +30,7 @@ interface PlayerDetailsProps {
 export function PlayerDetails({ defaultValues, onValid, onChange, onBack }: PlayerDetailsProps) {
   const t = useTranslations("wizard.step2.player");
   const tErrors = useTranslations("wizard.errors");
+  const tCommon = useTranslations("wizard.common");
 
   const form = useForm<PlayerDetailsData>({
     resolver: zodResolver(playerDetailsSchema),
@@ -37,7 +41,11 @@ export function PlayerDetails({ defaultValues, onValid, onChange, onBack }: Play
       preferred_foot: defaultValues.preferred_foot,
       years_playing: defaultValues.years_playing,
       club_experience_text: defaultValues.club_experience_text ?? "",
-      self_rating: defaultValues.self_rating,
+      experience_level: defaultValues.experience_level,
+      is_university_student: defaultValues.is_university_student,
+      has_pro_experience: defaultValues.has_pro_experience,
+      hourly_rate_azn: defaultValues.hourly_rate_azn,
+      professional_periods: defaultValues.professional_periods ?? [],
     } as PlayerDetailsData,
   });
 
@@ -60,7 +68,17 @@ export function PlayerDetails({ defaultValues, onValid, onChange, onBack }: Play
   const positionOptions = POSITION_VALUES.map((value) => ({ value, label: t(`positions.${value}`) }));
   const footOptions = FOOT_VALUES.map((value) => ({ value, label: t(`foot.${value}`) }));
   const yearsOptions = EXPERIENCE_YEARS_VALUES.map((value) => ({ value, label: t(`years.${value}`) }));
-  const ratingOptions = ["1", "2", "3", "4", "5"].map((value) => ({ value, label: value }));
+  const experienceLevelOptions = PLAYER_EXPERIENCE_LEVEL_VALUES.map((value) => ({
+    value,
+    label: t(`experienceLevel.${value}`),
+  }));
+  const yesNoOptions = [
+    { value: "true", label: tCommon("yes") },
+    { value: "false", label: tCommon("no") },
+  ];
+
+  const mainPosition = form.watch("main_position");
+  const hasPlayedProfessionally = form.watch("has_pro_experience");
 
   return (
     <form noValidate onSubmit={form.handleSubmit(onValid)} className="space-y-6">
@@ -91,6 +109,8 @@ export function PlayerDetails({ defaultValues, onValid, onChange, onBack }: Play
             values={field.value ?? []}
             onChange={field.onChange}
             options={positionOptions}
+            disabledValues={mainPosition ? [mainPosition] : []}
+            disabledTitle={t("mainPositionDisabledTitle")}
             registerRef={registerField("extra_positions")}
           />
         )}
@@ -128,6 +148,89 @@ export function PlayerDetails({ defaultValues, onValid, onChange, onBack }: Play
         )}
       />
 
+      <Controller
+        control={form.control}
+        name="experience_level"
+        render={({ field }) => (
+          <ChipSingleSelect
+            name="experience_level"
+            label={t("experienceLevelLabel")}
+            value={field.value}
+            onChange={field.onChange}
+            options={experienceLevelOptions}
+            error={errorMessage("experience_level")}
+            registerRef={registerField("experience_level")}
+          />
+        )}
+      />
+
+      <div>
+        <Controller
+          control={form.control}
+          name="is_university_student"
+          render={({ field }) => (
+            <ChipSingleSelect
+              name="is_university_student"
+              label={t("isUniversityStudentLabel")}
+              value={field.value === undefined ? undefined : String(field.value)}
+              onChange={(value) => field.onChange(value === "true")}
+              options={yesNoOptions}
+              error={errorMessage("is_university_student")}
+              registerRef={registerField("is_university_student")}
+            />
+          )}
+        />
+        <p className="mt-1.5 text-xs text-muted">{t("isUniversityStudentHint")}</p>
+      </div>
+
+      <Controller
+        control={form.control}
+        name="has_pro_experience"
+        render={({ field }) => (
+          <ChipSingleSelect
+            name="has_pro_experience"
+            label={t("hasPlayedProfessionallyLabel")}
+            value={field.value === undefined ? undefined : String(field.value)}
+            onChange={(value) => field.onChange(value === "true")}
+            options={yesNoOptions}
+            error={errorMessage("has_pro_experience")}
+            registerRef={registerField("has_pro_experience")}
+          />
+        )}
+      />
+
+      {hasPlayedProfessionally ? (
+        <ProfessionalPeriodsRepeater
+          control={form.control}
+          error={errorMessage("professional_periods")}
+          registerRef={registerField("professional_periods")}
+        />
+      ) : null}
+
+      <div>
+        <Label htmlFor="hourly_rate_azn">{t("hourlyRateLabel")}</Label>
+        <Input
+          id="hourly_rate_azn"
+          type="number"
+          inputMode="numeric"
+          min={1}
+          placeholder={t("hourlyRatePlaceholder")}
+          aria-invalid={Boolean(form.formState.errors.hourly_rate_azn)}
+          {...form.register("hourly_rate_azn")}
+          ref={(el) => {
+            form.register("hourly_rate_azn").ref(el);
+            registerField("hourly_rate_azn")(el);
+          }}
+        />
+        {/* TODO(owner-confirm): wording below is taken verbatim from the
+            fix doc, which itself flags it as needing the owner's
+            confirmation before launch — don't change it without that. */}
+        <p className="mt-1.5 text-xs text-muted">{t("hourlyRateHint")}</p>
+        {errorMessage("hourly_rate_azn") ? (
+          <p className="mt-1.5 text-sm text-red-600">{errorMessage("hourly_rate_azn")}</p>
+        ) : null}
+      </div>
+
       <div>
         <Label htmlFor="club_experience_text">{t("clubExperienceLabel")}</Label>
         <textarea
@@ -141,22 +244,6 @@ export function PlayerDetails({ defaultValues, onValid, onChange, onBack }: Play
           <p className="mt-1.5 text-sm text-red-600">{errorMessage("club_experience_text")}</p>
         ) : null}
       </div>
-
-      <Controller
-        control={form.control}
-        name="self_rating"
-        render={({ field }) => (
-          <ChipSingleSelect
-            name="self_rating"
-            label={t("selfRatingLabel")}
-            value={field.value != null ? String(field.value) : undefined}
-            onChange={(value) => field.onChange(Number(value))}
-            options={ratingOptions}
-            error={errorMessage("self_rating")}
-            registerRef={registerField("self_rating")}
-          />
-        )}
-      />
 
       <StepFooter onBack={onBack} />
     </form>

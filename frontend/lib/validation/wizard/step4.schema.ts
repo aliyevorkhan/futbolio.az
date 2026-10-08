@@ -43,7 +43,10 @@ export const refereeStep4Schema = z
     photo_uploaded: photoRequired,
     video_uploaded_count: z.number().min(0).max(3),
     video_link_url: z.string(),
-    document_uploaded_count: z.number(),
+    // Optional 0-1 certification document slot (only meaningful when
+    // Step 2's `has_official_certification` is true, but not hard
+    // required even then — matches the backend's relaxed rule).
+    document_uploaded_count: z.number().min(0).max(1, "filesRequired"),
   })
   .refine((value) => videoLinkOk(value.video_link_url), {
     message: "invalidVideoUrl",
@@ -54,7 +57,9 @@ export const medicStep4Schema = z.object({
   photo_uploaded: photoRequired,
   video_uploaded_count: z.number(),
   video_link_url: z.string(),
-  document_uploaded_count: z.number().min(1, "filesRequired").max(3, "filesRequired"),
+  // Relaxed from required-1-to-3 to optional-0-to-3, matching the
+  // backend's relaxation.
+  document_uploaded_count: z.number().min(0).max(3, "filesRequired"),
 });
 
 export function getStep4Schema(role: Role) {
