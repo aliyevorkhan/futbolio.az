@@ -45,3 +45,4 @@ clamav-data/
 .vscode/
 .idea/
 *.swp
+docker/garage/garage.toml

@@ -32,38 +32,25 @@ services:
       timeout: 5s
       retries: 10
 
-  minio:
-    image: minio/minio:latest
+  # S3-compatible object storage. MinIO's Docker images are no longer
+  # freely pullable (Docker Hub and Quay both deny anonymous pulls as of
+  # late 2025/2026), so local dev + this stack use Garage instead — a
+  # lightweight, actively maintained, fully open-source (AGPLv3)
+  # S3-compatible server. See docker/garage/README.md for the one-time
+  # bootstrap (layout/bucket/key) a fresh environment needs to run once.
+  garage:
+    image: dxflrs/garage:v1.0.1
     restart: unless-stopped
-    command: server /data --console-address ":9001"
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-futbolio-minio}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-futbolio-minio-secret}
-    ports:
-      - "127.0.0.1:9000:9000"
-      - "127.0.0.1:9001:9001"
     volumes:
-      - miniodata:/data
+      - ./docker/garage/garage.toml:/etc/garage.toml:ro
+      - garagemeta:/var/lib/garage/meta
+      - garagedata:/var/lib/garage/data
     healthcheck:
-      test: ["CMD", "curl", "-sf", "http://localhost:9000/minio/health/live"]
+      test: ["CMD", "/garage", "status"]
       interval: 5s
       timeout: 5s
-      retries: 10
-
-  minio-init:
-    image: minio/mc:latest
-    depends_on:
-      minio:
-        condition: service_healthy
-    environment:
-      AWS_S3_ENDPOINT_URL: http://minio:9000
-      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-futbolio-minio}
-      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-futbolio-minio-secret}
-      AWS_S3_BUCKET: ${AWS_S3_BUCKET:-futbolio-uploads}
-    entrypoint: ["/bin/sh", "/init/init-entrypoint.sh"]
-    volumes:
-      - ./docker/minio/init-entrypoint.sh:/init/init-entrypoint.sh:ro
-    restart: "no"
+      retries: 20
+      start_period: 10s
 
   clamav:
     image: clamav/clamav:stable
@@ -81,7 +68,7 @@ services:
     image: axllent/mailpit:latest
     restart: unless-stopped
     ports:
-      - "127.0.0.1:8025:8025"
+      - "127.0.0.1:${MAILPIT_WEB_PORT:-8025}:8025"
 
   backend:
     <<: *backend-env
@@ -93,7 +80,7 @@ services:
              python manage.py collectstatic --noinput &&
              gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3"
     ports:
-      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:${BACKEND_PORT:-8000}:8000"
     volumes:
       - ./backend:/app
     healthcheck:
@@ -107,7 +94,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-      minio:
+      garage:
         condition: service_healthy
 
   celery-worker:
@@ -163,12 +150,13 @@ services:
     env_file:
       - .env
     ports:
-      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:${FRONTEND_PORT:-3000}:3000"
     depends_on:
       backend:
         condition: service_healthy
 
 volumes:
   pgdata:
-  miniodata:
+  garagemeta:
+  garagedata:
   clamavdata:

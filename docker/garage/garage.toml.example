@@ -1,0 +1,34 @@
+# Garage (S3-compatible object storage) config template.
+#
+# MinIO's Docker images are no longer freely pullable (Docker Hub and Quay
+# both return access-denied as of late 2025/2026 — MinIO locked community
+# image distribution behind a commercial agreement), so this project uses
+# Garage (https://garagehq.deuxfleurs.fr) instead: a lightweight, actively
+# maintained, fully open-source (AGPLv3) S3-compatible server distributed
+# as a single static binary / minimal container (dxflrs/garage on Docker
+# Hub), with a much smaller memory footprint than MinIO ever had.
+#
+# Garage has no "root user" bootstrap like MinIO — copy this file to
+# garage.toml (gitignored) with real secrets substituted below, bring the
+# container up, then run the one-time bootstrap commands in
+# docker/garage/README.md (layout assign, bucket create, key import).
+
+metadata_dir = "/var/lib/garage/meta"
+data_dir = "/var/lib/garage/data"
+db_engine = "sqlite"
+
+replication_factor = 1
+
+rpc_bind_addr = "[::]:3901"
+rpc_public_addr = "127.0.0.1:3901"
+rpc_secret = "REPLACE_WITH_64_HEX_CHAR_SECRET"
+
+[s3_api]
+s3_region = "garage"
+api_bind_addr = "[::]:3900"
+root_domain = ".s3.garage.local"
+
+[admin]
+api_bind_addr = "[::]:3903"
+admin_token = "REPLACE_WITH_ADMIN_TOKEN"
+metrics_token = "REPLACE_WITH_METRICS_TOKEN"

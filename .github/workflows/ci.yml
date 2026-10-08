@@ -66,19 +66,15 @@ jobs:
       redis:
         image: redis:7-alpine
         ports: ["6379:6379"]
-      minio:
-        image: minio/minio:latest
-        env:
-          MINIO_ROOT_USER: futbolio-minio
-          MINIO_ROOT_PASSWORD: futbolio-minio-secret
-        ports: ["9000:9000"]
-        options: --entrypoint "sh -c 'minio server /data'"
+    # No object-storage service here — the files app's tests mock
+    # common.storage/common.clamav calls rather than hitting a real
+    # S3-compatible backend (see docker/garage/README.md for why local
+    # dev/prod use Garage instead of MinIO; CI doesn't need either).
     env:
       DJANGO_SECRET_KEY: ci-test-secret-key
       DATABASE_URL: postgres://futbolio:futbolio-test-password@localhost:5432/futbolio
       REDIS_URL: redis://localhost:6379/0
       TURNSTILE_BYPASS: "True"
-      AWS_S3_ENDPOINT_URL: http://localhost:9000
       NEXT_PUBLIC_API_URL: http://localhost:8000
     steps:
       - uses: actions/checkout@v4
