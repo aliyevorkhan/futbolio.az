@@ -1,0 +1,385 @@
+from django.core.validators import MinLengthValidator
+from django.utils import timezone
+from rest_framework import serializers
+
+from common.enums import (
+    ApplicationRole,
+    ApplicationStatus,
+    ConsentType,
+    District,
+    FileKind,
+    GameType,
+    HourSlot,
+    MainPosition,
+    Weekday,
+)
+from common.ip import get_client_ip, hash_ip
+from common.turnstile import verify_turnstile
+from common.validators import (
+    az_phone_validator,
+    full_name_validator,
+    instagram_handle_validator,
+    validate_age,
+    validate_non_empty_list,
+    validate_video_link_domain,
+)
+from files.models import ApplicationFile
+
+from .constants import CONSENT_TEXT_VERSION
+from .models import (
+    AdminNote,
+    Application,
+    Availability,
+    Consent,
+    MedicDetails,
+    PlayerDetails,
+    RefereeDetails,
+    StatusChange,
+)
+
+GENERIC_SUBMISSION_ERROR = "Sorğunu göndərmək mümkün olmadı. Məlumatları yoxlayıb yenidən cəhd edin."
+
+
+def headline_position(application: Application) -> str:
+    """The single role-specific field admins scan a list/export by."""
+    if application.role == ApplicationRole.PLAYER:
+        details = getattr(application, "player_details", None)
+        return details.main_position if details else ""
+    if application.role == ApplicationRole.REFEREE:
+        details = getattr(application, "referee_details", None)
+        return details.license_status if details else ""
+    if application.role == ApplicationRole.MEDIC:
+        details = getattr(application, "medic_details", None)
+        return details.specialty if details else ""
+    return ""
+
+
+# --- Shared nested serializers (reused for both public write and admin read) ---
+
+
+class PlayerDetailsSerializer(serializers.ModelSerializer):
+    extra_positions = serializers.ListField(
+        child=serializers.ChoiceField(choices=MainPosition.choices), required=False, default=list
+    )
+
+    class Meta:
+        model = PlayerDetails
+        fields = [
+            "main_position",
+            "extra_positions",
+            "preferred_foot",
+            "years_playing",
+            "club_experience_text",
+            "self_rating",
+        ]
+
+
+class RefereeDetailsSerializer(serializers.ModelSerializer):
+    game_types = serializers.ListField(child=serializers.ChoiceField(choices=GameType.choices))
+
+    class Meta:
+        model = RefereeDetails
+        fields = ["license_status", "years_refereeing", "game_types", "experience_text"]
+
+
+class MedicDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MedicDetails
+        fields = ["specialty", "first_aid_cert", "work_experience", "workplace"]
+
+
+class AvailabilitySerializer(serializers.Serializer):
+    days = serializers.ListField(
+        child=serializers.ChoiceField(choices=Weekday.choices), validators=[validate_non_empty_list]
+    )
+    hours = serializers.ListField(
+        child=serializers.ChoiceField(choices=HourSlot.choices), validators=[validate_non_empty_list]
+    )
+    districts = serializers.ListField(
+        child=serializers.ChoiceField(choices=District.choices), validators=[validate_non_empty_list]
+    )
+
+
+class ConsentInputSerializer(serializers.Serializer):
+    type = serializers.ChoiceField(choices=ConsentType.choices)
+    accepted = serializers.BooleanField()
+
+
+class FileListSummarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ApplicationFile
+        fields = ["id", "kind", "scan_status"]
+
+
+class FileDetailSummarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ApplicationFile
+        fields = ["id", "kind", "scan_status", "is_sensitive", "original_name"]
+
+
+# --- Public registration (write-only, atomic) -----------------------------------
+
+
+class ApplicationCreateSerializer(serializers.Serializer):
+    role = serializers.ChoiceField(choices=ApplicationRole.choices)
+    full_name = serializers.CharField(
+        max_length=80, validators=[MinLengthValidator(3), full_name_validator]
+    )
+    age = serializers.IntegerField(validators=[validate_age])
+    phone = serializers.CharField(max_length=20, validators=[az_phone_validator])
+    instagram_handle = serializers.CharField(
+        max_length=30, required=False, allow_blank=True, default="", validators=[instagram_handle_validator]
+    )
+    district = serializers.ChoiceField(choices=District.choices)
+
+    player_details = PlayerDetailsSerializer(required=False)
+    referee_details = RefereeDetailsSerializer(required=False)
+    medic_details = MedicDetailsSerializer(required=False)
+
+    video_link_url = serializers.URLField(
+        required=False, allow_blank=True, default="", validators=[validate_video_link_domain]
+    )
+    availability = AvailabilitySerializer()
+
+    upload_session_id = serializers.UUIDField()
+    file_ids = serializers.ListField(child=serializers.UUIDField(), required=False, default=list)
+    consents = ConsentInputSerializer(many=True)
+
+    utm_source = serializers.CharField(max_length=100, required=False, allow_blank=True, default="")
+    utm_medium = serializers.CharField(max_length=100, required=False, allow_blank=True, default="")
+    utm_campaign = serializers.CharField(max_length=100, required=False, allow_blank=True, default="")
+
+    turnstile_token = serializers.CharField(required=False, allow_blank=True, default="", write_only=True)
+    # Honeypot: real users never see or fill this field — any non-blank
+    # value means the submitter is an automated client.
+    website = serializers.CharField(required=False, allow_blank=True, default="", write_only=True)
+
+    def validate(self, attrs):
+        request = self.context["request"]
+
+        website = attrs.pop("website", "").strip()
+        turnstile_token = attrs.pop("turnstile_token", "")
+        if website or not verify_turnstile(turnstile_token, get_client_ip(request)):
+            raise serializers.ValidationError(GENERIC_SUBMISSION_ERROR)
+
+        role = attrs["role"]
+        details_key = {
+            ApplicationRole.PLAYER: "player_details",
+            ApplicationRole.REFEREE: "referee_details",
+            ApplicationRole.MEDIC: "medic_details",
+        }[role]
+        if not attrs.get(details_key):
+            raise serializers.ValidationError(
+                {details_key: ["This field is required for the selected role."]}
+            )
+
+        consents = attrs["consents"]
+        consent_by_type = {c["type"]: c["accepted"] for c in consents}
+        required_types = {
+            ConsentType.DATA_PROCESSING,
+            ConsentType.SOCIAL_SHARE,
+            ConsentType.AGE_18_CONFIRMATION,
+        }
+        if set(consent_by_type.keys()) != required_types:
+            raise serializers.ValidationError({"consents": ["All three consent types must be provided."]})
+        if not consent_by_type[ConsentType.DATA_PROCESSING] or not consent_by_type[
+            ConsentType.AGE_18_CONFIRMATION
+        ]:
+            raise serializers.ValidationError(
+                {"consents": ["Data processing and age 18+ consents must be accepted."]}
+            )
+
+        file_ids = attrs.pop("file_ids", [])
+        upload_session_id = attrs["upload_session_id"]
+        resolved_files = list(
+            ApplicationFile.objects.filter(
+                id__in=file_ids, upload_session_id=upload_session_id, application__isnull=True
+            )
+        )
+        if len(resolved_files) != len(set(file_ids)):
+            raise serializers.ValidationError(
+                {"file_ids": ["One or more files could not be found for this upload session."]}
+            )
+
+        files_by_kind: dict[str, list] = {}
+        for file in resolved_files:
+            files_by_kind.setdefault(file.kind, []).append(file)
+
+        if len(files_by_kind.get(FileKind.PHOTO, [])) != 1:
+            raise serializers.ValidationError({"file_ids": ["Exactly one photo is required."]})
+
+        video_count = len(files_by_kind.get(FileKind.VIDEO, []))
+        video_link_url = attrs.get("video_link_url", "")
+
+        if role == ApplicationRole.PLAYER:
+            if video_count > 3:
+                raise serializers.ValidationError({"file_ids": ["At most 3 videos are allowed."]})
+            if video_count < 1 and not video_link_url:
+                raise serializers.ValidationError(
+                    {"file_ids": ["Provide 1-3 videos or a video link."]}
+                )
+        elif role == ApplicationRole.REFEREE:
+            if video_count > 3:
+                raise serializers.ValidationError({"file_ids": ["At most 3 videos are allowed."]})
+        elif role == ApplicationRole.MEDIC:
+            document_count = len(files_by_kind.get(FileKind.DOCUMENT, []))
+            if not (1 <= document_count <= 3):
+                raise serializers.ValidationError({"file_ids": ["1-3 documents are required."]})
+
+        attrs["_resolved_files"] = resolved_files
+        return attrs
+
+    def create(self, validated_data):
+        request = self.context["request"]
+
+        resolved_files = validated_data.pop("_resolved_files")
+        player_details_data = validated_data.pop("player_details", None)
+        referee_details_data = validated_data.pop("referee_details", None)
+        medic_details_data = validated_data.pop("medic_details", None)
+        availability_data = validated_data.pop("availability")
+        consents_data = validated_data.pop("consents")
+
+        role = validated_data["role"]
+        phone = validated_data["phone"]
+        is_duplicate = Application.objects.filter(phone=phone).exists()
+
+        application = Application.objects.create(is_duplicate=is_duplicate, **validated_data)
+
+        headline = ""
+        if role == ApplicationRole.PLAYER and player_details_data:
+            details = PlayerDetails.objects.create(application=application, **player_details_data)
+            headline = details.main_position
+        elif role == ApplicationRole.REFEREE and referee_details_data:
+            details = RefereeDetails.objects.create(application=application, **referee_details_data)
+            headline = details.license_status
+        elif role == ApplicationRole.MEDIC and medic_details_data:
+            details = MedicDetails.objects.create(application=application, **medic_details_data)
+            headline = details.specialty
+
+        Availability.objects.create(application=application, **availability_data)
+
+        ip_hash = hash_ip(get_client_ip(request))
+        now = timezone.now()
+        for consent in consents_data:
+            Consent.objects.create(
+                application=application,
+                type=consent["type"],
+                text_version=CONSENT_TEXT_VERSION,
+                accepted=consent["accepted"],
+                accepted_at=now,
+                ip_hash=ip_hash,
+            )
+
+        for file in resolved_files:
+            file.application = application
+            file.save(update_fields=["application"])
+
+        application._headline_position = headline
+        return application
+
+
+# --- Admin-facing read/write serializers ----------------------------------------
+
+
+class ApplicationListSerializer(serializers.ModelSerializer):
+    files = FileListSummarySerializer(many=True, read_only=True)
+    position = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Application
+        fields = [
+            "id",
+            "full_name",
+            "role",
+            "age",
+            "district",
+            "phone",
+            "status",
+            "created_at",
+            "is_duplicate",
+            "position",
+            "files",
+        ]
+
+    def get_position(self, obj):
+        return headline_position(obj)
+
+
+class ConsentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Consent
+        fields = ["type", "text_version", "accepted", "accepted_at"]
+
+
+class StatusChangeSerializer(serializers.ModelSerializer):
+    changed_by_email = serializers.SerializerMethodField()
+
+    class Meta:
+        model = StatusChange
+        fields = ["from_status", "to_status", "changed_by_email", "changed_at", "reason"]
+
+    def get_changed_by_email(self, obj):
+        return obj.changed_by.email if obj.changed_by_id else None
+
+
+class AdminNoteSerializer(serializers.ModelSerializer):
+    admin_email = serializers.SerializerMethodField()
+
+    class Meta:
+        model = AdminNote
+        fields = ["id", "text", "admin_email", "created_at"]
+
+    def get_admin_email(self, obj):
+        return obj.admin.email
+
+
+class AdminNoteCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdminNote
+        fields = ["id", "text", "created_at"]
+        read_only_fields = ["id", "created_at"]
+
+
+class ApplicationDetailSerializer(serializers.ModelSerializer):
+    player_details = PlayerDetailsSerializer(read_only=True)
+    referee_details = RefereeDetailsSerializer(read_only=True)
+    medic_details = MedicDetailsSerializer(read_only=True)
+    availability = AvailabilitySerializer(read_only=True)
+    consents = ConsentSerializer(many=True, read_only=True)
+    files = FileDetailSummarySerializer(many=True, read_only=True)
+    status_history = StatusChangeSerializer(many=True, read_only=True)
+    notes = AdminNoteSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Application
+        fields = [
+            "id",
+            "role",
+            "full_name",
+            "age",
+            "phone",
+            "instagram_handle",
+            "district",
+            "status",
+            "is_duplicate",
+            "video_link_url",
+            "utm_source",
+            "utm_medium",
+            "utm_campaign",
+            "upload_session_id",
+            "created_at",
+            "updated_at",
+            "player_details",
+            "referee_details",
+            "medic_details",
+            "availability",
+            "consents",
+            "files",
+            "status_history",
+            "notes",
+        ]
+
+
+class StatusUpdateSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(choices=ApplicationStatus.choices)
+    reason = serializers.CharField(required=False, allow_blank=True, default="")

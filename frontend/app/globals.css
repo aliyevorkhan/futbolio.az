@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  /* Never left transparent — the host page must always paint its own
+     background, independent of whatever else is rendered on top. */
+  @apply bg-white text-foreground antialiased;
+}
+
+/* Accessibility: disable all animation/transition durations site-wide
+   when the user has requested reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

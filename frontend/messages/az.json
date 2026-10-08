@@ -1,0 +1,742 @@
+{
+  "meta": {
+    "home": {
+      "title": "Futbolio · Bakıda futbolçu, qapıçı, hakim və həkim tap",
+      "description": "Futbolio Bakıdakı həvəskar futbol komandalarını çatışmayan oyunçu, qapıçı, hakim və həkimlə WhatsApp üzərindən sürətlə birləşdirir."
+    },
+    "mexfilik": {
+      "title": "Məxfilik siyasəti · Futbolio",
+      "description": "Futbolio-nun qeydiyyat formasında topladığı məlumatlar, saxlama müddəti və silinmə qaydaları haqqında məlumat."
+    },
+    "notFound": {
+      "title": "Səhifə tapılmadı · Futbolio"
+    }
+  },
+  "nav": {
+    "primaryNavigation": "Əsas naviqasiya",
+    "biz": "Biz kimik",
+    "xidmetler": "Xidmətlər",
+    "nece": "Necə işləyir",
+    "suallar": "Suallar",
+    "cta": "Oyunçu ol",
+    "skipToContent": "Əsas məzmuna keç"
+  },
+  "footer": {
+    "privacyLink": "Məxfilik siyasəti",
+    "copyright": "© {year} Futbolio. Bütün hüquqlar qorunur."
+  },
+  "home": {
+    "hero": {
+      "title": "Hər komandanın 12-ci oyunçusu var.",
+      "subtitle": "Futbolio Bakıdakı həvəskar komandaları çatışmayan oyunçu, qapıçı, hakim və ya həkimlə WhatsApp və Instagram üzərindən sürətlə birləşdirir.",
+      "findPlayerCta": "Oyunçu tap",
+      "joinCta": "Komandamıza qoşul",
+      "illustrationAlt": "Futbol meydançasının sadə illüstrasiyası"
+    },
+    "biz": {
+      "eyebrow": "Biz kimik",
+      "title": "Komanda natamam olanda, Futbolio tamamlayır.",
+      "description": "Oyun günü oyunçu, qapıçı, hakim və ya həkim çatışmır? Futbolio Bakıdakı həvəskar komandaları etibarlı namizədlərlə bir neçə dəqiqəyə əlaqələndirir — uzun axtarışlara ehtiyac qalmır.",
+      "benefit1Title": "Sürətli həll",
+      "benefit1Desc": "Mesaj yazırsan, qısa müddətdə uyğun namizəd tapırıq.",
+      "benefit2Title": "Yoxlanılmış namizədlər",
+      "benefit2Desc": "Hər namizəd əsas məlumatlarını təqdim edir, uyğunluğu biz yoxlayırıq.",
+      "benefit3Title": "Çevik razılaşma",
+      "benefit3Desc": "İstər bir oyun, istər bütün mövsüm üçün — sənə uyğun formatda."
+    },
+    "xidmetler": {
+      "eyebrow": "Xidmətlər",
+      "title": "Nəyə ehtiyacın var?",
+      "orderCta": "Sifariş et",
+      "futbolcu": {
+        "title": "Futbolçu",
+        "desc": "Mövqeyinə uyğun həvəskar futbolçu tapırıq."
+      },
+      "qapici": {
+        "title": "Qapıçı",
+        "desc": "Son anda qapıçı axtaran komandalar üçün sürətli həll."
+      },
+      "hakim": {
+        "title": "Hakim",
+        "desc": "Dostluq və məşq oyunları üçün hakim təmin edirik."
+      },
+      "hekim": {
+        "title": "Həkim",
+        "desc": "Oyun zamanı ilk tibbi yardım üçün həkim təşkil edirik."
+      },
+      "howMany": {
+        "title": "Neçə nəfər lazımdır?",
+        "oneTitle": "Bir oyunçu",
+        "oneDesc": "Tək bir mövqe üçün sürətli həll.",
+        "manyTitle": "Bir neçə oyunçu",
+        "manyDesc": "Bir neçə mövqe eyni anda doldurulur.",
+        "rivalTitle": "Rəqib komanda",
+        "rivalDesc": "Məşq oyunu üçün rəqib komanda da tapırıq."
+      }
+    },
+    "nece": {
+      "eyebrow": "Necə işləyir",
+      "title": "Üç addımda hazır",
+      "step1Title": "Yaz",
+      "step1Desc": "WhatsApp üzərindən komandanın ehtiyacını yazırsan.",
+      "step2Title": "Seç",
+      "step2Desc": "Futbolio uyğun, yoxlanılmış namizədi təklif edir.",
+      "step3Title": "Oyna",
+      "step3Desc": "Namizəd komandaya qoşulur, oyun davam edir.",
+      "cta": "İndi yaz"
+    },
+    "seviyyeler": {
+      "eyebrow": "Səviyyələr",
+      "title": "Hər səviyyəyə uyğun namizəd",
+      "standartTitle": "Standart",
+      "standartDesc": "Həvəskar səviyyədə, mütəmadi oynayan oyunçular.",
+      "proTitle": "Pro",
+      "proDesc": "Təcrübəli, rəqabətli liqalarda oynamış oyunçular.",
+      "elitTitle": "Elit",
+      "elitDesc": "Yüksək səviyyəli, diqqətlə seçilmiş namizədlər.",
+      "prinsipialTitle": "Prinsipial",
+      "prinsipialDesc": "Qalib gəlmək istəyən, ciddi yanaşan oyunçular."
+    },
+    "videolar": {
+      "eyebrow": "Videolar",
+      "title": "Meydandan anlar"
+    },
+    "zemanet": {
+      "eyebrow": "Zəmanət",
+      "title": "Arxayın ol",
+      "point1": "Bütün namizədlər yoxlanılır.",
+      "point2": "Uyğun gəlməyən namizəd sürətlə əvəzlənir.",
+      "point3": "Məmnuniyyətini əsas tuturuq.",
+      "moneyBackTitle": "100% pul geri",
+      "moneyBackDesc": "Məmnun qalmasan, pulunu geri qaytarırıq."
+    },
+    "cta": {
+      "text": "18 yaş və yuxarı · yalnız Bakı",
+      "button": "Qeydiyyatdan keç"
+    },
+    "suallar": {
+      "eyebrow": "Suallar",
+      "title": "Tez-tez verilən suallar"
+    },
+    "elaqe": {
+      "title": "Bizimlə əlaqə",
+      "whatsapp": "WhatsApp yaz",
+      "instagramProfile": "Instagram profili",
+      "instagramDm": "Instagram-da yaz",
+      "tiktok": "TikTok",
+      "copyright": "© {year} Futbolio. Bütün hüquqlar qorunur."
+    }
+  },
+  "privacy": {
+    "title": "Məxfilik siyasəti",
+    "intro": "Bu səhifə Futbolio-nun qeydiyyat forması vasitəsilə topladığı məlumatlarla bağlı qaydaları izah edir. Qeyd: bu mətn hüquqi məsləhət deyil və son nəşrdən əvvəl hüquqşünas tərəfindən nəzərdən keçirilməlidir.",
+    "dataTitle": "Hansı məlumatları toplayırıq",
+    "dataBody": "Yalnız qeydiyyat formasında təqdim etdiyin məlumatları toplayırıq: ad, əlaqə vasitələri, mövqe/təcrübə məlumatları və (tətbiq olunarsa) yüklədiyin fayllar. Şəxsiyyət vəsiqəsi nömrəsi, ünvan və ya bank məlumatları tələb olunmur və saxlanılmır.",
+    "purposeTitle": "Niyə toplayırıq",
+    "purposeBody": "Bu məlumatlardan yalnız səni uyğun komanda və ya namizədlə əlaqələndirmək üçün istifadə edirik.",
+    "retentionTitle": "Nə qədər saxlayırıq",
+    "retentionBody": "Rədd edilmiş və ya arxivləşdirilmiş müraciətlər, defolt olaraq, son fəaliyyətdən 12 ay sonra silinir.",
+    "sharingTitle": "Kiminlə paylaşırıq",
+    "sharingBody": "Məlumatların heç biri Futbolio-dan kənar heç kimlə paylaşılmır.",
+    "deletionTitle": "Məlumatların silinməsini necə tələb edə bilərsən",
+    "deletionBody": "Məlumatlarının silinməsini tələb etmək üçün WhatsApp və ya e-poçt vasitəsilə bizimlə əlaqə saxlaya bilərsən."
+  },
+  "notFound": {
+    "title": "Səhifə tapılmadı",
+    "description": "Axtardığınız səhifə mövcud deyil və ya başqa ünvana köçürülüb.",
+    "backHome": "Ana səhifəyə qayıt"
+  },
+  "wizard": {
+    "meta": {
+      "title": "Qeydiyyat",
+      "description": "Futbolio-da futbolçu, hakim və ya həkim kimi qeydiyyatdan keç — bir neçə addımda, bir neçə dəqiqəyə."
+    },
+    "sidebar": {
+      "step1": "Əsas məlumat",
+      "step2": "Təfərrüatlar",
+      "step3": "Uyğunluq",
+      "step4": "Fayllar",
+      "step5": "Təsdiq",
+      "progressLabel": "Addım {current} / {total}"
+    },
+    "nav": {
+      "back": "Geri",
+      "continue": "Davam et",
+      "submit": "Göndər",
+      "submitting": "Göndərilir..."
+    },
+    "common": {
+      "remove": "Sil",
+      "retry": "Yenidən cəhd et",
+      "yes": "Bəli",
+      "no": "Xeyr"
+    },
+    "errors": {
+      "required": "Bu sahə tələb olunur",
+      "invalidFullName": "Ad və soyadı düzgün daxil edin (yalnız hərflər, boşluq və defis, 3-80 simvol)",
+      "invalidAge": "Yaş 18 ilə 70 arasında olmalıdır",
+      "invalidPhone": "Nömrəni düzgün formatda daxil edin (+994 50 123 45 67)",
+      "invalidInstagramHandle": "Instagram istifadəçi adını düzgün daxil edin",
+      "tooLong": "Mətn həddindən artıq uzundur",
+      "selfRatingRequired": "Qiymətini seç",
+      "minSelectionGameTypes": "Ən azı bir oyun növü seç",
+      "minSelectionDays": "Ən azı bir gün seç",
+      "minSelectionHours": "Ən azı bir vaxt aralığı seç",
+      "minSelectionDistricts": "Ən azı bir rayon seç",
+      "invalidVideoUrl": "Keçərli Instagram, TikTok, YouTube və ya Google Drive linki daxil et",
+      "videoRequired": "Ən azı bir video fayl və ya video linki tələb olunur",
+      "filesRequired": "Tələb olunan faylları yüklə",
+      "consentRequired": "Davam etmək üçün bunu təsdiqləməlisən",
+      "invalidFileType": "Bu fayl növü qəbul olunmur",
+      "fileTooLarge": "Fayl həddindən artıq böyükdür",
+      "uploadFailed": "Fayl yüklənmədi, yenidən cəhd et",
+      "genericSubmitError": "Məlumatları yoxlayın"
+    },
+    "roles": {
+      "player": "Futbolçu",
+      "referee": "Hakim",
+      "medic": "Həkim"
+    },
+    "step1": {
+      "roleLabel": "Hansı rolda qoşulursan?",
+      "fullNameLabel": "Ad və soyad",
+      "fullNamePlaceholder": "Məs. Elvin Məmmədov",
+      "ageLabel": "Yaş",
+      "agePlaceholder": "Məs. 25",
+      "phoneLabel": "WhatsApp nömrəsi",
+      "phonePlaceholder": "+994 50 123 45 67",
+      "instagramLabel": "Instagram (istəyə bağlı)",
+      "instagramPlaceholder": "istifadeci_adi",
+      "districtLabel": "Yaşadığın rayon",
+      "districtPlaceholder": "Rayon seç"
+    },
+    "districts": {
+      "binegedi": "Binəqədi",
+      "xetai": "Xətai",
+      "xezer": "Xəzər",
+      "qaradag": "Qaradağ",
+      "nerimanov": "Nərimanov",
+      "nesimi": "Nəsimi",
+      "nizami": "Nizami",
+      "pirallahi": "Pirallahı",
+      "sabuncu": "Sabunçu",
+      "sebail": "Səbail",
+      "suraxani": "Suraxanı",
+      "yasamal": "Yasamal"
+    },
+    "step2": {
+      "player": {
+        "title": "Futbolçu haqqında",
+        "mainPositionLabel": "Əsas mövqe",
+        "positions": {
+          "goalkeeper": "Qapıçı",
+          "defender": "Müdafiəçi",
+          "midfielder": "Yarımmüdafiəçi",
+          "forward": "Hücumçu"
+        },
+        "extraPositionsLabel": "Əlavə oynaya biləcəyin mövqelər (istəyə bağlı)",
+        "preferredFootLabel": "Əsas ayaq",
+        "foot": {
+          "right": "Sağ",
+          "left": "Sol",
+          "both": "Hər ikisi"
+        },
+        "yearsPlayingLabel": "Neçə ildir futbol oynayırsan?",
+        "years": {
+          "under_1": "1 ildən az",
+          "1_3": "1-3 il",
+          "3_5": "3-5 il",
+          "over_5": "5 ildən çox"
+        },
+        "clubExperienceLabel": "Komanda təcrübən (istəyə bağlı)",
+        "clubExperiencePlaceholder": "Hansı komandalarda oynamısan, hansı liqalarda...",
+        "selfRatingLabel": "Özünü 1-5 arasında necə qiymətləndirərdin?"
+      },
+      "referee": {
+        "title": "Hakim haqqında",
+        "licenseStatusLabel": "Lisenziya statusu",
+        "license": {
+          "licensed": "Lisenziyalı",
+          "course_completed": "Hakim kursunu bitirmişəm",
+          "experienced_unlicensed": "Təcrübəliyəm, amma lisenziyam yoxdur"
+        },
+        "yearsRefereeingLabel": "Neçə ildir hakimlik edirsən?",
+        "years": {
+          "under_1": "1 ildən az",
+          "1_3": "1-3 il",
+          "3_5": "3-5 il",
+          "over_5": "5 ildən çox"
+        },
+        "gameTypesLabel": "Hansı oyun növlərində hakimlik edə bilərsən?",
+        "gameTypes": {
+          "mini_football": "Mini-futbol",
+          "big_football": "Böyük futbol",
+          "futsal": "Futzal",
+          "tournaments": "Turnirlər"
+        },
+        "experienceLabel": "Təcrüban haqqında (istəyə bağlı)",
+        "experiencePlaceholder": "Hansı liqa/turnirlərdə hakimlik etmisən..."
+      },
+      "medic": {
+        "title": "Həkim haqqında",
+        "specialtyLabel": "İxtisas",
+        "specialty": {
+          "sports_doctor": "İdman həkimi",
+          "doctor": "Həkim",
+          "paramedic": "Feldşer",
+          "physiotherapist": "Fizioterapevt",
+          "nurse": "Tibb bacısı"
+        },
+        "firstAidCertLabel": "İlk yardım sertifikatın var?",
+        "workExperienceLabel": "Neçə ildir bu sahədə çalışırsan?",
+        "years": {
+          "under_1": "1 ildən az",
+          "1_3": "1-3 il",
+          "3_5": "3-5 il",
+          "over_5": "5 ildən çox"
+        },
+        "workplaceLabel": "İş yerin (istəyə bağlı)",
+        "workplacePlaceholder": "Məs. Hospital/klinika adı"
+      }
+    },
+    "step3": {
+      "title": "Nə vaxt uyğunsan?",
+      "description": "Hansı günlər, saatlar və rayonlarda oyuna qoşula bilərsən — bir neçəsini seçə bilərsən.",
+      "daysLabel": "Günlər",
+      "hoursLabel": "Vaxt aralığı",
+      "districtsLabel": "Uyğun olduğun rayonlar"
+    },
+    "days": {
+      "monday": "Bazar ertəsi",
+      "tuesday": "Çərşənbə axşamı",
+      "wednesday": "Çərşənbə",
+      "thursday": "Cümə axşamı",
+      "friday": "Cümə",
+      "saturday": "Şənbə",
+      "sunday": "Bazar"
+    },
+    "hours": {
+      "18_20": "18:00 - 20:00",
+      "20_22": "20:00 - 22:00",
+      "22_00": "22:00 - 00:00",
+      "weekend_daytime": "Həftə sonu, gündüz"
+    },
+    "step4": {
+      "title": "Şəkil və video",
+      "description": "Profilinin yoxlanılması üçün aşağıdakı faylları yüklə.",
+      "photo": {
+        "label": "Profil şəkli",
+        "hint": "JPG, PNG və ya WEBP/HEIC, maksimum 10 MB"
+      },
+      "video": {
+        "label": "Video",
+        "hint": "MP4 və ya MOV, maksimum 200 MB, hər biri. Video fayl və ya video linkindən ən azı biri kifayətdir.",
+        "linkLabel": "Video linki (Instagram, TikTok, YouTube və ya Google Drive)",
+        "linkPlaceholder": "https://..."
+      },
+      "document": {
+        "label": "Sertifikat / sənəd",
+        "hint": "PDF, JPG və ya PNG, maksimum 10 MB, hər biri"
+      },
+      "dropzone": {
+        "instructions": "Faylı bura sürüklə",
+        "browseButton": "və ya kompüterdən seç"
+      },
+      "status": {
+        "uploading": "yüklənir",
+        "uploaded": "yükləndi",
+        "error": "xəta"
+      }
+    },
+    "step5": {
+      "title": "Son addım",
+      "description": "Göndərmədən əvvəl aşağıdakıları təsdiqlə.",
+      "dataProcessingLabel": "Şəxsi məlumatlarımın Futbolio-nun <link>Məxfilik siyasətinə</link> uyğun istifadə olunmasına razıyam.",
+      "socialShareLabel": "Profilimin (şəkil/video daxil) Futbolio-nun sosial media hesablarında paylaşıla bilməsinə razıyam.",
+      "ageConfirmationLabel": "18 yaşımın tamam olduğunu təsdiqləyirəm."
+    },
+    "thankYou": {
+      "title": "Müraciətin qəbul olundu!",
+      "description": "Məlumatlarını nəzərdən keçiririk. Uyğun gəldikdə səninlə WhatsApp və ya Instagram üzərindən əlaqə saxlayacağıq.",
+      "backHome": "Ana səhifəyə qayıt"
+    }
+  },
+  "admin": {
+    "common": {
+      "save": "Yadda saxla",
+      "saving": "Saxlanılır...",
+      "cancel": "İmtina et",
+      "delete": "Sil",
+      "edit": "Redaktə et",
+      "create": "Yarat",
+      "add": "Əlavə et",
+      "loading": "Yüklənir...",
+      "error": "Xəta baş verdi",
+      "confirm": "Təsdiqlə",
+      "actions": "Əməliyyatlar",
+      "close": "Bağla",
+      "yes": "Bəli",
+      "no": "Xeyr",
+      "back": "Geri",
+      "search": "Axtar",
+      "noResults": "Nəticə tapılmadı",
+      "required": "Bu sahə mütləqdir",
+      "optional": "istəyə bağlı",
+      "active": "Aktiv",
+      "inactive": "Qeyri-aktiv",
+      "copy": "Kopyala",
+      "copied": "Kopyalandı"
+    },
+    "nav": {
+      "brand": "Futbolio Admin",
+      "applications": "Müraciətlər",
+      "settings": "Tənzimləmələr",
+      "adminUsers": "Adminlər",
+      "logout": "Çıxış"
+    },
+    "login": {
+      "title": "Admin girişi",
+      "subtitle": "Davam etmək üçün hesabına daxil ol.",
+      "emailLabel": "E-poçt",
+      "passwordLabel": "Parol",
+      "submit": "Daxil ol",
+      "submitting": "Yoxlanılır...",
+      "forgotPassword": "Parolu unutmusan?",
+      "totpEnrollTitle": "İki addımlı doğrulamanı aktivləşdir",
+      "totpEnrollInstructions": "Aşağıdakı gizli açarı Google Authenticator (və ya oxşar tətbiq) proqramına əl ilə daxil et, sonra tətbiqin göstərdiyi 6 rəqəmli kodu aşağı yaz.",
+      "secretLabel": "Gizli açar",
+      "codeLabel": "6 rəqəmli kod",
+      "totpVerifyTitle": "Doğrulama kodu",
+      "totpVerifyInstructions": "Authenticator tətbiqindəki 6 rəqəmli kodu daxil et.",
+      "verify": "Təsdiqlə",
+      "verifying": "Yoxlanılır...",
+      "backToLogin": "Girişə qayıt",
+      "codePlaceholder": "123456"
+    },
+    "resetPassword": {
+      "requestTitle": "Parolu bərpa et",
+      "requestSubtitle": "E-poçt ünvanını daxil et, sənə bərpa keçidi göndərək.",
+      "emailLabel": "E-poçt",
+      "submit": "Keçid göndər",
+      "submitting": "Göndərilir...",
+      "requestSuccess": "Əgər bu e-poçt sistemdə mövcuddursa, parolu sıfırlamaq üçün keçid göndərildi.",
+      "confirmTitle": "Yeni parol təyin et",
+      "newPasswordLabel": "Yeni parol",
+      "confirmSubmit": "Parolu təyin et",
+      "confirmSubmitting": "Yadda saxlanılır...",
+      "confirmSuccess": "Parolun uğurla yeniləndi. İndi daxil ola bilərsən.",
+      "invalidToken": "Keçid tapılmadı. Bərpa keçidini yenidən tələb et.",
+      "goToLogin": "Girişə get"
+    },
+    "dashboard": {
+      "redirecting": "Yönləndirilir..."
+    },
+    "guard": {
+      "checkingSession": "Sessiya yoxlanılır..."
+    },
+    "applications": {
+      "title": "Müraciətlər",
+      "searchPlaceholder": "Ad və ya telefon üzrə axtar",
+      "filters": {
+        "title": "Filtrlər",
+        "role": "Rol",
+        "district": "Rayon",
+        "status": "Status",
+        "dateFrom": "Tarixdən",
+        "dateTo": "Tarixədək",
+        "selfRating": "Özünüqiymətləndirmə",
+        "position": "Mövqe",
+        "days": "Günlər",
+        "hours": "Saatlar",
+        "allRoles": "Bütün rollar",
+        "allDistricts": "Bütün rayonlar",
+        "allStatuses": "Bütün statuslar",
+        "apply": "Tətbiq et",
+        "reset": "Sıfırla"
+      },
+      "sort": {
+        "label": "Sırala",
+        "newest": "Ən yeni",
+        "oldest": "Ən köhnə",
+        "nameAsc": "Ad (A-Z)",
+        "statusAsc": "Status"
+      },
+      "export": {
+        "label": "İxrac et",
+        "csv": "CSV",
+        "xlsx": "Excel"
+      },
+      "table": {
+        "name": "Ad",
+        "role": "Rol",
+        "position": "Mövqe",
+        "age": "Yaş",
+        "district": "Rayon",
+        "phone": "Telefon",
+        "status": "Status",
+        "date": "Tarix",
+        "duplicate": "Təkrar"
+      },
+      "pagination": {
+        "pageInfo": "{count} nəticədən {from}-{to}",
+        "previous": "Əvvəlki",
+        "next": "Növbəti"
+      },
+      "empty": "Heç bir müraciət tapılmadı.",
+      "loadError": "Müraciətlər yüklənə bilmədi.",
+      "viewDetail": "Bax"
+    },
+    "applicationDetail": {
+      "back": "Müraciətlərə qayıt",
+      "sections": {
+        "personal": "Şəxsi məlumatlar",
+        "roleDetails": "Rol üzrə məlumatlar",
+        "availability": "Uyğunluq",
+        "files": "Fayllar",
+        "consents": "Razılıqlar",
+        "statusHistory": "Status tarixçəsi",
+        "notes": "Qeydlər"
+      },
+      "fields": {
+        "fullName": "Ad, soyad",
+        "role": "Rol",
+        "age": "Yaş",
+        "phone": "Telefon",
+        "instagram": "Instagram",
+        "district": "Rayon",
+        "createdAt": "Göndərilmə tarixi",
+        "updatedAt": "Yenilənmə tarixi",
+        "videoLink": "Video keçidi",
+        "duplicate": "Təkrar müraciət",
+        "mainPosition": "Əsas mövqe",
+        "extraPositions": "Əlavə mövqelər",
+        "preferredFoot": "Üstün ayaq",
+        "yearsPlaying": "Təcrübə",
+        "clubExperience": "Klub təcrübəsi",
+        "selfRating": "Özünüqiymətləndirmə",
+        "licenseStatus": "Lisenziya statusu",
+        "yearsRefereeing": "Hakimlik təcrübəsi",
+        "gameTypes": "Oyun növləri",
+        "refereeExperience": "Təcrübə qeydi",
+        "specialty": "İxtisas",
+        "firstAidCert": "İlk yardım sertifikatı",
+        "workExperience": "İş təcrübəsi",
+        "workplace": "İş yeri",
+        "days": "Günlər",
+        "hours": "Saatlar",
+        "districts": "Rayonlar"
+      },
+      "status": {
+        "label": "Status",
+        "updateSuccess": "Status yeniləndi.",
+        "updateError": "Statusu yeniləmək mümkün olmadı."
+      },
+      "files": {
+        "view": "Bax",
+        "download": "Yüklə",
+        "noFiles": "Fayl yoxdur.",
+        "loadingUrl": "Yüklənir...",
+        "forbidden": "Bu fayla baxmaq üçün icazəniz yoxdur.",
+        "loadError": "Fayl açıla bilmədi.",
+        "scanClean": "təmiz",
+        "scanPending": "yoxlanılır",
+        "scanInfected": "yoluxmuş — silinib",
+        "scanError": "xəta"
+      },
+      "consents": {
+        "accepted": "Qəbul edilib",
+        "declined": "Qəbul edilməyib",
+        "acceptedAt": "Tarix"
+      },
+      "statusHistory": {
+        "empty": "Status dəyişikliyi yoxdur.",
+        "entry": "{from} → {to}",
+        "by": "{email} tərəfindən",
+        "systemActor": "Sistem",
+        "reason": "Səbəb"
+      },
+      "notes": {
+        "empty": "Qeyd yoxdur.",
+        "placeholder": "Qeyd yaz...",
+        "add": "Qeyd əlavə et",
+        "adding": "Əlavə edilir...",
+        "addError": "Qeyd əlavə edilə bilmədi."
+      },
+      "delete": {
+        "trigger": "Müraciəti sil",
+        "title": "Müraciəti silmək istədiyinə əminsən?",
+        "description": "Bu əməliyyat geri qaytarıla bilməz. {name} adlı müraciət və ona aid bütün fayllar həmişəlik silinəcək.",
+        "confirm": "Bəli, sil",
+        "success": "Müraciət silindi.",
+        "error": "Müraciəti silmək mümkün olmadı."
+      },
+      "loadError": "Müraciət tapılmadı."
+    },
+    "settings": {
+      "title": "Tənzimləmələr",
+      "tabs": {
+        "general": "Əsas",
+        "videoCards": "Video kartları",
+        "faq": "Suallar"
+      },
+      "general": {
+        "whatsappNumber": "WhatsApp nömrəsi",
+        "whatsappDefaultText": "WhatsApp standart mesajı",
+        "phoneNumber": "Telefon nömrəsi",
+        "instagramUrl": "Instagram linki",
+        "instagramDmUrl": "Instagram DM linki",
+        "tiktokUrl": "TikTok linki",
+        "save": "Yadda saxla",
+        "saveSuccess": "Tənzimləmələr yadda saxlanıldı.",
+        "saveError": "Tənzimləmələri yadda saxlamaq mümkün olmadı."
+      },
+      "videoCards": {
+        "addTitle": "Yeni video kartı",
+        "editTitle": "Video kartını redaktə et",
+        "link": "Video keçidi",
+        "coverImageKey": "Üz qabığı şəkli (storage key)",
+        "coverImageHint": "MVP qeydi: bu sahə birbaşa storage açarıdır — fayl yükləmə alətı hələ qoşulmayıb.",
+        "caption": "Başlıq",
+        "order": "Sıra",
+        "isActive": "Aktiv",
+        "empty": "Hələ video kartı yoxdur.",
+        "createSuccess": "Video kartı yaradıldı.",
+        "updateSuccess": "Video kartı yeniləndi.",
+        "deleteSuccess": "Video kartı silindi.",
+        "deleteConfirmTitle": "Video kartını silmək istədiyinə əminsən?",
+        "error": "Əməliyyat uğursuz oldu."
+      },
+      "faq": {
+        "addTitle": "Yeni sual",
+        "editTitle": "Sualı redaktə et",
+        "question": "Sual",
+        "answer": "Cavab",
+        "order": "Sıra",
+        "isActive": "Aktiv",
+        "empty": "Hələ sual yoxdur.",
+        "createSuccess": "Sual yaradıldı.",
+        "updateSuccess": "Sual yeniləndi.",
+        "deleteSuccess": "Sual silindi.",
+        "deleteConfirmTitle": "Sualı silmək istədiyinə əminsən?",
+        "error": "Əməliyyat uğursuz oldu."
+      }
+    },
+    "adminUsers": {
+      "title": "Adminlər",
+      "addTitle": "Yeni admin əlavə et",
+      "email": "E-poçt",
+      "fullName": "Ad, soyad",
+      "role": "Rol",
+      "canViewSensitiveFiles": "Həssas faylları görə bilər",
+      "status": "Status",
+      "lastLogin": "Son giriş",
+      "never": "Heç vaxt",
+      "create": "Admin yarat",
+      "createSuccess": "Admin yaradıldı. Parol təyini üçün e-poçt göndərildi.",
+      "createError": "Admin yaratmaq mümkün olmadı.",
+      "disable": "Deaktiv et",
+      "disableConfirmTitle": "Bu adminin hesabını deaktiv etmək istədiyinə əminsən?",
+      "disableSuccess": "Admin deaktiv edildi.",
+      "disableError": "Admini deaktiv etmək mümkün olmadı.",
+      "resetPassword": "Parolu sıfırla",
+      "resetPasswordConfirmTitle": "Bu admin üçün parol sıfırlama keçidi göndərilsin?",
+      "resetPasswordSuccess": "Parol sıfırlama keçidi göndərildi.",
+      "resetPasswordError": "Keçid göndərilə bilmədi.",
+      "empty": "Hələ admin yoxdur.",
+      "forbidden": "Bu səhifəyə yalnız super adminlər daxil ola bilər."
+    },
+    "enums": {
+      "role": {
+        "player": "Futbolçu",
+        "referee": "Hakim",
+        "medic": "Həkim"
+      },
+      "status": {
+        "new": "Yeni",
+        "reviewed": "Baxılıb",
+        "contacted": "Əlaqə saxlanılıb",
+        "accepted": "Qəbul edilib",
+        "rejected": "Rədd edilib",
+        "archived": "Arxivləşdirilib"
+      },
+      "district": {
+        "binegedi": "Binəqədi",
+        "xetai": "Xətai",
+        "xezer": "Xəzər",
+        "qaradag": "Qaradağ",
+        "nerimanov": "Nərimanov",
+        "nesimi": "Nəsimi",
+        "nizami": "Nizami",
+        "pirallahi": "Pirallahı",
+        "sabuncu": "Sabunçu",
+        "sebail": "Səbail",
+        "suraxani": "Suraxanı",
+        "yasamal": "Yasamal"
+      },
+      "mainPosition": {
+        "goalkeeper": "Qapıçı",
+        "defender": "Müdafiəçi",
+        "midfielder": "Yarımmüdafiəçi",
+        "forward": "Hücumçu"
+      },
+      "preferredFoot": {
+        "right": "Sağ",
+        "left": "Sol",
+        "both": "Hər ikisi"
+      },
+      "duration": {
+        "under_1": "1 ildən az",
+        "1_3": "1-3 il",
+        "3_5": "3-5 il",
+        "over_5": "5+ il"
+      },
+      "licenseStatus": {
+        "licensed": "Lisenziyalı",
+        "course_completed": "Kurs bitirib",
+        "experienced_unlicensed": "Təcrübəli (lisenziyasız)"
+      },
+      "gameType": {
+        "mini_football": "Mini-futbol",
+        "big_football": "Böyük futbol",
+        "futsal": "Futzal",
+        "tournaments": "Turnirlər"
+      },
+      "specialty": {
+        "sports_doctor": "İdman həkimi",
+        "doctor": "Həkim",
+        "paramedic": "Feldşer/Paramedik",
+        "physiotherapist": "Fizioterapevt",
+        "nurse": "Tibb bacısı"
+      },
+      "weekday": {
+        "monday": "Bazar ertəsi",
+        "tuesday": "Çərşənbə axşamı",
+        "wednesday": "Çərşənbə",
+        "thursday": "Cümə axşamı",
+        "friday": "Cümə",
+        "saturday": "Şənbə",
+        "sunday": "Bazar"
+      },
+      "hourSlot": {
+        "18_20": "18:00-20:00",
+        "20_22": "20:00-22:00",
+        "22_00": "22:00-00:00",
+        "weekend_daytime": "Həftə sonu gündüz"
+      },
+      "fileKind": {
+        "photo": "Şəkil",
+        "video": "Video",
+        "document": "Sənəd"
+      },
+      "consentType": {
+        "data_processing": "Məlumatların işlənməsi",
+        "social_share": "Sosial media paylaşımı",
+        "age_18_confirmation": "18 yaş təsdiqi"
+      },
+      "adminRole": {
+        "admin": "Admin",
+        "super_admin": "Super admin"
+      }
+    }
+  }
+}
