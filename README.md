@@ -16,7 +16,7 @@ repo). Implementation plan/decisions: see the project's plan history.
 | Frontend | Next.js 14 (App Router, TypeScript), Tailwind CSS |
 | Backend | Django REST Framework, PostgreSQL |
 | Async jobs | Celery + Redis (file scanning, retention purges, notifications) |
-| File storage | S3-compatible — Garage locally, Hetzner Object Storage in production |
+| File storage | S3-compatible — Hetzner Object Storage |
 | Antivirus | ClamAV (every uploaded file is scanned before it's attached to an application) |
 | Bot protection | Cloudflare Turnstile |
 | Local dev orchestration | Docker Compose |
@@ -31,14 +31,13 @@ Browser ──> Cloudflare ──> frontend (Next.js, futbolio.az)
 
 ## Local development
 
-1. Copy the env file: `cp .env.example .env` (fill in nothing for local dev —
-   every default already works against the dockerized services below;
-   `TURNSTILE_BYPASS=True` skips real Turnstile verification locally).
+1. Copy the env file: `cp .env.example .env` — fill in the `AWS_S3_*` /
+   `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` vars with a Hetzner Object
+   Storage bucket + access key (Hetzner Cloud Console → Object Storage);
+   every other default already works against the dockerized services below.
+   `TURNSTILE_BYPASS=True` skips real Turnstile verification locally.
 2. `docker compose up --build`
 3. First boot only:
-   - Bootstrap Garage (object storage) — see `docker/garage/README.md` for
-     the one-time layout/bucket/key setup (MinIO's Docker images are no
-     longer freely pullable, so this project uses Garage instead).
    - Create the first super_admin account:
      `docker compose exec backend python manage.py create_superadmin --email you@futbolio.az`
      (every other admin account is created through this one via the admin
@@ -91,9 +90,8 @@ npm run generate:types   # fetches http://localhost:8000/api/schema/
 
 - `futbolio.az` → frontend, `api.futbolio.az` → backend, both behind
   Cloudflare (CDN/WAF/DDoS protection, Turnstile, Tunnel for origin access).
-- Production object storage is Hetzner Object Storage (S3-compatible) —
-  swapping from local Garage is a pure environment-variable change
-  (`AWS_S3_ENDPOINT_URL`, `AWS_S3_ADDRESSING_STYLE=virtual`), no code change.
+- Object storage is Hetzner Object Storage (S3-compatible) in every
+  environment, local dev included — one bucket/access key per environment.
 - `SESSION_COOKIE_DOMAIN=.futbolio.az` so the admin session cookie is shared
   between the two subdomains.
 - Backups: daily Postgres dump (30-day retention, off-region, encrypted —
@@ -111,6 +109,6 @@ backend/            Django project (package: config) + apps:
   sitesettings/        admin-editable phone/social links/video cards/FAQ
   notifications/       pluggable new-application notification backends
 frontend/            Next.js app (marketing site, registration wizard, admin panel)
-docker-compose.yml    full local stack: postgres, redis, garage, clamav, mailpit,
+docker-compose.yml    full local stack: postgres, redis, clamav, mailpit,
                        backend, celery-worker(+media), celery-beat, frontend
 ```

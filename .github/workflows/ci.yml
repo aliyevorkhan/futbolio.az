@@ -68,8 +68,8 @@ jobs:
         ports: ["6379:6379"]
     # No object-storage service here — the files app's tests mock
     # common.storage/common.clamav calls rather than hitting a real
-    # S3-compatible backend (see docker/garage/README.md for why local
-    # dev/prod use Garage instead of MinIO; CI doesn't need either).
+    # S3-compatible backend (Hetzner Object Storage in every real
+    # environment; CI doesn't need it at all).
     env:
       DJANGO_SECRET_KEY: ci-test-secret-key
       DATABASE_URL: postgres://futbolio:futbolio-test-password@localhost:5432/futbolio
