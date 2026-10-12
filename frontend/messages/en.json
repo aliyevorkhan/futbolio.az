@@ -36,9 +36,6 @@
   "home": {
     "hero": {
       "badge": "Baku's amateur football platform",
-      "titlePrefix": "Every team has a ",
-      "titleHighlight": "12th player",
-      "titleSuffix": ".",
       "subtitle": "Futbolio quickly connects Baku's amateur teams with a missing player, goalkeeper, referee or medic over WhatsApp and Instagram.",
       "checklistPlayers": "Players",
       "checklistGoalkeepers": "Goalkeepers",
@@ -46,25 +43,34 @@
       "checklistMedics": "Medics",
       "findPlayerCta": "Find a player",
       "joinCta": "Join our team",
-      "notificationTitle": "Your 12th player is on the way",
-      "notificationMeta": "Player · Pro · 21:00",
-      "illustrationAlt": "Simple illustration of a football pitch"
+      "notificationTitle": "A player is needed",
+      "notificationMeta": "Forward · Pro · 21:00",
+      "illustrationAlt": "Illustration of a football pitch with a team lineup",
+      "titleLine1": "Every game,",
+      "titleLine2": "full squad.",
+      "roleMenuTitle": "Who do you need?",
+      "slotTooltip": "Tap to choose who you need",
+      "slotAriaLabel": "Who do you need? Choose"
     },
     "biz": {
       "eyebrow": "About us",
       "title": "When a team is short a player, Futbolio fills the gap.",
-      "description": "Missing a player, goalkeeper, referee or medic on game day? Futbolio connects Baku's amateur teams with reliable candidates within minutes, no long searches needed.",
-      "benefit1Title": "Fast solution",
-      "benefit1Desc": "Send a message, we find a suitable candidate in a short time.",
-      "benefit2Title": "Vetted candidates",
-      "benefit2Desc": "Every candidate submits their key details, we check they're a good fit.",
-      "benefit3Title": "Flexible arrangements",
-      "benefit3Desc": "Whether it's one game or a whole season, we match the format to you."
+      "description": "Missing a player, goalkeeper, referee or medic on game day? Futbolio connects Baku's amateur teams with reliable candidates, no long searches needed.",
+      "noBadge": "Without Futbolio",
+      "yesBadge": "With Futbolio",
+      "noItem1": "Hours spent searching for a player in group chats",
+      "noItem2": "A last-minute \"can't make it\" message",
+      "noItem3": "A game without a goalkeeper or referee",
+      "noItem4": "Money spent on the pitch goes to waste",
+      "yesItem1": "One message, we handle the rest",
+      "yesItem2": "A candidate with a vetted skill level",
+      "yesItem3": "Goalkeeper, referee and medic all in one place",
+      "yesItem4": "If they don't show up, we find a replacement"
     },
     "xidmetler": {
       "eyebrow": "Services",
       "title": "What do you need?",
-      "description": "We find vetted candidates that match the position within minutes.",
+      "description": "We quickly find vetted candidates that match the position.",
       "orderCta": "Order",
       "futbolcu": {
         "title": "Player",
@@ -85,6 +91,11 @@
         "title": "Medic",
         "desc": "We arrange a medic for first aid during the game.",
         "whatsappMessage": "Hi! I need a medic for my game."
+      },
+      "reqib": {
+        "title": "Opposing team",
+        "desc": "Can't find an opponent to play? We'll bring a team that matches your level.",
+        "whatsappMessage": "Hi! I need an opposing team for my game."
       }
     },
     "tiers": {

@@ -13,6 +13,8 @@ const config: Config = {
         brand: {
           green: "#00E676",
           dark: "#0A1410",
+          // Light mint green — badge/tag backgrounds, icon-circle fills.
+          mint: "#D4F7E3",
         },
         surface: "#F2F4F3",
         foreground: "#0A1410",

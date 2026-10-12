@@ -1,14 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { ArrowRight, Check } from "lucide-react";
+import { Check, MessageCircle } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { useSettingsQuery } from "@/lib/queries/useSettingsQuery";
-import { buildWhatsAppUrl } from "@/lib/utils";
+import { useRoleOptions } from "@/lib/hooks/useRoleOptions";
 import { Container } from "@/components/shared/Container";
-import { ExternalLink } from "@/components/shared/ExternalLink";
 import { Button } from "@/components/ui/button";
 import { HeroIllustration } from "@/components/home/HeroIllustration";
+import { RoleMenu } from "@/components/home/RoleMenu";
 
 const CHECKLIST_KEYS = [
   "checklistPlayers",
@@ -18,73 +19,99 @@ const CHECKLIST_KEYS = [
 ] as const;
 
 /**
- * Hero section (`#top`). Client component because it reads the
- * WhatsApp number/default text from `useSettingsQuery()` — the same
- * query every other section that needs a WhatsApp link also calls, so
- * there's exactly one network request and one source of truth.
+ * Hero section (`#top`). "Oyunçu tap" no longer links straight to
+ * WhatsApp with a generic message — it (and the pitch's "?" slot) opens
+ * a role picker, each option carrying its own WhatsApp message. Client
+ * component for that menu state and for `useSettingsQuery()`'s
+ * WhatsApp number (same source every WhatsApp link on the site uses).
  */
 export function HeroSection() {
   const t = useTranslations("home.hero");
   const { data: settings } = useSettingsQuery();
+  const roles = useRoleOptions();
 
-  const whatsappUrl = settings
-    ? buildWhatsAppUrl(settings.whatsapp_number, settings.whatsapp_default_text)
-    : undefined;
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
+
+  const openMenu = (rect: DOMRect) => {
+    setAnchorRect(rect);
+    setMenuOpen(true);
+  };
 
   return (
     <section id="top" className="bg-surface">
-      <Container className="grid items-center gap-10 py-16 sm:py-24 lg:grid-cols-2">
+      <Container className="pb-[120px] pt-7 lg:grid lg:min-h-[calc(100vh-80px)] lg:grid-cols-2 lg:items-center lg:gap-[72px] lg:py-[90px] lg:pb-[110px]">
         <div>
-          <span className="inline-flex items-center rounded-full bg-brand-green/15 px-3 py-1 text-xs font-semibold text-brand-dark">
+          <span className="inline-flex items-center rounded-full bg-brand-mint px-3.5 py-[7px] text-[13px] font-semibold text-foreground lg:px-4 lg:text-[15px]">
             {t("badge")}
           </span>
 
-          {/* Split into 3 keys so only "12-ci oyunçusu" is wrapped in the
-              highlight span — word order differs by language, so this
-              must never be a runtime split of one translated sentence. */}
-          <h1
-            className="mt-4 font-heading font-extrabold leading-[1.2] tracking-tight"
-            style={{ fontSize: "clamp(1.875rem, 1.3rem + 2.2vw, 3rem)" }}
-          >
-            {t("titlePrefix")}
-            <span className="rounded bg-brand-green px-1.5 py-0.5 [box-decoration-break:clone] [-webkit-box-decoration-break:clone]">
-              {t("titleHighlight")}
+          <h1 className="mt-4 font-heading text-[44px] font-bold leading-[1.08] tracking-[-1.8px] lg:mt-[22px] lg:text-[clamp(52px,4.6vw,72px)] lg:tracking-[-2.5px]">
+            {t("titleLine1")}
+            <br />
+            <span className="mt-1.5 inline-block rounded-[10px] bg-brand-green px-[0.14em] [box-decoration-break:clone] [-webkit-box-decoration-break:clone]">
+              {t("titleLine2")}
             </span>
-            {t("titleSuffix")}
           </h1>
 
-          <p className="mt-5 max-w-lg text-base leading-[1.5] text-muted sm:text-lg">
-            {t("subtitle")}
-          </p>
+          <p className="mt-3.5 text-base leading-[1.6] text-muted lg:mt-5 lg:max-w-[600px] lg:text-xl">{t("subtitle")}</p>
 
-          <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm font-medium text-foreground">
+          <ul className="mt-[18px] flex flex-wrap gap-x-[18px] gap-y-2.5 text-[15px] font-medium text-foreground lg:mt-[26px] lg:gap-x-[26px] lg:gap-y-3 lg:text-[17px]">
             {CHECKLIST_KEYS.map((key) => (
-              <li key={key} className="flex items-center gap-1.5">
-                <Check className="h-4 w-4 text-brand-green" aria-hidden="true" />
+              <li key={key} className="flex items-center gap-[7px]">
+                <Check className="h-4 w-4 text-[#00B35C]" aria-hidden="true" />
                 {t(key)}
               </li>
             ))}
           </ul>
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            {whatsappUrl ? (
-              <ExternalLink
-                href={whatsappUrl}
-                analyticsLabel="hero_find_player"
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-brand-green px-5 text-sm font-semibold text-brand-dark transition-colors duration-150 hover:bg-brand-green/90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark focus-visible:ring-offset-2"
-              >
-                {t("findPlayerCta")}
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </ExternalLink>
-            ) : null}
-            <Button asChild variant="outline">
+          <div className="mt-[34px] hidden gap-3.5 lg:flex">
+            <Button
+              variant="default"
+              size="lg"
+              className="h-[60px] px-[30px] text-lg font-bold"
+              onClick={(event) => openMenu(event.currentTarget.getBoundingClientRect())}
+            >
+              {t("findPlayerCta")}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="h-[60px] rounded-full px-[30px] text-[17px]">
               <Link href="/qeydiyyat">{t("joinCta")}</Link>
             </Button>
           </div>
         </div>
 
-        <HeroIllustration />
+        <HeroIllustration onOpenRoleMenu={openMenu} />
+
+        <Link
+          href="/qeydiyyat"
+          className="mt-3.5 flex h-14 items-center justify-center rounded-full border-[1.5px] border-[#C9D0CC] text-base font-semibold text-foreground lg:hidden"
+        >
+          {t("joinCta")}
+        </Link>
       </Container>
+
+      {/* Mobile-only fixed "find a player" CTA — desktop uses the inline button above. */}
+      <button
+        type="button"
+        onClick={(event) => openMenu(event.currentTarget.getBoundingClientRect())}
+        className="fixed inset-x-4 bottom-[calc(16px+env(safe-area-inset-bottom))] z-[8] flex h-14 items-center justify-center gap-2.5 rounded-full bg-brand-green text-[17px] font-bold text-brand-dark shadow-[0_10px_30px_rgba(10,20,16,0.2)] lg:hidden"
+      >
+        <MessageCircle className="h-5 w-5 fill-brand-dark text-brand-dark" aria-hidden="true" />
+        {t("findPlayerCta")}
+      </button>
+
+      <RoleMenu
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        anchorRect={anchorRect}
+        roles={roles}
+        title={t("roleMenuTitle")}
+        whatsappNumber={settings?.whatsapp_number}
+        analyticsPrefix="hero_role_menu"
+      />
     </section>
   );
 }

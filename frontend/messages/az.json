@@ -36,9 +36,6 @@
   "home": {
     "hero": {
       "badge": "Bakının həvəskar futbol platforması",
-      "titlePrefix": "Hər komandanın ",
-      "titleHighlight": "12-ci oyunçusu",
-      "titleSuffix": " var.",
       "subtitle": "Futbolio Bakıdakı həvəskar komandaları çatışmayan oyunçu, qapıçı, hakim və ya həkimlə WhatsApp və Instagram üzərindən sürətlə birləşdirir.",
       "checklistPlayers": "Futbolçular",
       "checklistGoalkeepers": "Qapıçılar",
@@ -46,25 +43,34 @@
       "checklistMedics": "Həkimlər",
       "findPlayerCta": "Oyunçu tap",
       "joinCta": "Komandamıza qoşul",
-      "notificationTitle": "12-ci oyunçu yoldadır",
-      "notificationMeta": "Oyunçu · Pro · 21:00",
-      "illustrationAlt": "Futbol meydançasının sadə illüstrasiyası"
+      "notificationTitle": "Oyunçu lazımdır",
+      "notificationMeta": "Hücumçu · Pro · 21:00",
+      "illustrationAlt": "Futbol meydançasının komanda düzülüşü ilə illüstrasiyası",
+      "titleLine1": "Hər oyuna",
+      "titleLine2": "tam heyət.",
+      "roleMenuTitle": "Kim lazımdır?",
+      "slotTooltip": "Toxun, kim lazımdır seç",
+      "slotAriaLabel": "Kim lazımdır? Seç"
     },
     "biz": {
       "eyebrow": "Biz kimik",
       "title": "Komanda natamam olanda, Futbolio tamamlayır.",
-      "description": "Oyun günü oyunçu, qapıçı, hakim və ya həkim çatışmır? Futbolio Bakıdakı həvəskar komandaları etibarlı namizədlərlə bir neçə dəqiqəyə əlaqələndirir, uzun axtarışlara ehtiyac qalmır.",
-      "benefit1Title": "Sürətli həll",
-      "benefit1Desc": "Mesaj yazırsan, qısa müddətdə uyğun namizəd tapırıq.",
-      "benefit2Title": "Yoxlanılmış namizədlər",
-      "benefit2Desc": "Hər namizəd əsas məlumatlarını təqdim edir, uyğunluğu biz yoxlayırıq.",
-      "benefit3Title": "Çevik razılaşma",
-      "benefit3Desc": "İstər bir oyun, istər bütün mövsüm üçün, sənə uyğun formatda."
+      "description": "Oyun günü oyunçu, qapıçı, hakim və ya həkim çatışmır? Futbolio Bakıdakı həvəskar komandaları etibarlı namizədlərlə əlaqələndirir, uzun axtarışlara ehtiyac qalmır.",
+      "noBadge": "Futbolio olmadan",
+      "yesBadge": "Futbolio ilə",
+      "noItem1": "Qrupda saatlarla oyunçu axtarışı",
+      "noItem2": "Son anda \"gələ bilmirəm\" mesajı",
+      "noItem3": "Qapıçısız, hakimsiz oyun",
+      "noItem4": "Meydança pulu boşa gedir",
+      "yesItem1": "Bir mesaj, qalanını biz həll edirik",
+      "yesItem2": "Səviyyəsi yoxlanmış namizəd",
+      "yesItem3": "Qapıçı, hakim və həkim bir yerdə",
+      "yesItem4": "Gəlməsə, əvəzi tapılır"
     },
     "xidmetler": {
       "eyebrow": "Xidmətlər",
       "title": "Nəyə ehtiyacın var?",
-      "description": "Mövqeyinə uyğun, yoxlanılmış namizədləri bir neçə dəqiqəyə tapırıq.",
+      "description": "Mövqeyinə uyğun, yoxlanılmış namizədləri tez tapırıq.",
       "orderCta": "Sifariş et",
       "futbolcu": {
         "title": "Futbolçu",
@@ -85,6 +91,11 @@
         "title": "Həkim",
         "desc": "Oyun zamanı ilk tibbi yardım üçün həkim təşkil edirik.",
         "whatsappMessage": "Salam! Oyunuma həkim lazımdır."
+      },
+      "reqib": {
+        "title": "Rəqib komanda",
+        "desc": "Oynamağa rəqib tapmırsan? Səviyyənə uyğun komanda gətiririk.",
+        "whatsappMessage": "Salam! Oyunuma rəqib komanda lazımdır."
       }
     },
     "tiers": {
