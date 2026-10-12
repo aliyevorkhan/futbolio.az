@@ -31,6 +31,13 @@ export async function generateMetadata({
       default: "Futbolio",
       template: "%s",
     },
+    icons: {
+      icon: [
+        { url: "/favicon.ico", sizes: "any" },
+        { url: "/icon-256.png", type: "image/png", sizes: "256x256" },
+      ],
+      apple: "/apple-touch-icon.png",
+    },
     openGraph: {
       siteName: "Futbolio",
       locale: OG_LOCALE[locale as AppLocale] ?? "az_AZ",

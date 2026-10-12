@@ -142,6 +142,13 @@ AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID", default="")
 AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY", default="")
 AWS_S3_BUCKET = env("AWS_S3_BUCKET", default="futbolio-uploads")
 AWS_S3_ENDPOINT_URL = env("AWS_S3_ENDPOINT_URL", default="http://minio:9000")
+# The host a BROWSER can actually reach to PUT a presigned upload — never
+# the same as AWS_S3_ENDPOINT_URL in production, since that one is the
+# container-internal compose hostname (e.g. "http://garage:3900"), which
+# only resolves inside the compose network. Falls back to
+# AWS_S3_ENDPOINT_URL for local dev, where the storage port is published
+# to the host and reachable at the same address either way.
+AWS_S3_PUBLIC_ENDPOINT_URL = env("AWS_S3_PUBLIC_ENDPOINT_URL", default=AWS_S3_ENDPOINT_URL)
 AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME", default="us-east-1")
 AWS_S3_ADDRESSING_STYLE = env("AWS_S3_ADDRESSING_STYLE", default="path")
 

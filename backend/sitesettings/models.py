@@ -6,9 +6,9 @@ from django.db import models
 # changing a number/link updates the whole site at once, never hardcoded
 # in multiple components.
 DEFAULT_SETTINGS = {
-    "whatsapp_number": "994558850709",
+    "whatsapp_number": "994993990069",
     "whatsapp_default_text": "Salam, oyunçu lazımdır",
-    "phone_number": "+994558850709",
+    "phone_number": "+994993990069",
     "instagram_url": "https://instagram.com/futbolio.az",
     "instagram_dm_url": "https://ig.me/m/futbolio.az",
     "tiktok_url": "",

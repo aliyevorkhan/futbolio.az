@@ -13,9 +13,8 @@ interface Player {
 }
 
 // 6-a-side on each team (goalkeeper + 5 outfield), symmetric across the
-// center line. One of our outfield slots (the last one) is rendered as
-// the dashed "open position" marker instead of a solid dot — the one
-// player we're still missing.
+// center line. Our team only has 5 solid players — the 6th is the open
+// slot below, the one we're actively looking for.
 const OUR_TEAM: Player[] = [
   { cx: 33, cy: 150, isGoalkeeper: true },
   { cx: 85, cy: 70 },
@@ -23,7 +22,12 @@ const OUR_TEAM: Player[] = [
   { cx: 140, cy: 105 },
   { cx: 140, cy: 195 },
 ];
-const OUR_OPEN_SLOT: Player = { cx: 175, cy: 150 };
+// The open position, and the ball's home — the ball sits right next to
+// the gap, as if waiting for a 6th player to arrive and receive it. This
+// ties the ball's motion to the actual story (missing the 12th player),
+// rather than drifting aimlessly mid-pitch.
+const OUR_OPEN_SLOT: Player = { cx: 180, cy: 150 };
+const BALL_HOME = { cx: 180, cy: 185 };
 
 const RIVAL_TEAM: Player[] = [
   { cx: 367, cy: 150, isGoalkeeper: true },
@@ -37,10 +41,7 @@ const RIVAL_TEAM: Player[] = [
 /** A proper soccer ball: white body, a few black pentagon facets, soft drop shadow, spins while it drifts. */
 function Ball({ cx, cy, animate }: { cx: number; cy: number; animate: boolean }) {
   return (
-    <g
-      className={cn(animate && "animate-ball-roll")}
-      style={{ transformOrigin: `${cx}px ${cy}px` }}
-    >
+    <g className={cn(animate && "animate-ball-roll")} style={{ transformOrigin: `${cx}px ${cy}px` }}>
       <ellipse cx={cx} cy={cy + 8} rx="9" ry="3" fill="#0A1410" opacity="0.18" />
       <circle cx={cx} cy={cy} r="8" fill="#FFFFFF" stroke="#0A1410" strokeWidth="1.25" />
       <g className={cn(animate && "animate-ball-spin")} style={{ transformOrigin: `${cx}px ${cy}px` }}>
@@ -57,12 +58,13 @@ function Ball({ cx, cy, animate }: { cx: number; cy: number; animate: boolean })
 }
 
 /**
- * Inline composed SVG pitch illustration. Two full 6-a-side formations
- * (goalkeeper + 5 outfield each), one open outfield slot on our team
- * marked with a dashed "?" circle, and a real-looking soccer ball that
- * idles with a gentle drift/spin and reacts to the pointer by rolling
- * toward it (magnet effect), reverting to its idle animation on
- * pointer-leave. Touch taps trigger the same reaction briefly.
+ * Inline composed SVG pitch illustration. Two 6-a-side formations — the
+ * rival team is full, ours is missing its 6th player, marked with a
+ * pulsing dashed "?" slot. The ball idles right next to that gap (not
+ * drifting randomly), and a callout card points directly at the open
+ * slot instead of floating at an unrelated spot. The ball also reacts to
+ * the pointer by rolling toward it (magnet effect), settling back next
+ * to the open slot on pointer-leave.
  */
 export function HeroIllustration() {
   const t = useTranslations("home.hero");
@@ -70,18 +72,16 @@ export function HeroIllustration() {
   const shouldAnimate = useInViewAnimation(containerRef);
   const [ballOffset, setBallOffset] = useState<{ x: number; y: number } | null>(null);
 
-  const ballHome = { cx: 230, cy: 150 };
-
   const reactToPoint = (clientX: number, clientY: number) => {
     const svg = containerRef.current?.querySelector("svg");
     if (!svg) return;
     const rect = svg.getBoundingClientRect();
     const px = ((clientX - rect.left) / rect.width) * 400;
     const py = ((clientY - rect.top) / rect.height) * 300;
-    const dx = px - ballHome.cx;
-    const dy = py - ballHome.cy;
+    const dx = px - BALL_HOME.cx;
+    const dy = py - BALL_HOME.cy;
     const dist = Math.hypot(dx, dy) || 1;
-    const pull = Math.min(14, dist / 4);
+    const pull = Math.min(16, dist / 4);
     setBallOffset({ x: (dx / dist) * pull, y: (dy / dist) * pull });
   };
 
@@ -128,16 +128,18 @@ export function HeroIllustration() {
           />
         ))}
 
-        <g
-          style={{
-            transform: ballOffset ? `translate(${ballOffset.x}px, ${ballOffset.y}px)` : undefined,
-            transition: "transform 220ms ease-out",
-          }}
-        >
-          <Ball cx={ballHome.cx} cy={ballHome.cy} animate={shouldAnimate && !ballOffset} />
-        </g>
-
-        {/* Open position: dashed circle with a "?" glyph — an outfield slot, not the goalkeeper */}
+        {/* Open position: a soft pulsing ring draws the eye to the gap,
+            then the dashed circle + "?" glyph mark it explicitly. */}
+        <circle
+          cx={OUR_OPEN_SLOT.cx}
+          cy={OUR_OPEN_SLOT.cy}
+          r="15"
+          fill="none"
+          stroke="#00E676"
+          strokeWidth="2"
+          className={cn(shouldAnimate && "animate-slot-pulse")}
+          style={{ transformOrigin: `${OUR_OPEN_SLOT.cx}px ${OUR_OPEN_SLOT.cy}px` }}
+        />
         <circle
           cx={OUR_OPEN_SLOT.cx}
           cy={OUR_OPEN_SLOT.cy}
@@ -150,6 +152,15 @@ export function HeroIllustration() {
         <text x={OUR_OPEN_SLOT.cx} y={OUR_OPEN_SLOT.cy + 5} textAnchor="middle" fontSize="15" fontWeight="700" fill="#0A1410">
           ?
         </text>
+
+        <g
+          style={{
+            transform: ballOffset ? `translate(${ballOffset.x}px, ${ballOffset.y}px)` : undefined,
+            transition: "transform 220ms ease-out",
+          }}
+        >
+          <Ball cx={BALL_HOME.cx} cy={BALL_HOME.cy} animate={shouldAnimate && !ballOffset} />
+        </g>
       </svg>
 
       <div

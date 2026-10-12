@@ -41,6 +41,13 @@ services:
   garage:
     image: dxflrs/garage:v1.0.1
     restart: unless-stopped
+    # Must be reachable from the BROWSER, not just from other containers:
+    # presigned upload URLs handed to the client point at whatever host
+    # AWS_S3_PUBLIC_ENDPOINT_URL names, and that host has to resolve to
+    # this port from outside the compose network too (see
+    # docker/garage/README.md's "public endpoint" section).
+    ports:
+      - "127.0.0.1:${GARAGE_PORT:-3900}:3900"
     volumes:
       - ./docker/garage/garage.toml:/etc/garage.toml:ro
       - garagemeta:/var/lib/garage/meta

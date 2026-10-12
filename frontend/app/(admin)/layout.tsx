@@ -16,6 +16,13 @@ import "@/app/globals.css";
  */
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon-256.png", type: "image/png", sizes: "256x256" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default async function AdminLayout({

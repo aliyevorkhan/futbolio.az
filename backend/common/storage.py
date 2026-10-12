@@ -27,9 +27,29 @@ except ImportError:  # pragma: no cover - dev environments without the plugin
 
 
 def _client():
+    """Server-to-server client — every call the backend itself makes
+    (CORS config, magic-byte verification downloads, completing a
+    multipart upload). Uses the compose-internal endpoint."""
     return boto3.client(
         "s3",
         endpoint_url=settings.AWS_S3_ENDPOINT_URL,
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        region_name=settings.AWS_S3_REGION_NAME,
+        config=BotoConfig(
+            signature_version="s3v4",
+            s3={"addressing_style": settings.AWS_S3_ADDRESSING_STYLE},
+        ),
+    )
+
+
+def _public_client():
+    """Only for `generate_presigned_url` calls whose URL is handed to the
+    BROWSER — must be built against the publicly-reachable endpoint, or
+    the resulting URL's host is unreachable outside the compose network."""
+    return boto3.client(
+        "s3",
+        endpoint_url=settings.AWS_S3_PUBLIC_ENDPOINT_URL,
         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
         aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
         region_name=settings.AWS_S3_REGION_NAME,
@@ -79,7 +99,7 @@ class PresignedUpload:
 
 def presign_put(key: str, content_type: str, ttl: int | None = None) -> str:
     ttl = ttl or settings.FILE_PRESIGN_UPLOAD_TTL_SECONDS
-    return _client().generate_presigned_url(
+    return _public_client().generate_presigned_url(
         "put_object",
         Params={"Bucket": BUCKET, "Key": key, "ContentType": content_type},
         ExpiresIn=ttl,
@@ -93,12 +113,15 @@ def create_multipart_upload(
     key: str, content_type: str, size: int, ttl: int | None = None
 ) -> PresignedUpload:
     ttl = ttl or settings.FILE_PRESIGN_UPLOAD_TTL_SECONDS
-    client = _client()
-    created = client.create_multipart_upload(Bucket=BUCKET, Key=key, ContentType=content_type)
+    # Creating the upload is a server-to-server call (internal endpoint);
+    # the part URLs below are handed to the browser, so they're signed
+    # against the public endpoint instead.
+    created = _client().create_multipart_upload(Bucket=BUCKET, Key=key, ContentType=content_type)
     upload_id = created["UploadId"]
     part_count = max(1, -(-size // MULTIPART_PART_SIZE))  # ceil division
+    public_client = _public_client()
     part_urls = [
-        client.generate_presigned_url(
+        public_client.generate_presigned_url(
             "upload_part",
             Params={
                 "Bucket": BUCKET,
@@ -165,13 +188,15 @@ def presign_get(
     download_filename: str | None = None,
     content_type: str | None = None,
 ) -> str:
+    """Also browser-facing — the admin panel opens/downloads files via
+    this URL directly, so it must use the public endpoint too."""
     ttl = ttl or settings.FILE_PRESIGN_VIEW_TTL_SECONDS
     params = {"Bucket": BUCKET, "Key": key}
     if download_filename:
         params["ResponseContentDisposition"] = f'attachment; filename="{download_filename}"'
     if content_type:
         params["ResponseContentType"] = content_type
-    return _client().generate_presigned_url("get_object", Params=params, ExpiresIn=ttl)
+    return _public_client().generate_presigned_url("get_object", Params=params, ExpiresIn=ttl)
 
 
 def presign_get_export(key: str, download_filename: str, content_type: str) -> str:
