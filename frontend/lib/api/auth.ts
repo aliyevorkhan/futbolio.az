@@ -19,58 +19,25 @@ export interface AdminUser {
   created_at: string;
 }
 
-export interface LoginResponse {
-  totp_enrollment_required: boolean;
-  login_token: string;
-}
-
-export interface TotpEnrollResponse {
-  secret: string;
-  provisioning_uri: string;
-}
-
 /** Call once before any admin mutation to receive the `csrftoken` cookie. */
 export async function fetchCsrfCookie(): Promise<void> {
   await adminApiFetch("/api/admin/auth/csrf/");
 }
 
+/**
+ * 2FA is disabled — a correct password alone now establishes the
+ * session, so this returns the final `AdminUser` directly (the backend's
+ * totp enroll/confirm/verify endpoints still exist but are unreachable
+ * from this flow).
+ */
 export async function login(
   email: string,
   password: string,
-): Promise<LoginResponse> {
-  return apiFetch<LoginResponse>("/api/admin/auth/login/", {
+): Promise<AdminUser> {
+  return apiFetch<AdminUser>("/api/admin/auth/login/", {
     method: "POST",
     credentials: "include",
     body: JSON.stringify({ email, password }),
-  });
-}
-
-export async function enrollTotp(
-  loginToken: string,
-): Promise<TotpEnrollResponse> {
-  return adminApiFetch<TotpEnrollResponse>("/api/admin/auth/totp/enroll/", {
-    method: "POST",
-    body: JSON.stringify({ login_token: loginToken }),
-  });
-}
-
-export async function confirmTotp(
-  loginToken: string,
-  code: string,
-): Promise<AdminUser> {
-  return adminApiFetch<AdminUser>("/api/admin/auth/totp/confirm/", {
-    method: "POST",
-    body: JSON.stringify({ login_token: loginToken, code }),
-  });
-}
-
-export async function verifyTotp(
-  loginToken: string,
-  code: string,
-): Promise<AdminUser> {
-  return adminApiFetch<AdminUser>("/api/admin/auth/totp/verify/", {
-    method: "POST",
-    body: JSON.stringify({ login_token: loginToken, code }),
   });
 }
 

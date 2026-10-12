@@ -32,7 +32,7 @@ from .services import (
     send_password_set_email,
     verify_totp_code,
 )
-from .tokens import issue_login_token, read_login_token
+from .tokens import read_login_token
 
 GENERIC_LOGIN_ERROR = "Email və ya parol yanlışdır."
 LOCKED_ERROR = "Hesab müvəqqəti bloklanıb. Bir az sonra yenidən cəhd edin."
@@ -95,12 +95,19 @@ class LoginView(APIView):
             return Response({"detail": GENERIC_LOGIN_ERROR}, status=status.HTTP_401_UNAUTHORIZED)
 
         user.reset_failed_attempts()
-        login_token = issue_login_token(user.id)
-        device = getattr(user, "totp_device", None)
-
-        if device is None or not device.is_confirmed:
-            return Response({"totp_enrollment_required": True, "login_token": login_token})
-        return Response({"totp_enrollment_required": False, "login_token": login_token})
+        # 2FA enrollment/verification is disabled — a correct password
+        # alone establishes the session now (TOTPEnrollView/TOTPConfirmView/
+        # TOTPVerifyView below are unreachable from the login form, kept
+        # only so re-enabling 2FA later doesn't need new endpoints).
+        django_login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+        log_event(
+            actor=user,
+            action="admin.login.success",
+            target_type="admin_user",
+            target_id=str(user.id),
+            ip=ip,
+        )
+        return Response(AdminUserSerializer(user).data)
 
 
 class TOTPEnrollView(APIView):
