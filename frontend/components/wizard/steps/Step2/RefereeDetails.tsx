@@ -7,7 +7,9 @@ import { useTranslations } from "next-intl";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { ChipSingleSelect, ChipMultiSelect } from "@/components/wizard/fields/ChipGroup";
+import { FileDropzone } from "@/components/wizard/fields/FileDropzone";
 import { StepFooter } from "@/components/wizard/StepFooter";
+import { useFileUpload } from "@/lib/upload/useFileUpload";
 import { useFocusFirstInvalidField } from "@/lib/validation/useFocusFirstInvalidField";
 import {
   refereeDetailsSchema,
@@ -19,15 +21,27 @@ import {
 
 interface RefereeDetailsProps {
   defaultValues: Partial<RefereeDetailsData>;
+  uploadSessionId: string;
+  certificateFileId: string | null;
+  onCertificateFileIdChange: (fileId: string | null) => void;
   onValid: (data: RefereeDetailsData) => void;
   onChange: (values: Partial<RefereeDetailsData>) => void;
   onBack: () => void;
 }
 
-export function RefereeDetails({ defaultValues, onValid, onChange, onBack }: RefereeDetailsProps) {
+export function RefereeDetails({
+  defaultValues,
+  uploadSessionId,
+  certificateFileId,
+  onCertificateFileIdChange,
+  onValid,
+  onChange,
+  onBack,
+}: RefereeDetailsProps) {
   const t = useTranslations("wizard.step2.referee");
   const tErrors = useTranslations("wizard.errors");
   const tCommon = useTranslations("wizard.common");
+  const tStep4 = useTranslations("wizard.step4");
 
   const form = useForm<RefereeDetailsData>({
     resolver: zodResolver(refereeDetailsSchema),
@@ -35,6 +49,7 @@ export function RefereeDetails({ defaultValues, onValid, onChange, onBack }: Ref
     defaultValues: {
       has_official_certification: defaultValues.has_official_certification,
       certification_name: defaultValues.certification_name ?? "",
+      certification_link: defaultValues.certification_link ?? "",
       years_refereeing: defaultValues.years_refereeing,
       game_types: defaultValues.game_types ?? [],
       experience_text: defaultValues.experience_text ?? "",
@@ -65,9 +80,53 @@ export function RefereeDetails({ defaultValues, onValid, onChange, onBack }: Ref
   ];
 
   const hasOfficialCertification = form.watch("has_official_certification");
+  const certificationName = form.watch("certification_name");
+  const certificationLink = form.watch("certification_link");
+
+  const certificateUpload = useFileUpload({ kind: "document", role: "referee", uploadSessionId });
+
+  // Clear any in-progress/uploaded certificate proof (file, name, link)
+  // the moment the user switches the certification question back to
+  // "Xeyr" — none of it is relevant or required once that's false.
+  useEffect(() => {
+    if (hasOfficialCertification === false) {
+      if (certificateUpload.state.status !== "idle") certificateUpload.remove();
+      if (form.getValues("certification_name")) form.setValue("certification_name", "");
+      if (form.getValues("certification_link")) form.setValue("certification_link", "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasOfficialCertification]);
+
+  useEffect(() => {
+    if (certificateUpload.state.status === "uploaded") {
+      onCertificateFileIdChange(certificateUpload.state.fileId);
+    } else if (certificateUpload.state.status === "idle") {
+      onCertificateFileIdChange(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [certificateUpload.state.status, certificateUpload.state.fileId]);
+
+  const statusLabels = {
+    uploading: tStep4("status.uploading"),
+    uploaded: tStep4("status.uploaded"),
+    error: tStep4("status.error"),
+  };
+
+  const handleValid = (data: RefereeDetailsData) => {
+    if (
+      data.has_official_certification &&
+      !data.certification_name?.trim() &&
+      !data.certification_link?.trim() &&
+      !certificateFileId
+    ) {
+      form.setError("certification_name", { type: "manual", message: "certificationProofRequired" });
+      return;
+    }
+    onValid(data);
+  };
 
   return (
-    <form noValidate onSubmit={form.handleSubmit(onValid)} className="space-y-6">
+    <form noValidate onSubmit={form.handleSubmit(handleValid)} className="space-y-6">
       <div ref={liveRegionRef} aria-live="assertive" role="alert" className="sr-only" />
 
       <Controller
@@ -87,20 +146,56 @@ export function RefereeDetails({ defaultValues, onValid, onChange, onBack }: Ref
       />
 
       {hasOfficialCertification ? (
-        <div>
-          <Label htmlFor="certification_name">{t("certificationNameLabel")}</Label>
-          <Input
-            id="certification_name"
-            placeholder={t("certificationNamePlaceholder")}
-            aria-invalid={Boolean(form.formState.errors.certification_name)}
-            {...form.register("certification_name")}
-            ref={(el) => {
-              form.register("certification_name").ref(el);
-              registerField("certification_name")(el);
-            }}
-          />
+        <div className="animate-role-fade-in space-y-4 rounded-xl bg-brand-green/10 p-4">
+          <p className="text-xs text-muted">{t("certificationProofHint")}</p>
+
+          <div>
+            <Label htmlFor="certification_name">{t("certificationNameLabel")}</Label>
+            <Input
+              id="certification_name"
+              placeholder={t("certificationNamePlaceholder")}
+              aria-invalid={Boolean(form.formState.errors.certification_name)}
+              {...form.register("certification_name")}
+              ref={(el) => {
+                form.register("certification_name").ref(el);
+                registerField("certification_name")(el);
+              }}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="certification_link">{t("certificationLinkLabel")}</Label>
+            <Input
+              id="certification_link"
+              placeholder={t("certificationLinkPlaceholder")}
+              {...form.register("certification_link")}
+            />
+          </div>
+
+          <div>
+            <p className="mb-2 text-sm font-medium text-foreground">{t("certificationFileLabel")}</p>
+            <FileDropzone
+              label=""
+              accept={certificateUpload.accept}
+              state={certificateUpload.state}
+              onSelect={certificateUpload.selectFile}
+              onRemove={certificateUpload.remove}
+              onRetry={certificateUpload.retry}
+              browseLabel={t("certificationFileBrowse")}
+              dragLabel={t("certificationFileDrag")}
+              errorLabels={{
+                invalidFileType: tErrors("invalidFileType"),
+                fileTooLarge: tErrors("fileTooLarge"),
+                uploadFailed: tErrors("uploadFailed"),
+              }}
+              statusLabels={statusLabels}
+              removeLabel={tCommon("remove")}
+              retryLabel={tCommon("retry")}
+            />
+          </div>
+
           {errorMessage("certification_name") ? (
-            <p className="mt-1.5 text-sm text-red-600">{errorMessage("certification_name")}</p>
+            <p className="text-sm text-red-600">{errorMessage("certification_name")}</p>
           ) : null}
         </div>
       ) : null}

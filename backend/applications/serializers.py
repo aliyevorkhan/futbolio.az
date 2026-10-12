@@ -82,6 +82,10 @@ class PlayerDetailsSerializer(serializers.ModelSerializer):
     has_pro_experience = serializers.BooleanField()
     hourly_rate_azn = serializers.IntegerField(min_value=1)
     is_university_student = serializers.BooleanField()
+    university_name = serializers.CharField(max_length=200, required=False, allow_blank=True, default="")
+    course_year = serializers.IntegerField(
+        min_value=1, max_value=4, required=False, allow_null=True, default=None
+    )
     professional_periods = PlayerProfessionalPeriodSerializer(many=True, required=False, default=list)
 
     class Meta:
@@ -96,6 +100,8 @@ class PlayerDetailsSerializer(serializers.ModelSerializer):
             "has_pro_experience",
             "hourly_rate_azn",
             "is_university_student",
+            "university_name",
+            "course_year",
             "professional_periods",
         ]
 
@@ -106,12 +112,14 @@ class RefereeDetailsSerializer(serializers.ModelSerializer):
     certification_name = serializers.CharField(
         max_length=200, required=False, allow_blank=True, default=""
     )
+    certification_link = serializers.URLField(required=False, allow_blank=True, default="")
 
     class Meta:
         model = RefereeDetails
         fields = [
             "has_official_certification",
             "certification_name",
+            "certification_link",
             "years_refereeing",
             "game_types",
             "experience_text",
@@ -214,9 +222,9 @@ class ApplicationCreateSerializer(serializers.Serializer):
                 {details_key: ["This field is required for the selected role."]}
             )
 
-        if role == ApplicationRole.REFEREE and attrs.get("instagram_handle"):
+        if role in (ApplicationRole.REFEREE, ApplicationRole.MEDIC) and attrs.get("instagram_handle"):
             raise serializers.ValidationError(
-                {"instagram_handle": ["Instagram is not collected for the referee role."]}
+                {"instagram_handle": ["Instagram is not collected for this role."]}
             )
 
         if role == ApplicationRole.PLAYER:
@@ -229,14 +237,24 @@ class ApplicationCreateSerializer(serializers.Serializer):
             else:
                 player_data["professional_periods"] = []
 
+            if player_data["is_university_student"]:
+                if not player_data.get("university_name", "").strip():
+                    raise serializers.ValidationError(
+                        {"player_details": {"university_name": ["This field is required."]}}
+                    )
+                if not player_data.get("course_year"):
+                    raise serializers.ValidationError(
+                        {"player_details": {"course_year": ["This field is required."]}}
+                    )
+            else:
+                player_data["university_name"] = ""
+                player_data["course_year"] = None
+
         if role == ApplicationRole.REFEREE:
             ref_data = attrs["referee_details"]
-            if ref_data["has_official_certification"] and not ref_data.get(
-                "certification_name", ""
-            ).strip():
-                raise serializers.ValidationError(
-                    {"referee_details": {"certification_name": ["This field is required."]}}
-                )
+            if not ref_data["has_official_certification"]:
+                ref_data["certification_name"] = ""
+                ref_data["certification_link"] = ""
 
         if role == ApplicationRole.MEDIC:
             medic_data = attrs["medic_details"]
@@ -300,15 +318,37 @@ class ApplicationCreateSerializer(serializers.Serializer):
                     {"file_ids": ["Provide 1-3 videos or a video link."]}
                 )
         elif role == ApplicationRole.REFEREE:
-            if video_count > 3:
-                raise serializers.ValidationError({"file_ids": ["At most 3 videos are allowed."]})
+            # Referee submissions no longer collect video at all.
+            if video_count > 0:
+                raise serializers.ValidationError(
+                    {"file_ids": ["Video is not accepted for the referee role."]}
+                )
             document_count = len(files_by_kind.get(FileKind.DOCUMENT, []))
             if document_count > 1:
                 raise serializers.ValidationError(
                     {"file_ids": ["At most 1 certificate document is allowed."]}
                 )
+            ref_data = attrs["referee_details"]
+            if ref_data["has_official_certification"] and not (
+                ref_data.get("certification_name", "").strip()
+                or ref_data.get("certification_link", "").strip()
+                or document_count >= 1
+            ):
+                raise serializers.ValidationError(
+                    {
+                        "referee_details": {
+                            "certification_name": [
+                                "Provide a certificate name, link, or document."
+                            ]
+                        }
+                    }
+                )
         elif role == ApplicationRole.MEDIC:
             document_count = len(files_by_kind.get(FileKind.DOCUMENT, []))
+            if document_count < 1:
+                raise serializers.ValidationError(
+                    {"file_ids": ["A diploma or certificate document is required."]}
+                )
             if document_count > 3:
                 raise serializers.ValidationError({"file_ids": ["At most 3 documents are allowed."]})
 

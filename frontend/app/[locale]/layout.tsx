@@ -3,7 +3,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing, type AppLocale } from "@/i18n/routing";
-import { inter, manrope } from "@/lib/fonts";
+import { montserrat } from "@/lib/fonts";
 import { Providers } from "@/components/providers/Providers";
 import { cn } from "@/lib/utils";
 import "@/app/globals.css";
@@ -62,7 +62,7 @@ export default async function LocaleRootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={cn(inter.variable, manrope.variable)}>
+    <html lang={locale} className={cn(montserrat.variable)}>
       <body>
         <NextIntlClientProvider messages={messages}>
           <Providers>{children}</Providers>

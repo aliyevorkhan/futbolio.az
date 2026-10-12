@@ -16,6 +16,7 @@ export const SPECIALTY_VALUES = [
   "first_aid_specialist",
 ] as const;
 export const EQUIPMENT_STATUS_VALUES = ["yes", "partial", "no"] as const;
+export const COURSE_YEAR_VALUES = ["1", "2", "3", "4"] as const;
 
 /** Last ~30 years, descending — shared by the professional-periods repeater's from/to selects. */
 export const PROFESSIONAL_PERIOD_YEARS: number[] = Array.from(
@@ -58,6 +59,8 @@ export const playerDetailsSchema = z
       invalid_type_error: "required",
     }),
     is_university_student: z.boolean({ required_error: "required", invalid_type_error: "required" }),
+    university_name: z.string().max(200, "tooLong").optional().or(z.literal("")),
+    course_year: z.enum(COURSE_YEAR_VALUES).optional().or(z.literal("")),
     has_pro_experience: z.boolean({ required_error: "required", invalid_type_error: "required" }),
     hourly_rate_azn: hourlyRateField,
     professional_periods: z.array(professionalPeriodSchema).default([]),
@@ -70,6 +73,20 @@ export const playerDetailsSchema = z
       ["professional_periods"],
       "professionalPeriodsRequired",
     );
+    requireWhenFilled(
+      ctx,
+      value.is_university_student,
+      value.university_name,
+      ["university_name"],
+      "universityNameRequired",
+    );
+    requireWhenFilled(
+      ctx,
+      value.is_university_student,
+      value.course_year,
+      ["course_year"],
+      "courseYearRequired",
+    );
   });
 export type PlayerDetails = z.infer<typeof playerDetailsSchema>;
 export const PLAYER_STEP2_FIELD_ORDER: (keyof PlayerDetails)[] = [
@@ -79,6 +96,8 @@ export const PLAYER_STEP2_FIELD_ORDER: (keyof PlayerDetails)[] = [
   "years_playing",
   "experience_level",
   "is_university_student",
+  "university_name",
+  "course_year",
   "has_pro_experience",
   "professional_periods",
   "hourly_rate_azn",
@@ -93,6 +112,11 @@ export const refereeDetailsSchema = z
       .max(200, "tooLong")
       .optional()
       .or(z.literal("")),
+    certification_link: z
+      .string()
+      .max(500, "tooLong")
+      .optional()
+      .or(z.literal("")),
     years_refereeing: z.enum(EXPERIENCE_YEARS_VALUES, { required_error: "required", invalid_type_error: "required" }),
     game_types: z.array(z.enum(GAME_TYPE_VALUES)).min(1, "minSelectionGameTypes"),
     experience_text: z
@@ -100,20 +124,12 @@ export const refereeDetailsSchema = z
       .max(500, "tooLong")
       .optional()
       .or(z.literal("")),
-  })
-  .superRefine((value, ctx) => {
-    requireWhenFilled(
-      ctx,
-      value.has_official_certification,
-      value.certification_name,
-      ["certification_name"],
-      "certificationNameRequired",
-    );
   });
 export type RefereeDetails = z.infer<typeof refereeDetailsSchema>;
 export const REFEREE_STEP2_FIELD_ORDER: (keyof RefereeDetails)[] = [
   "has_official_certification",
   "certification_name",
+  "certification_link",
   "years_refereeing",
   "game_types",
   "experience_text",

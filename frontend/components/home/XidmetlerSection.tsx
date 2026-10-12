@@ -26,26 +26,19 @@ const SERVICE_KEYS = Object.keys(SERVICE_ICONS) as Array<keyof typeof SERVICE_IC
 /**
  * "Xidmətlər" section (`#xidmetler`): 4 service cards. Client component
  * because each service card's "Sifariş et" button links out to
- * WhatsApp, sourced from the shared `useSettingsQuery()` result.
- *
- * NOTE: a separate, concurrent work-stream is replacing these 4 "Sifariş
- * et" buttons' click behavior to open a new Order Flow wizard instead of
- * a direct WhatsApp link. This component only restyles the button —
- * the existing ExternalLink/href is left in place deliberately so the
- * other work-stream's onClick wiring has a stable spot to land on.
+ * WhatsApp, sourced from the shared `useSettingsQuery()` result. The
+ * whole card is clickable (not just the button) and opens WhatsApp with
+ * a message specific to that service — never the generic default text.
  */
 export function XidmetlerSection() {
   const t = useTranslations("home.xidmetler");
   const { data: settings } = useSettingsQuery();
 
-  const whatsappUrl = settings
-    ? buildWhatsAppUrl(settings.whatsapp_number, settings.whatsapp_default_text)
-    : undefined;
-
   const services = SERVICE_KEYS.map((key) => ({
     key,
     title: t(`${key}.title`),
     desc: t(`${key}.desc`),
+    message: t(`${key}.whatsappMessage`),
     Icon: SERVICE_ICONS[key],
   }));
 
@@ -55,49 +48,42 @@ export function XidmetlerSection() {
         <SectionHeading eyebrow={t("eyebrow")} title={t("title")} description={t("description")} />
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {services.map((service, index) => {
-            const isFirst = index === 0;
+          {services.map((service) => {
+            const whatsappUrl = settings ? buildWhatsAppUrl(settings.whatsapp_number, service.message) : undefined;
+            if (!whatsappUrl) {
+              return (
+                <div key={service.key} className="flex flex-col rounded-xl bg-white p-6">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-green/15 text-brand-dark">
+                    <service.Icon className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <h3 className="mt-4 font-heading font-semibold">{service.title}</h3>
+                  <p className="mt-2 flex-1 text-sm text-muted">{service.desc}</p>
+                </div>
+              );
+            }
             return (
-              <div
+              <ExternalLink
                 key={service.key}
-                className={cn(
-                  "flex flex-col rounded-xl p-6",
-                  isFirst ? "bg-brand-green text-brand-dark" : "bg-white",
-                )}
+                href={whatsappUrl}
+                analyticsLabel={`xidmetler_order_${service.key}`}
+                className="group flex cursor-pointer flex-col rounded-xl bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:bg-brand-green hover:text-brand-dark hover:shadow-lg"
               >
-                <span
-                  className={cn(
-                    "flex h-11 w-11 items-center justify-center rounded-full",
-                    isFirst ? "bg-white text-brand-dark" : "bg-brand-green text-brand-dark",
-                  )}
-                >
+                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-green/15 text-brand-dark transition-colors duration-200 group-hover:bg-white">
                   <service.Icon className="h-5 w-5" aria-hidden="true" />
                 </span>
                 <h3 className="mt-4 font-heading font-semibold">{service.title}</h3>
-                <p
-                  className={cn(
-                    "mt-2 flex-1 text-sm",
-                    isFirst ? "text-brand-dark/70" : "text-muted",
-                  )}
-                >
+                <p className="mt-2 flex-1 text-sm text-muted transition-colors duration-200 group-hover:text-brand-dark/70">
                   {service.desc}
                 </p>
-                {whatsappUrl ? (
-                  // TODO(order-flow): wire onClick to open the Order Flow modal.
-                  // Keep this ExternalLink's href/behavior untouched until that
-                  // work-stream replaces it — this component only owns styling.
-                  <ExternalLink
-                    href={whatsappUrl}
-                    analyticsLabel={`xidmetler_order_${service.key}`}
-                    className={cn(
-                      buttonVariants({ variant: "dark-solid", size: "sm" }),
-                      "mt-4 self-start",
-                    )}
-                  >
-                    {t("orderCta")}
-                  </ExternalLink>
-                ) : null}
-              </div>
+                <span
+                  className={cn(
+                    buttonVariants({ variant: "dark-solid", size: "sm" }),
+                    "pointer-events-none mt-4 self-start",
+                  )}
+                >
+                  {t("orderCta")}
+                </span>
+              </ExternalLink>
             );
           })}
         </div>

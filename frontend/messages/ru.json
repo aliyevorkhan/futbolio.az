@@ -47,7 +47,7 @@
       "findPlayerCta": "Найти игрока",
       "joinCta": "Присоединиться к команде",
       "notificationTitle": "12-й игрок уже в пути",
-      "notificationMeta": "Вратарь · Pro · 21:00",
+      "notificationMeta": "Игрок · Про · 21:00",
       "illustrationAlt": "Простая иллюстрация футбольного поля"
     },
     "biz": {
@@ -68,19 +68,23 @@
       "orderCta": "Заказать",
       "futbolcu": {
         "title": "Игрок",
-        "desc": "Находим игрока-любителя, подходящего под позицию."
+        "desc": "Находим игрока-любителя, подходящего под позицию.",
+        "whatsappMessage": "Здравствуйте! Для моей игры нужен футболист."
       },
       "qapici": {
         "title": "Вратарь",
-        "desc": "Быстрое решение для команд, которым срочно нужен вратарь."
+        "desc": "Быстрое решение для команд, которым срочно нужен вратарь.",
+        "whatsappMessage": "Здравствуйте! Для моей игры нужен вратарь."
       },
       "hakim": {
         "title": "Судья",
-        "desc": "Обеспечиваем судью для товарищеских и тренировочных игр."
+        "desc": "Обеспечиваем судью для товарищеских и тренировочных игр.",
+        "whatsappMessage": "Здравствуйте! Для моей игры нужен судья."
       },
       "hekim": {
         "title": "Врач",
-        "desc": "Организуем врача для оказания первой помощи во время игры."
+        "desc": "Организуем врача для оказания первой помощи во время игры.",
+        "whatsappMessage": "Здравствуйте! Для моей игры нужен врач."
       }
     },
     "tiers": {
@@ -122,7 +126,7 @@
       "point2": "Неподходящий кандидат быстро заменяется.",
       "point3": "Ваше удовлетворение для нас главное.",
       "badgeLabel": "Гарантия Futbolio",
-      "moneyBackSubline": "возврат денег",
+      "moneyBackSubline": "деньги возвращаются",
       "moneyBackDesc": "Если вы не удовлетворены, мы возвращаем деньги."
     },
     "cta": {
@@ -251,7 +255,7 @@
       "tooLong": "Текст слишком длинный",
       "minSelectionGameTypes": "Выберите хотя бы один тип игры",
       "minSelectionDistricts": "Выберите хотя бы один район",
-      "invalidVideoUrl": "Введите действительную ссылку на Instagram, TikTok, YouTube или Google Drive",
+      "invalidVideoUrl": "Введите корректную ссылку на видео (начинается с http:// или https://)",
       "videoRequired": "Требуется хотя бы один видеофайл или ссылка на видео",
       "filesRequired": "Загрузите необходимые файлы",
       "consentRequired": "Для продолжения вы должны подтвердить это",
@@ -265,7 +269,10 @@
       "professionalPeriodsRequired": "Добавьте хотя бы один период",
       "professionalPeriodOrder": "Год окончания не может быть раньше года начала",
       "certificationNameRequired": "Укажите название сертификата",
-      "equipmentMissingTextRequired": "Укажите, чего не хватает"
+      "equipmentMissingTextRequired": "Укажите, чего не хватает",
+      "universityNameRequired": "Выберите университет или укажите его название",
+      "courseYearRequired": "Выберите курс",
+      "certificationProofRequired": "Укажите название, ссылку или загрузите файл сертификата"
     },
     "roles": {
       "player": "Игрок",
@@ -322,8 +329,8 @@
           "3_5": "3-5 лет",
           "over_5": "Больше 5 лет"
         },
-        "clubExperienceLabel": "Клубный опыт (необязательно)",
-        "clubExperiencePlaceholder": "В каких командах играли, в каких лигах...",
+        "clubExperienceLabel": "Что бы вы хотели рассказать о себе",
+        "clubExperiencePlaceholder": "Коротко расскажите о себе",
         "experienceLevelLabel": "Ваш уровень опыта",
         "experienceLevel": {
           "amateur": "Любитель",
@@ -339,13 +346,20 @@
           "toLabel": "Год окончания",
           "clubLabel": "Клуб (необязательно)",
           "clubPlaceholder": "Название клуба",
-          "addAnother": "Добавить ещё один период",
-          "remove": "Удалить"
+          "addAnother": "Добавить период",
+          "remove": "Удалить",
+          "periodLabel": "Период {n}"
         },
-        "hourlyRateLabel": "Ваша почасовая ставка (AZN)",
+        "hourlyRateLabel": "Цена за 1 игру (AZN)",
         "hourlyRatePlaceholder": "Напр. 15",
         "hourlyRateHint": "Эта сумма не показывается заказчику, она используется для подбора подходящих заказов.",
-        "mainPositionDisabledTitle": "Это ваша основная позиция"
+        "mainPositionDisabledTitle": "Это ваша основная позиция",
+        "universityNameLabel": "Ваш университет",
+        "universityNamePlaceholder": "Выберите университет",
+        "universityNameSearchPlaceholder": "Поиск университета...",
+        "universityNameOther": "Другое",
+        "universityNameOtherPlaceholder": "Напишите название университета",
+        "courseYearLabel": "На каком курсе вы учитесь?"
       },
       "referee": {
         "title": "О судье",
@@ -367,7 +381,13 @@
         "experiencePlaceholder": "В каких лигах/турнирах судили...",
         "hasOfficialCertificationLabel": "У вас есть официальный судейский сертификат?",
         "certificationNameLabel": "Название сертификата",
-        "certificationNamePlaceholder": "Напр. Сертификат судейских курсов АФФА"
+        "certificationNamePlaceholder": "Напр. Сертификат судейских курсов АФФА",
+        "certificationLinkLabel": "Ссылка на сертификат (необязательно)",
+        "certificationLinkPlaceholder": "https://...",
+        "certificationFileLabel": "Файл сертификата (необязательно)",
+        "certificationFileBrowse": "выбрать с компьютера",
+        "certificationFileDrag": "Перетащите файл сюда",
+        "certificationProofHint": "Подтвердите сертификат одним из способов: укажите название, добавьте ссылку или загрузите файл."
       },
       "medic": {
         "title": "О враче",
@@ -419,17 +439,17 @@
       "description": "Загрузите файлы для проверки профиля.",
       "photo": {
         "label": "Фото профиля",
-        "hint": "JPG, PNG или WEBP/HEIC, максимум 10 МБ"
+        "hint": "JPG, PNG или HEIC, максимум 10 МБ"
       },
       "video": {
         "label": "Видео",
-        "hint": "MP4 или MOV, максимум 200 МБ каждое. Достаточно одного видеофайла или ссылки на видео.",
-        "linkLabel": "Ссылка на видео (Instagram, TikTok, YouTube или Google Drive)",
+        "hint": "MP4 или MOV, максимум 200 МБ каждое. Достаточно видеофайла или корректной ссылки на видео.",
+        "linkLabel": "Ссылка на видео",
         "linkPlaceholder": "https://..."
       },
       "document": {
-        "label": "Сертификат / документ",
-        "hint": "PDF, JPG или PNG, максимум 10 МБ каждый"
+        "label": "Диплом / сертификат",
+        "hint": "PDF, JPG или PNG, максимум 10 МБ каждый. Требуется хотя бы 1 документ."
       },
       "dropzone": {
         "instructions": "Перетащите файл сюда",

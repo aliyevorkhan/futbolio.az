@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { ChipSingleSelect, ChipMultiSelect } from "@/components/wizard/fields/ChipGroup";
 import { ProfessionalPeriodsRepeater } from "@/components/wizard/fields/ProfessionalPeriodsRepeater";
+import { UniversitySelect } from "@/components/wizard/fields/UniversitySelect";
 import { StepFooter } from "@/components/wizard/StepFooter";
 import { useFocusFirstInvalidField } from "@/lib/validation/useFocusFirstInvalidField";
 import {
@@ -43,6 +44,8 @@ export function PlayerDetails({ defaultValues, onValid, onChange, onBack }: Play
       club_experience_text: defaultValues.club_experience_text ?? "",
       experience_level: defaultValues.experience_level,
       is_university_student: defaultValues.is_university_student,
+      university_name: defaultValues.university_name ?? "",
+      course_year: defaultValues.course_year ?? undefined,
       has_pro_experience: defaultValues.has_pro_experience,
       hourly_rate_azn: defaultValues.hourly_rate_azn,
       professional_periods: defaultValues.professional_periods ?? [],
@@ -79,6 +82,8 @@ export function PlayerDetails({ defaultValues, onValid, onChange, onBack }: Play
 
   const mainPosition = form.watch("main_position");
   const hasPlayedProfessionally = form.watch("has_pro_experience");
+  const isUniversityStudent = form.watch("is_university_student");
+  const courseYearOptions = ["1", "2", "3", "4"].map((value) => ({ value, label: value }));
 
   return (
     <form noValidate onSubmit={form.handleSubmit(onValid)} className="space-y-6">
@@ -182,6 +187,50 @@ export function PlayerDetails({ defaultValues, onValid, onChange, onBack }: Play
         />
         <p className="mt-1.5 text-xs text-muted">{t("isUniversityStudentHint")}</p>
       </div>
+
+      {isUniversityStudent ? (
+        <div className="animate-role-fade-in grid gap-6 sm:grid-cols-2">
+          <div>
+            <Label>{t("universityNameLabel")}</Label>
+            <Controller
+              control={form.control}
+              name="university_name"
+              render={({ field }) => (
+                <UniversitySelect
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  placeholder={t("universityNamePlaceholder")}
+                  searchPlaceholder={t("universityNameSearchPlaceholder")}
+                  otherLabel={t("universityNameOther")}
+                  otherInputPlaceholder={t("universityNameOtherPlaceholder")}
+                  error={Boolean(form.formState.errors.university_name)}
+                  registerRef={registerField("university_name")}
+                />
+              )}
+            />
+            {errorMessage("university_name") ? (
+              <p className="mt-1.5 text-sm text-red-600">{errorMessage("university_name")}</p>
+            ) : null}
+          </div>
+
+          <Controller
+            control={form.control}
+            name="course_year"
+            render={({ field }) => (
+              <ChipSingleSelect
+                name="course_year"
+                label={t("courseYearLabel")}
+                value={field.value}
+                onChange={field.onChange}
+                options={courseYearOptions}
+                error={errorMessage("course_year")}
+                registerRef={registerField("course_year")}
+              />
+            )}
+          />
+        </div>
+      ) : null}
 
       <Controller
         control={form.control}

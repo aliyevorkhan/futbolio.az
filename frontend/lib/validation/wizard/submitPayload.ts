@@ -59,7 +59,12 @@ export function buildSubmitPayload(input: BuildSubmitPayloadInput): ApplicationS
     payload.video_link_url = input.videoLinkUrl;
   }
   if (input.role === "player" && input.playerDetails) {
-    payload.player_details = input.playerDetails;
+    // Schema keeps course_year as a string (chip-select value) — the
+    // backend's field is a plain 1-4 integer.
+    payload.player_details = {
+      ...input.playerDetails,
+      course_year: input.playerDetails.course_year ? Number(input.playerDetails.course_year) : undefined,
+    } as unknown as PlayerDetails;
   }
   if (input.role === "referee" && input.refereeDetails) {
     payload.referee_details = input.refereeDetails;

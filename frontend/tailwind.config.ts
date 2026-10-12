@@ -20,13 +20,12 @@ const config: Config = {
         "muted-2": "#4F5653",
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "Inter", "-apple-system", "sans-serif"],
-        heading: [
-          "var(--font-manrope)",
-          "Manrope",
-          "-apple-system",
-          "sans-serif",
-        ],
+        sans: ["var(--font-montserrat)", "Montserrat", "-apple-system", "sans-serif"],
+        // Same family as `sans` — kept as a separate token so every
+        // `font-heading` className across the codebase keeps working
+        // without edits, while both resolve to one Montserrat family
+        // (no per-language font swap).
+        heading: ["var(--font-montserrat)", "Montserrat", "-apple-system", "sans-serif"],
       },
       borderRadius: {
         lg: "1rem",

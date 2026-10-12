@@ -16,8 +16,6 @@ interface Step4Props {
   role: Role;
   uploadSessionId: string;
   videoLinkUrlDefault: string;
-  /** Referee-only: Step 2's `has_official_certification` flag, threaded down to gate the certificate-document slot. */
-  hasOfficialCertification?: boolean;
   onValid: (result: { fileIds: string[]; videoLinkUrl: string }) => void;
   onBack: () => void;
   /** Lets the parent mirror file-slot counts into its own status map (step-status derivation), without ever lifting file bytes themselves. */
@@ -35,7 +33,6 @@ export function Step4Files({
   role,
   uploadSessionId,
   videoLinkUrlDefault,
-  hasOfficialCertification,
   onValid,
   onBack,
   onFileSummaryChange,
@@ -54,10 +51,11 @@ export function Step4Files({
   const documentUpload0 = useFileUpload({ kind: "document", role, uploadSessionId });
   const documentUpload1 = useFileUpload({ kind: "document", role, uploadSessionId });
   const documentUpload2 = useFileUpload({ kind: "document", role, uploadSessionId });
-  const videoUploads = [videoUpload0, videoUpload1, videoUpload2];
-  // Referee's certificate-document slot is capped at 1 (vs. medic's 3).
-  const documentUploads =
-    role === "referee" ? [documentUpload0] : [documentUpload0, documentUpload1, documentUpload2];
+  // Video is player-only now (referee's video section was removed).
+  const videoUploads = role === "player" ? [videoUpload0, videoUpload1, videoUpload2] : [];
+  // Document (diploma/certificate) upload is medic-only here — referee's
+  // certification document is now collected inline in Step 2.
+  const documentUploads = role === "medic" ? [documentUpload0, documentUpload1, documentUpload2] : [];
 
   const { registerField, liveRegionRef } = useFocusFirstInvalidField(errors, STEP4_FIELD_ORDER);
 
@@ -151,7 +149,7 @@ export function Step4Files({
           error={errorMessage("photo_uploaded")}
         />
 
-        {role !== "medic" ? (
+        {role === "player" ? (
           <div>
             <p className="mb-2 text-sm font-medium text-foreground">{t("video.label")}</p>
             <p className="mb-3 text-xs text-muted">{t("video.hint")}</p>
@@ -199,11 +197,8 @@ export function Step4Files({
           </div>
         ) : null}
 
-        {/* Medic: document slot always shown (now optional 0-3, relaxed
-            from required 1-3). Referee: new conditional 0-1 certificate
-            slot, only meaningful (and shown) when Step 2's
-            `has_official_certification` is true. */}
-        {role === "medic" || (role === "referee" && hasOfficialCertification) ? (
+        {/* Medic: mandatory diploma/certificate document (1-3 files). */}
+        {role === "medic" ? (
           <div>
             <p className="mb-2 text-sm font-medium text-foreground">{t("document.label")}</p>
             <p className="mb-3 text-xs text-muted">{t("document.hint")}</p>

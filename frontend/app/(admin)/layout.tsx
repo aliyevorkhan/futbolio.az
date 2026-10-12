@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import { inter, manrope } from "@/lib/fonts";
+import { montserrat } from "@/lib/fonts";
 import { Providers } from "@/components/providers/Providers";
 import { cn } from "@/lib/utils";
 import "@/app/globals.css";
@@ -28,7 +28,7 @@ export default async function AdminLayout({
   const messages = await getMessages();
 
   return (
-    <html lang="az" className={cn(inter.variable, manrope.variable)}>
+    <html lang="az" className={cn(montserrat.variable)}>
       <body>
         <NextIntlClientProvider locale="az" messages={messages}>
           <Providers>

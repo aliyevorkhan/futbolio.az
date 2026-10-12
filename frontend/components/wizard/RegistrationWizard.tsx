@@ -24,6 +24,7 @@ import { buildSubmitPayload } from "@/lib/validation/wizard/submitPayload";
 import { step1Schema, ROLE_QUERY_PARAM_MAP, type Role, type Step1Data } from "@/lib/validation/wizard/step1.schema";
 import {
   getStep2Schema,
+  refereeDetailsSchema,
   type PlayerDetails,
   type RefereeDetails,
   type MedicDetails,
@@ -82,6 +83,7 @@ export function RegistrationWizard() {
   const [role, setRole] = useState<Role | null>(null);
   const [draft, setDraft] = useState<WizardDraftShape>(EMPTY_DRAFT);
   const [fileIds, setFileIds] = useState<string[]>([]);
+  const [certificateFileId, setCertificateFileId] = useState<string | null>(null);
   const [fileSummary, setFileSummary] = useState<FileSummary>(EMPTY_FILE_SUMMARY);
   const [bannerStep, setBannerStep] = useState<number | null>(null);
   const [bannerMessage, setBannerMessage] = useState<string | null>(null);
@@ -109,8 +111,12 @@ export function RegistrationWizard() {
 
     if (saved) {
       // Files never survive a reload — always land back on Step 4 to
-      // re-pick them rather than resuming on Step 5.
-      const restoredStep = saved.currentStep >= 4 ? 4 : saved.currentStep;
+      // re-pick them rather than resuming on Step 5. Referee is a
+      // special case: its certificate file now lives in Step 2, so send
+      // it back there instead once it's reached Step 2 or beyond.
+      const resolvedRole = saved.role ?? mappedRole ?? null;
+      const fileStep = resolvedRole === "referee" ? 2 : 4;
+      const restoredStep = saved.currentStep >= fileStep ? fileStep : saved.currentStep;
       setCurrentStep(restoredStep);
       setRole(saved.role ?? mappedRole ?? null);
       setDraft(saved);
@@ -167,9 +173,22 @@ export function RegistrationWizard() {
       document_uploaded_count: fileSummary.documentCount,
     };
 
+    const refereeData = draft.step2.referee;
+    const refereeHasProof = Boolean(
+      !refereeData?.has_official_certification ||
+        refereeData?.certification_name?.trim() ||
+        refereeData?.certification_link?.trim() ||
+        certificateFileId,
+    );
+
     const isValid: Record<number, boolean> = {
       1: step1Schema.safeParse(draft.step1).success,
-      2: role ? getStep2Schema(role).safeParse(draft.step2[role]).success : false,
+      2:
+        role === "referee"
+          ? refereeDetailsSchema.safeParse(draft.step2.referee).success && refereeHasProof
+          : role
+            ? getStep2Schema(role).safeParse(draft.step2[role]).success
+            : false,
       3: step3Schema.safeParse(draft.step3).success,
       4: role ? getStep4Schema(role).safeParse(step4Input).success : false,
       5: step5Schema.safeParse(draft.step5).success,
@@ -187,7 +206,7 @@ export function RegistrationWizard() {
     }
     return result;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [draft, role, currentStep, visitedSteps, fileSummary]);
+  }, [draft, role, currentStep, visitedSteps, fileSummary, certificateFileId]);
 
   const steps: WizardStepMeta[] = [
     { step: 1, title: t("sidebar.step1"), status: stepStatus[1] },
@@ -228,7 +247,7 @@ export function RegistrationWizard() {
       videoLinkUrl: draft.videoLinkUrl,
       consents: step5Data,
       uploadSessionId,
-      fileIds,
+      fileIds: certificateFileId ? [...fileIds, certificateFileId] : fileIds,
       turnstileToken,
       utm,
     });
@@ -290,6 +309,9 @@ export function RegistrationWizard() {
               playerDefaults={draft.step2.player}
               refereeDefaults={draft.step2.referee}
               medicDefaults={draft.step2.medic}
+              uploadSessionId={uploadSessionId}
+              certificateFileId={certificateFileId}
+              onCertificateFileIdChange={setCertificateFileId}
               onChangePlayer={(values) =>
                 setDraft((prev) => ({ ...prev, step2: { ...prev.step2, player: values } }))
               }
@@ -332,7 +354,6 @@ export function RegistrationWizard() {
               role={role}
               uploadSessionId={uploadSessionId}
               videoLinkUrlDefault={draft.videoLinkUrl}
-              hasOfficialCertification={draft.step2.referee?.has_official_certification}
               onFileSummaryChange={setFileSummary}
               onValid={({ fileIds: nextFileIds, videoLinkUrl }) => {
                 setFileIds(nextFileIds);

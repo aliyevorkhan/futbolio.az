@@ -28,6 +28,17 @@ export function toCanonicalPhone(raw: string): string {
 export function formatPhoneInput(raw: string): string {
   const canonical = toCanonicalPhone(raw);
   if (!canonical) return "";
+  return `+994 ${formatNationalPart(raw)}`.trimEnd();
+}
+
+/**
+ * Same `XX XXX XX XX` mask, but WITHOUT the `+994` prefix — used by the
+ * Step 1 phone field, which renders `+994` as its own fixed, non-editable
+ * block and only lets the user type/see the 9 national digits.
+ */
+export function formatNationalPart(raw: string): string {
+  const canonical = toCanonicalPhone(raw);
+  if (!canonical) return "";
   const national = canonical.slice(4); // digits after +994
   const parts = [
     national.slice(0, 2),
@@ -35,5 +46,5 @@ export function formatPhoneInput(raw: string): string {
     national.slice(5, 7),
     national.slice(7, 9),
   ].filter(Boolean);
-  return `+994 ${parts.join(" ")}`.trimEnd();
+  return parts.join(" ");
 }

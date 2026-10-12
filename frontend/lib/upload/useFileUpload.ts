@@ -3,7 +3,13 @@
 import { useCallback, useRef, useState } from "react";
 import { presignUpload, completeUpload } from "@/lib/api/uploads";
 import { ApiError } from "@/lib/api/client";
-import { FILE_RULES, MULTIPART_THRESHOLD_BYTES, isFileKindValid, type UploadKind } from "@/lib/validation/shared/fileRules";
+import {
+  FILE_RULES,
+  MULTIPART_THRESHOLD_BYTES,
+  isFileKindValid,
+  resolveContentType,
+  type UploadKind,
+} from "@/lib/validation/shared/fileRules";
 import type { Role } from "@/lib/validation/wizard/step1.schema";
 import { uploadSingle, uploadMultipart } from "./xhrUpload";
 
@@ -53,17 +59,18 @@ export function useFileUpload(config: UseFileUploadConfig) {
     setState({ status: "uploading", file, progress: 0, error: null, fileId: null });
 
     try {
+      const contentType = resolveContentType(file);
       const presign = await presignUpload({
         upload_session_id: uploadSessionId,
         kind,
         filename: file.name,
-        content_type: file.type,
+        content_type: contentType,
         size: file.size,
         role,
       });
 
       if (presign.mode === "single") {
-        await uploadSingle(file, presign.url, file.type, (progress) => {
+        await uploadSingle(file, presign.url, contentType, (progress) => {
           setState((prev) => ({ ...prev, progress }));
         }, registerXhr);
         await completeUpload(presign.file_id);

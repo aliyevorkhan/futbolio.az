@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { DistrictSelect } from "@/components/wizard/fields/DistrictSelect";
 import { StepFooter } from "@/components/wizard/StepFooter";
 import { cn } from "@/lib/utils";
-import { formatPhoneInput, toCanonicalPhone } from "@/lib/validation/shared/phone";
+import { formatNationalPart, toCanonicalPhone } from "@/lib/validation/shared/phone";
 import { getMinBirthDateString, getMaxBirthDateString } from "@/lib/validation/shared/dateOfBirth";
 import {
   step1Schema,
@@ -78,11 +78,11 @@ export function Step1({ defaultValues, onValid, onChange }: Step1Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form]);
 
-  // Referee submissions must never include an Instagram handle — the
-  // backend actively rejects a non-blank value for this role — so clear
-  // any stray value the moment the user switches away from it.
+  // Only the player role collects an Instagram handle — the backend
+  // actively rejects a non-blank value for referee/medic submissions —
+  // so clear any stray value the moment the user switches away from it.
   useEffect(() => {
-    if (role === "referee" && form.getValues("instagram_handle")) {
+    if (role !== "player" && form.getValues("instagram_handle")) {
       form.setValue("instagram_handle", "");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -202,19 +202,30 @@ export function Step1({ defaultValues, onValid, onChange }: Step1Props) {
             control={form.control}
             name="phone"
             render={({ field }) => (
-              <Input
-                id="phone"
-                inputMode="tel"
-                placeholder={t("phonePlaceholder")}
-                aria-invalid={Boolean(form.formState.errors.phone)}
-                value={formatPhoneInput(field.value ?? "")}
-                onChange={(event) => field.onChange(toCanonicalPhone(event.target.value))}
-                onBlur={field.onBlur}
-                ref={(el) => {
-                  field.ref(el);
-                  registerField("phone")(el);
-                }}
-              />
+              <div
+                className={cn(
+                  "flex h-11 overflow-hidden rounded-lg border border-brand-dark/15 bg-white focus-within:ring-2 focus-within:ring-brand-dark focus-within:ring-offset-2",
+                  Boolean(form.formState.errors.phone) && "border-red-500",
+                )}
+              >
+                <span className="flex shrink-0 select-none items-center border-r border-brand-dark/15 bg-brand-dark/5 px-3 text-sm font-medium text-muted">
+                  +994
+                </span>
+                <input
+                  id="phone"
+                  inputMode="tel"
+                  placeholder="XX XXX XX XX"
+                  aria-invalid={Boolean(form.formState.errors.phone)}
+                  value={formatNationalPart(field.value ?? "")}
+                  onChange={(event) => field.onChange(toCanonicalPhone(`994${event.target.value}`))}
+                  onBlur={field.onBlur}
+                  className="h-full min-w-0 flex-1 bg-transparent px-3.5 text-sm text-foreground placeholder:text-muted-2 focus-visible:outline-none"
+                  ref={(el) => {
+                    field.ref(el);
+                    registerField("phone")(el);
+                  }}
+                />
+              </div>
             )}
           />
           {errorMessage("phone") ? (
@@ -224,7 +235,7 @@ export function Step1({ defaultValues, onValid, onChange }: Step1Props) {
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">
-        {role !== "referee" ? (
+        {role === "player" ? (
           <div key={role ?? "none"} className="animate-role-fade-in">
             <Label htmlFor="instagram_handle">{t("instagramLabel")}</Label>
             <Controller

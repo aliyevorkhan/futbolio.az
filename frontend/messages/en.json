@@ -47,7 +47,7 @@
       "findPlayerCta": "Find a player",
       "joinCta": "Join our team",
       "notificationTitle": "Your 12th player is on the way",
-      "notificationMeta": "Goalkeeper · Pro · 9:00 PM",
+      "notificationMeta": "Player · Pro · 21:00",
       "illustrationAlt": "Simple illustration of a football pitch"
     },
     "biz": {
@@ -68,19 +68,23 @@
       "orderCta": "Order",
       "futbolcu": {
         "title": "Player",
-        "desc": "We find an amateur player who matches the position."
+        "desc": "We find an amateur player who matches the position.",
+        "whatsappMessage": "Hi! I need a player for my game."
       },
       "qapici": {
         "title": "Goalkeeper",
-        "desc": "A fast solution for teams scrambling for a goalkeeper."
+        "desc": "A fast solution for teams scrambling for a goalkeeper.",
+        "whatsappMessage": "Hi! I need a goalkeeper for my game."
       },
       "hakim": {
         "title": "Referee",
-        "desc": "We provide a referee for friendly and practice games."
+        "desc": "We provide a referee for friendly and practice games.",
+        "whatsappMessage": "Hi! I need a referee for my game."
       },
       "hekim": {
         "title": "Medic",
-        "desc": "We arrange a medic for first aid during the game."
+        "desc": "We arrange a medic for first aid during the game.",
+        "whatsappMessage": "Hi! I need a medic for my game."
       }
     },
     "tiers": {
@@ -122,7 +126,7 @@
       "point2": "An unsuitable candidate is replaced quickly.",
       "point3": "Your satisfaction is our priority.",
       "badgeLabel": "The Futbolio guarantee",
-      "moneyBackSubline": "money back",
+      "moneyBackSubline": "money back, guaranteed",
       "moneyBackDesc": "If you're not satisfied, we refund your money."
     },
     "cta": {
@@ -251,7 +255,7 @@
       "tooLong": "This text is too long",
       "minSelectionGameTypes": "Choose at least one game type",
       "minSelectionDistricts": "Choose at least one district",
-      "invalidVideoUrl": "Enter a valid Instagram, TikTok, YouTube or Google Drive link",
+      "invalidVideoUrl": "Enter a valid video link starting with http:// or https://",
       "videoRequired": "At least one video file or video link is required",
       "filesRequired": "Upload the required files",
       "consentRequired": "You must confirm this to continue",
@@ -265,7 +269,10 @@
       "professionalPeriodsRequired": "Add at least one period",
       "professionalPeriodOrder": "The end year can't be before the start year",
       "certificationNameRequired": "Enter the certificate name",
-      "equipmentMissingTextRequired": "Describe what's missing"
+      "equipmentMissingTextRequired": "Describe what's missing",
+      "universityNameRequired": "Select your university or enter its name",
+      "courseYearRequired": "Select your year",
+      "certificationProofRequired": "Provide the certificate's name, link, or document"
     },
     "roles": {
       "player": "Player",
@@ -322,8 +329,8 @@
           "3_5": "3-5 years",
           "over_5": "More than 5 years"
         },
-        "clubExperienceLabel": "Club experience (optional)",
-        "clubExperiencePlaceholder": "Which clubs/leagues have you played in...",
+        "clubExperienceLabel": "Anything else you'd like to share about yourself",
+        "clubExperiencePlaceholder": "Write a short note about yourself",
         "experienceLevelLabel": "Your experience level",
         "experienceLevel": {
           "amateur": "Amateur",
@@ -339,13 +346,20 @@
           "toLabel": "End year",
           "clubLabel": "Club (optional)",
           "clubPlaceholder": "Club name",
-          "addAnother": "Add another period",
-          "remove": "Remove"
+          "addAnother": "Add period",
+          "remove": "Remove",
+          "periodLabel": "Period {n}"
         },
-        "hourlyRateLabel": "Your hourly rate (AZN)",
+        "hourlyRateLabel": "Price per game (AZN)",
         "hourlyRatePlaceholder": "E.g. 15",
         "hourlyRateHint": "This amount is not shown to the person ordering, it is used only to match suitable orders.",
-        "mainPositionDisabledTitle": "This is your main position"
+        "mainPositionDisabledTitle": "This is your main position",
+        "universityNameLabel": "Your university",
+        "universityNamePlaceholder": "Select a university",
+        "universityNameSearchPlaceholder": "Search universities...",
+        "universityNameOther": "Other",
+        "universityNameOtherPlaceholder": "Enter your university's name",
+        "courseYearLabel": "Which year are you in?"
       },
       "referee": {
         "title": "About the referee",
@@ -367,7 +381,13 @@
         "experiencePlaceholder": "Which leagues/tournaments have you refereed...",
         "hasOfficialCertificationLabel": "Do you hold an official refereeing certificate?",
         "certificationNameLabel": "Certificate name",
-        "certificationNamePlaceholder": "E.g. AFFA referee course certificate"
+        "certificationNamePlaceholder": "E.g. AFFA referee course certificate",
+        "certificationLinkLabel": "Certificate link (optional)",
+        "certificationLinkPlaceholder": "https://...",
+        "certificationFileLabel": "Certificate document (optional)",
+        "certificationFileBrowse": "browse from computer",
+        "certificationFileDrag": "Drag a file here",
+        "certificationProofHint": "Confirm your certificate one of three ways: enter its name, add a link, or upload the document."
       },
       "medic": {
         "title": "About the medic",
@@ -419,17 +439,17 @@
       "description": "Upload the files below to verify your profile.",
       "photo": {
         "label": "Profile photo",
-        "hint": "JPG, PNG or WEBP/HEIC, max 10 MB"
+        "hint": "JPG, PNG or HEIC, 10 MB max"
       },
       "video": {
         "label": "Video",
-        "hint": "MP4 or MOV, max 200 MB each. At least one video file or video link is enough.",
-        "linkLabel": "Video link (Instagram, TikTok, YouTube or Google Drive)",
+        "hint": "MP4 or MOV, 200 MB max each. A video file or a valid video link is enough.",
+        "linkLabel": "Video link",
         "linkPlaceholder": "https://..."
       },
       "document": {
-        "label": "Certificate / document",
-        "hint": "PDF, JPG or PNG, max 10 MB each"
+        "label": "Diploma / certificate",
+        "hint": "PDF, JPG or PNG, 10 MB max each. At least 1 document is required."
       },
       "dropzone": {
         "instructions": "Drag a file here",

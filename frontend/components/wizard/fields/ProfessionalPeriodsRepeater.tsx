@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useFieldArray, useFormState, type Control } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Plus, Trash2 } from "lucide-react";
@@ -34,6 +35,16 @@ export function ProfessionalPeriodsRepeater({
   const { fields, append, remove } = useFieldArray({ control, name: "professional_periods" });
   const { errors } = useFormState({ control, name: "professional_periods" });
 
+  // Show the first period's fields immediately — the user shouldn't have
+  // to press "add" just to see the one period they're about to describe.
+  useEffect(() => {
+    if (fields.length === 0) {
+      const currentYear = new Date().getFullYear();
+      append({ start_year: currentYear, end_year: currentYear, club: "" });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fields.length]);
+
   return (
     <div ref={registerRef as React.Ref<HTMLDivElement>} tabIndex={-1}>
       <p className="mb-2 text-sm font-medium text-foreground">{t("label")}</p>
@@ -42,6 +53,21 @@ export function ProfessionalPeriodsRepeater({
           const rowError = errors.professional_periods?.[index]?.end_year?.message;
           return (
             <div key={field.id} className="rounded-lg border border-brand-dark/10 p-3">
+              <div className="mb-2 flex items-center justify-between">
+                <p className="text-xs font-semibold text-muted">{t("periodLabel", { n: index + 1 })}</p>
+                {index > 0 ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-8 w-8 shrink-0 p-0"
+                    onClick={() => remove(index)}
+                    aria-label={t("remove")}
+                  >
+                    <Trash2 className="h-4 w-4" aria-hidden="true" />
+                  </Button>
+                ) : null}
+              </div>
               <div className="flex flex-wrap items-end gap-2">
                 <div className="min-w-[7rem] flex-1">
                   <label className="mb-1 block text-xs text-muted" htmlFor={`professional_periods.${index}.start_year`}>
@@ -87,17 +113,6 @@ export function ProfessionalPeriodsRepeater({
                     {...control.register(`professional_periods.${index}.club`)}
                   />
                 </div>
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="h-11 w-11 shrink-0 p-0"
-                  onClick={() => remove(index)}
-                  aria-label={t("remove")}
-                >
-                  <Trash2 className="h-4 w-4" aria-hidden="true" />
-                </Button>
               </div>
               {rowError ? <p className="mt-2 text-sm text-red-600">{tErrors(String(rowError))}</p> : null}
             </div>

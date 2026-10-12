@@ -42,9 +42,14 @@ export function HeroSection() {
           {/* Split into 3 keys so only "12-ci oyunçusu" is wrapped in the
               highlight span — word order differs by language, so this
               must never be a runtime split of one translated sentence. */}
-          <h1 className="mt-4 font-heading text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+          <h1
+            className="mt-4 font-heading font-extrabold leading-[1.2] tracking-tight"
+            style={{ fontSize: "clamp(1.875rem, 1.3rem + 2.2vw, 3rem)" }}
+          >
             {t("titlePrefix")}
-            <span className="rounded bg-brand-green px-1.5">{t("titleHighlight")}</span>
+            <span className="rounded bg-brand-green px-1.5 py-0.5 [box-decoration-break:clone] [-webkit-box-decoration-break:clone]">
+              {t("titleHighlight")}
+            </span>
             {t("titleSuffix")}
           </h1>
 

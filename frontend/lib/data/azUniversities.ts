@@ -1,0 +1,52 @@
+/**
+ * Static list of Azerbaijani higher-education institutions (state + private,
+ * including well-known branch campuses), used by the player registration
+ * wizard's searchable "Oxuduğun universitet" field. Plain display names —
+ * not an enum/choices list the backend validates against, since
+ * `university_name` is a free-text field server-side (the "Digər" escape
+ * hatch means this list can never be exhaustive).
+ */
+export const AZ_UNIVERSITIES: string[] = [
+  "Bakı Dövlət Universiteti (BDU)",
+  "Azərbaycan Dövlət İqtisad Universiteti (UNEC)",
+  "Azərbaycan Texniki Universiteti (AzTU)",
+  "Azərbaycan Dövlət Neft və Sənaye Universiteti (ADNSU)",
+  "Azərbaycan Tibb Universiteti (ATU)",
+  "Azərbaycan Dövlət Pedaqoji Universiteti (ADPU)",
+  "Azərbaycan Dillər Universiteti (ADU)",
+  "Bakı Mühəndislik Universiteti (BMU)",
+  "Bakı Dövlət Universiteti — Sumqayıt filialı",
+  "Xəzər Universiteti",
+  "ADA Universiteti",
+  "Qafqaz Universiteti",
+  "Odlar Yurdu Universiteti",
+  "Bakı Avrasiya Universiteti",
+  "Bakı Biznes Universiteti",
+  "Bakı Slavyan Universiteti",
+  "Azərbaycan Memarlıq və İnşaat Universiteti (AzMİU)",
+  "Azərbaycan Dövlət Aqrar Universiteti (Gəncə)",
+  "Azərbaycan Dövlət Mədəniyyət və İncəsənət Universiteti",
+  "Azərbaycan Milli Konservatoriyası",
+  "Bakı Musiqi Akademiyası",
+  "Azərbaycan Dövlət Bədən Tərbiyəsi və İdman Akademiyası",
+  "Azərbaycan Dövlət Dəniz Akademiyası",
+  "Milli Aviasiya Akademiyası",
+  "Sumqayıt Dövlət Universiteti",
+  "Gəncə Dövlət Universiteti",
+  "Lənkəran Dövlət Universiteti",
+  "Mingəçevir Dövlət Universiteti",
+  "Naxçıvan Dövlət Universiteti",
+  "Naxçıvan Universiteti",
+  "Şəki Texnologiya Universiteti",
+  "Azərbaycan Respublikasının Prezidenti yanında Dövlət İdarəçilik Akademiyası",
+  "Azərbaycan Dövlət Neft Akademiyası (ASOIU)",
+  "Azərbaycan Hava Yolları Təlim Mərkəzi",
+  "Bakı Ali Neft Məktəbi",
+  "UNEC — Naxçıvan filialı",
+  "Azərbaycan Turizm və Menecment Universiteti",
+  "Qərbi Kaspi Universiteti",
+  "Beynəlxalq Bank-Business Akademiyası",
+  "Təhsil Problemləri İnstitutu",
+  "Bakı Qızlar Universiteti",
+  "Azərbaycan Universiteti",
+];

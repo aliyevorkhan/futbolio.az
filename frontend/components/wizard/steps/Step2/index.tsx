@@ -17,6 +17,9 @@ interface Step2Props {
   playerDefaults: Partial<PlayerDetailsData>;
   refereeDefaults: Partial<RefereeDetailsData>;
   medicDefaults: Partial<MedicDetailsData>;
+  uploadSessionId: string;
+  certificateFileId: string | null;
+  onCertificateFileIdChange: (fileId: string | null) => void;
   onValidPlayer: (data: PlayerDetailsData) => void;
   onValidReferee: (data: RefereeDetailsData) => void;
   onValidMedic: (data: MedicDetailsData) => void;
@@ -32,6 +35,9 @@ export function Step2({
   playerDefaults,
   refereeDefaults,
   medicDefaults,
+  uploadSessionId,
+  certificateFileId,
+  onCertificateFileIdChange,
   onValidPlayer,
   onValidReferee,
   onValidMedic,
@@ -48,7 +54,15 @@ export function Step2({
       {role === "player" ? (
         <PlayerDetails defaultValues={playerDefaults} onValid={onValidPlayer} onChange={onChangePlayer} onBack={onBack} />
       ) : role === "referee" ? (
-        <RefereeDetails defaultValues={refereeDefaults} onValid={onValidReferee} onChange={onChangeReferee} onBack={onBack} />
+        <RefereeDetails
+          defaultValues={refereeDefaults}
+          uploadSessionId={uploadSessionId}
+          certificateFileId={certificateFileId}
+          onCertificateFileIdChange={onCertificateFileIdChange}
+          onValid={onValidReferee}
+          onChange={onChangeReferee}
+          onBack={onBack}
+        />
       ) : (
         <MedicDetails defaultValues={medicDefaults} onValid={onValidMedic} onChange={onChangeMedic} onBack={onBack} />
       )}

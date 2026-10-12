@@ -47,7 +47,7 @@
       "findPlayerCta": "Oyunçu tap",
       "joinCta": "Komandamıza qoşul",
       "notificationTitle": "12-ci oyunçu yoldadır",
-      "notificationMeta": "Qapıçı · Pro · 21:00",
+      "notificationMeta": "Oyunçu · Pro · 21:00",
       "illustrationAlt": "Futbol meydançasının sadə illüstrasiyası"
     },
     "biz": {
@@ -68,19 +68,23 @@
       "orderCta": "Sifariş et",
       "futbolcu": {
         "title": "Futbolçu",
-        "desc": "Mövqeyinə uyğun həvəskar futbolçu tapırıq."
+        "desc": "Mövqeyinə uyğun həvəskar futbolçu tapırıq.",
+        "whatsappMessage": "Salam! Oyunuma futbolçu lazımdır."
       },
       "qapici": {
         "title": "Qapıçı",
-        "desc": "Son anda qapıçı axtaran komandalar üçün sürətli həll."
+        "desc": "Son anda qapıçı axtaran komandalar üçün sürətli həll.",
+        "whatsappMessage": "Salam! Oyunuma qapıçı lazımdır."
       },
       "hakim": {
         "title": "Hakim",
-        "desc": "Dostluq və məşq oyunları üçün hakim təmin edirik."
+        "desc": "Dostluq və məşq oyunları üçün hakim təmin edirik.",
+        "whatsappMessage": "Salam! Oyunuma hakim lazımdır."
       },
       "hekim": {
         "title": "Həkim",
-        "desc": "Oyun zamanı ilk tibbi yardım üçün həkim təşkil edirik."
+        "desc": "Oyun zamanı ilk tibbi yardım üçün həkim təşkil edirik.",
+        "whatsappMessage": "Salam! Oyunuma həkim lazımdır."
       }
     },
     "tiers": {
@@ -122,7 +126,7 @@
       "point2": "Uyğun gəlməyən namizəd sürətlə əvəzlənir.",
       "point3": "Məmnuniyyətini əsas tuturuq.",
       "badgeLabel": "Futbolio zəmanəti",
-      "moneyBackSubline": "pul geri",
+      "moneyBackSubline": "pul geri qaytarılır",
       "moneyBackDesc": "Məmnun qalmasan, pulunu geri qaytarırıq."
     },
     "cta": {
@@ -251,7 +255,7 @@
       "tooLong": "Mətn həddindən artıq uzundur",
       "minSelectionGameTypes": "Ən azı bir oyun növü seç",
       "minSelectionDistricts": "Ən azı bir rayon seç",
-      "invalidVideoUrl": "Keçərli Instagram, TikTok, YouTube və ya Google Drive linki daxil et",
+      "invalidVideoUrl": "Düzgün formatlı (http:// və ya https://) video linki daxil et",
       "videoRequired": "Ən azı bir video fayl və ya video linki tələb olunur",
       "filesRequired": "Tələb olunan faylları yüklə",
       "consentRequired": "Davam etmək üçün bunu təsdiqləməlisən",
@@ -265,7 +269,10 @@
       "professionalPeriodsRequired": "Ən azı bir dövr əlavə et",
       "professionalPeriodOrder": "Son il başlanğıc ildən əvvəl ola bilməz",
       "certificationNameRequired": "Sertifikatın adını daxil et",
-      "equipmentMissingTextRequired": "Nələrin çatışmadığını qeyd et"
+      "equipmentMissingTextRequired": "Nələrin çatışmadığını qeyd et",
+      "universityNameRequired": "Universitetini seç və ya adını yaz",
+      "courseYearRequired": "Kursunu seç",
+      "certificationProofRequired": "Sertifikatın adını, linkini və ya sənədini əlavə et"
     },
     "roles": {
       "player": "Futbolçu",
@@ -322,8 +329,8 @@
           "3_5": "3-5 il",
           "over_5": "5 ildən çox"
         },
-        "clubExperienceLabel": "Komanda təcrübən (istəyə bağlı)",
-        "clubExperiencePlaceholder": "Hansı komandalarda oynamısan, hansı liqalarda...",
+        "clubExperienceLabel": "Özün haqqında qeyd etmək istədiyin məlumatlar",
+        "clubExperiencePlaceholder": "Özün haqqında qısa məlumat yaz",
         "experienceLevelLabel": "Təcrübə səviyyən",
         "experienceLevel": {
           "amateur": "Həvəskar",
@@ -339,13 +346,20 @@
           "toLabel": "Son il",
           "clubLabel": "Klub (istəyə bağlı)",
           "clubPlaceholder": "Klubun adı",
-          "addAnother": "Başqa dövr əlavə et",
-          "remove": "Sil"
+          "addAnother": "Dövr əlavə et",
+          "remove": "Sil",
+          "periodLabel": "Dövr {n}"
         },
-        "hourlyRateLabel": "Saatlıq qiymətin (AZN)",
+        "hourlyRateLabel": "1 oyun üçün qiymət (AZN)",
         "hourlyRatePlaceholder": "Məs. 15",
         "hourlyRateHint": "Bu qiymət sifarişçiyə göstərilmir, uyğun sifarişləri seçmək üçün istifadə olunur.",
-        "mainPositionDisabledTitle": "Bu, əsas mövqeyinizdir"
+        "mainPositionDisabledTitle": "Bu, əsas mövqeyinizdir",
+        "universityNameLabel": "Oxuduğun universitet",
+        "universityNamePlaceholder": "Universitet seç",
+        "universityNameSearchPlaceholder": "Universitet axtar...",
+        "universityNameOther": "Digər",
+        "universityNameOtherPlaceholder": "Universitetin adını yaz",
+        "courseYearLabel": "Neçənci kursdasan?"
       },
       "referee": {
         "title": "Hakim haqqında",
@@ -367,7 +381,13 @@
           "tournaments": "Turnirlər"
         },
         "experienceLabel": "Təcrüban haqqında (istəyə bağlı)",
-        "experiencePlaceholder": "Məsələn: hansı turnirlərdə və liqalarda hakimlik etmisiniz, neçə oyun"
+        "experiencePlaceholder": "Məsələn: hansı turnirlərdə və liqalarda hakimlik etmisiniz, neçə oyun",
+        "certificationLinkLabel": "Sertifikat linki (istəyə bağlı)",
+        "certificationLinkPlaceholder": "https://...",
+        "certificationFileLabel": "Sertifikat sənədi (istəyə bağlı)",
+        "certificationFileBrowse": "kompüterdən seç",
+        "certificationFileDrag": "Faylı bura sürüklə",
+        "certificationProofHint": "Sertifikatı aşağıdakı yollardan biri ilə təsdiqləyə bilərsən: adını yaz, linkini əlavə et, ya da sənədini yüklə."
       },
       "medic": {
         "title": "Həkim haqqında",
@@ -419,17 +439,17 @@
       "description": "Profilinin yoxlanılması üçün aşağıdakı faylları yüklə.",
       "photo": {
         "label": "Profil şəkli",
-        "hint": "JPG, PNG və ya WEBP/HEIC, maksimum 10 MB"
+        "hint": "JPG, PNG və ya HEIC, maksimum 10 MB"
       },
       "video": {
         "label": "Video",
-        "hint": "MP4 və ya MOV, maksimum 200 MB, hər biri. Video fayl və ya video linkindən ən azı biri kifayətdir.",
-        "linkLabel": "Video linki (Instagram, TikTok, YouTube və ya Google Drive)",
+        "hint": "MP4 və ya MOV, maksimum 200 MB, hər biri. Video fayl və ya düzgün formatlı video linkindən ən azı biri kifayətdir.",
+        "linkLabel": "Video linki",
         "linkPlaceholder": "https://..."
       },
       "document": {
-        "label": "Sertifikat / sənəd",
-        "hint": "PDF, JPG və ya PNG, maksimum 10 MB, hər biri"
+        "label": "Diplom / sertifikat",
+        "hint": "PDF, JPG və ya PNG, maksimum 10 MB, hər biri. Ən azı 1 sənəd tələb olunur."
       },
       "dropzone": {
         "instructions": "Faylı bura sürüklə",

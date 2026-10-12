@@ -36,26 +36,15 @@ instagram_handle_validator = RegexValidator(
     message="Enter an Instagram handle without the leading @.",
 )
 
-ALLOWED_VIDEO_LINK_DOMAINS = (
-    "instagram.com",
-    "www.instagram.com",
-    "tiktok.com",
-    "www.tiktok.com",
-    "youtube.com",
-    "www.youtube.com",
-    "youtu.be",
-    "drive.google.com",
-)
-
-
 def validate_video_link_domain(url: str) -> None:
+    """Accepts any well-formed http(s) URL — not restricted to a domain
+    allowlist, per the owner's explicit instruction that any valid video
+    link should be accepted."""
     from urllib.parse import urlparse
 
-    netloc = urlparse(url).netloc.lower()
-    if netloc not in ALLOWED_VIDEO_LINK_DOMAINS:
-        raise ValidationError(
-            "Video link must be an Instagram, TikTok, YouTube or Google Drive URL."
-        )
+    scheme = urlparse(url).scheme.lower()
+    if scheme not in ("http", "https"):
+        raise ValidationError("Enter a valid video link starting with http:// or https://.")
 
 
 MIN_AGE = 18

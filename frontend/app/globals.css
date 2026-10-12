@@ -49,6 +49,22 @@ body {
   animation: ball-roll 8s ease-in-out infinite;
 }
 
+/* Continuous ball spin (the facet group inside the ball), independent of
+   the drift above so the two compose without one keyframe overwriting
+   the other's transform. */
+@keyframes ball-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-ball-spin {
+  animation: ball-spin 3s linear infinite;
+}
+
 /* Accessibility: disable all animation/transition durations site-wide
    when the user has requested reduced motion. */
 @media (prefers-reduced-motion: reduce) {

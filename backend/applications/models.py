@@ -85,6 +85,9 @@ class PlayerDetails(models.Model):
     # Admin-facing only — never serialized on a public-facing serializer.
     hourly_rate_azn = models.PositiveIntegerField()
     is_university_student = models.BooleanField()
+    # Required only when is_university_student=True (serializer-enforced).
+    university_name = models.CharField(max_length=200, blank=True)
+    course_year = models.PositiveSmallIntegerField(null=True, blank=True)
 
 
 class PlayerProfessionalPeriod(models.Model):
@@ -109,6 +112,7 @@ class RefereeDetails(models.Model):
     )
     has_official_certification = models.BooleanField()
     certification_name = models.CharField(max_length=200, blank=True)
+    certification_link = models.URLField(blank=True)
     years_refereeing = models.CharField(max_length=20, choices=YearsRefereeing.choices)
     game_types = ArrayField(models.CharField(max_length=20, choices=GameType.choices), default=list)
     experience_text = models.CharField(max_length=500, blank=True)

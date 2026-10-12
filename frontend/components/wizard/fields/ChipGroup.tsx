@@ -48,6 +48,7 @@ export function ChipSingleSelect({
         ref={registerRef as React.Ref<HTMLDivElement>}
         tabIndex={-1}
         name={name}
+        className={cn(error && "rounded-lg border-2 border-red-500 p-2")}
       >
         {options.map((option) => (
           <RadioGroupChip key={option.value} value={option.value}>
@@ -103,7 +104,7 @@ export function ChipMultiSelect({
         aria-label={label}
         ref={registerRef as React.Ref<HTMLDivElement>}
         tabIndex={-1}
-        className={cn("flex flex-wrap gap-2")}
+        className={cn("flex flex-wrap gap-2", error && "rounded-lg border-2 border-red-500 p-2")}
       >
         {options.map((option) => {
           const isDisabled = disabledValues?.includes(option.value) ?? false;

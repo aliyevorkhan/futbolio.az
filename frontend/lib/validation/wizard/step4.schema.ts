@@ -38,28 +38,21 @@ export const playerStep4Schema = z
     path: ["video_link_url"],
   });
 
-export const refereeStep4Schema = z
-  .object({
-    photo_uploaded: photoRequired,
-    video_uploaded_count: z.number().min(0).max(3),
-    video_link_url: z.string(),
-    // Optional 0-1 certification document slot (only meaningful when
-    // Step 2's `has_official_certification` is true, but not hard
-    // required even then — matches the backend's relaxed rule).
-    document_uploaded_count: z.number().min(0).max(1, "filesRequired"),
-  })
-  .refine((value) => videoLinkOk(value.video_link_url), {
-    message: "invalidVideoUrl",
-    path: ["video_link_url"],
-  });
+export const refereeStep4Schema = z.object({
+  photo_uploaded: photoRequired,
+  // Referee submissions no longer collect video at all — the
+  // certification document itself is now collected inline in Step 2.
+  video_uploaded_count: z.number().max(0),
+  video_link_url: z.string(),
+  document_uploaded_count: z.number(),
+});
 
 export const medicStep4Schema = z.object({
   photo_uploaded: photoRequired,
   video_uploaded_count: z.number(),
   video_link_url: z.string(),
-  // Relaxed from required-1-to-3 to optional-0-to-3, matching the
-  // backend's relaxation.
-  document_uploaded_count: z.number().min(0).max(3, "filesRequired"),
+  // Mandatory diploma/certificate document, 1-3 files.
+  document_uploaded_count: z.number().min(1, "filesRequired").max(3, "filesRequired"),
 });
 
 export function getStep4Schema(role: Role) {

@@ -15,11 +15,14 @@ import { AccordionFaqItem } from "@/components/shared/AccordionItem";
 // ərazilərdə xidmət göstərirsiniz?") answers need the owner's explicit
 // confirmation before launch — see messages/{az,ru,en}.json's
 // home.suallar.items.q5 / .q11.
+//
+// q4 ("Bütöv rəqib komanda tapmaq olar?") was removed per the owner's
+// request — the key stays in messages/*.json (unused) rather than
+// renumbering every subsequent key.
 const FAQ_KEYS = [
   "q1",
   "q2",
   "q3",
-  "q4",
   "q5",
   "q6",
   "q7",
