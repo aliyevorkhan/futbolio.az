@@ -363,7 +363,7 @@
       },
       "referee": {
         "title": "Hakim haqqında",
-        "hasOfficialCertificationLabel": "Rəsmi hakimlik sertifikatın var?",
+        "hasOfficialCertificationLabel": "Hakimlik sertifikatın var?",
         "certificationNameLabel": "Sertifikatın adı",
         "certificationNamePlaceholder": "Məs. AFFA hakim kursu sertifikatı",
         "yearsRefereeingLabel": "Neçə ildir hakimlik edirsən?",
