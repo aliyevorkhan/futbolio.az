@@ -1,10 +1,10 @@
 import django_filters
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
-from rest_framework import filters, generics, status
+from rest_framework import filters, generics, serializers, status
 from rest_framework.permissions import AllowAny
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
@@ -28,9 +28,13 @@ from .serializers import (
     ApplicationCreateSerializer,
     ApplicationDetailSerializer,
     ApplicationListSerializer,
+    PhoneInputSerializer,
     StatusUpdateSerializer,
     headline_position,
 )
+from .services import find_duplicate_phone_groups
+
+DUPLICATE_PHONE_ADMIN_ERROR = "Bu nömrə artıq başqa namizədə aiddir."
 
 APPLICATION_RELATED = (
     "player_details",
@@ -62,6 +66,23 @@ class CreateApplicationView(APIView):
             position=getattr(application, "_headline_position", ""),
         )
         return Response({"id": str(application.id)}, status=status.HTTP_201_CREATED)
+
+
+class PhoneAvailabilityView(APIView):
+    """Hit when the candidate advances past Step 1, not on blur and not
+    only at final submit — lets the wizard block early with the WhatsApp
+    message, before the candidate has filled in the rest of the form."""
+
+    permission_classes = [AllowAny]
+    throttle_classes = [CloudflareAwareScopedRateThrottle]
+    throttle_scope = "phone_check"
+
+    def post(self, request):
+        serializer = PhoneInputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        canonical = serializer.validated_data["phone"]
+        available = not Application.objects.filter(phone=canonical).exists()
+        return Response({"available": available})
 
 
 # --- Admin ------------------------------------------------------------------------
@@ -99,6 +120,20 @@ class ApplicationListView(generics.ListAPIView):
     queryset = Application.objects.select_related(*APPLICATION_RELATED).prefetch_related("files")
 
 
+class DuplicatePhonesView(APIView):
+    """Permanent read-only surface, kept live even after the DB-level
+    unique constraint ships — defense-in-depth for the one scenario the
+    constraint can't catch (two different raw strings that only collide
+    after normalization, if some future write path ever bypasses
+    canonicalize_phone). Never deletes/merges; a human resolves a real
+    conflict via the phone-edit endpoint above."""
+
+    permission_classes = [IsAdmin]
+
+    def get(self, request):
+        return Response(find_duplicate_phone_groups())
+
+
 class ApplicationDetailView(APIView):
     permission_classes = [IsAdmin]
 
@@ -118,6 +153,39 @@ class ApplicationDetailView(APIView):
             target_type="application",
             target_id=str(pk),
             ip=get_client_ip(request),
+        )
+        return Response(ApplicationDetailSerializer(application).data)
+
+    def patch(self, request, pk):
+        """Admin-only phone edit — the one way to resolve a real duplicate
+        the "Dublikat nömrələr" report surfaces, since nothing is ever
+        deleted/merged automatically."""
+        application = get_object_or_404(Application, pk=pk)
+        serializer = PhoneInputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        canonical = serializer.validated_data["phone"]
+
+        if Application.objects.exclude(pk=pk).filter(phone=canonical).exists():
+            raise serializers.ValidationError({"phone": [DUPLICATE_PHONE_ADMIN_ERROR]})
+
+        old_phone = application.phone
+        try:
+            with transaction.atomic():
+                application.phone = canonical
+                application.save(update_fields=["phone", "updated_at"])
+        except IntegrityError as exc:
+            # Race-condition backstop once the DB-level unique constraint
+            # is live (Release 2) — same error shape as the exists() check
+            # above, never a raw 500.
+            raise serializers.ValidationError({"phone": [DUPLICATE_PHONE_ADMIN_ERROR]}) from exc
+
+        log_event(
+            actor=request.user,
+            action="admin.application.phone_updated",
+            target_type="application",
+            target_id=str(pk),
+            ip=get_client_ip(request),
+            meta={"from": old_phone, "to": canonical},
         )
         return Response(ApplicationDetailSerializer(application).data)
 

@@ -194,6 +194,7 @@ AUDIT_LOG_RETENTION_MONTHS = env.int("AUDIT_LOG_RETENTION_MONTHS", default=12)
 
 RATE_LIMIT_REGISTRATION_PER_HOUR = env.int("RATE_LIMIT_REGISTRATION_PER_HOUR", default=5)
 RATE_LIMIT_UPLOAD_LINK_PER_MINUTE = env.int("RATE_LIMIT_UPLOAD_LINK_PER_MINUTE", default=20)
+RATE_LIMIT_PHONE_CHECK_PER_MINUTE = env.int("RATE_LIMIT_PHONE_CHECK_PER_MINUTE", default=10)
 ADMIN_LOGIN_LOCKOUT_THRESHOLD = env.int("ADMIN_LOGIN_LOCKOUT_THRESHOLD", default=5)
 ADMIN_LOGIN_LOCKOUT_MINUTES = env.int("ADMIN_LOGIN_LOCKOUT_MINUTES", default=15)
 
@@ -294,6 +295,7 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_RATES": {
         "registration": f"{RATE_LIMIT_REGISTRATION_PER_HOUR}/hour",
         "upload_presign": f"{RATE_LIMIT_UPLOAD_LINK_PER_MINUTE}/minute",
+        "phone_check": f"{RATE_LIMIT_PHONE_CHECK_PER_MINUTE}/minute",
         "admin_login": "10/minute",
     },
     "EXCEPTION_HANDLER": "common.exceptions.generic_exception_handler",

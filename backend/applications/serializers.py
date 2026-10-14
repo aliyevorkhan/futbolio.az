@@ -45,8 +45,13 @@ from .models import (
     RefereeDetails,
     StatusChange,
 )
+from .services import canonicalize_phone
 
 GENERIC_SUBMISSION_ERROR = "Sorğunu göndərmək mümkün olmadı. Məlumatları yoxlayıb yenidən cəhd edin."
+DUPLICATE_PHONE_ERROR = (
+    "Bu nömrə ilə artıq qeydiyyat mövcuddur. Məlumatlarını dəyişmək istəyirsənsə, "
+    "WhatsApp-dan bizə yaz."
+)
 
 
 def headline_position(application: Application) -> str:
@@ -181,7 +186,11 @@ class ApplicationCreateSerializer(serializers.Serializer):
     # which isn't known until the whole object is assembled, so the real
     # check lives in validate() below (see common.age_limits).
     date_of_birth = serializers.DateField()
-    phone = serializers.CharField(max_length=20, validators=[az_phone_validator])
+    # No field-level validator — a raw, non-canonical input (e.g.
+    # "055 885 07 09") must be normalized before the strict operator-code
+    # regex ever runs, which only validate_phone() below can do (DRF runs
+    # field-level validators before any validate_<field> hook).
+    phone = serializers.CharField(max_length=20)
     instagram_handle = serializers.CharField(
         max_length=30, required=False, allow_blank=True, default="", validators=[instagram_handle_validator]
     )
@@ -208,6 +217,13 @@ class ApplicationCreateSerializer(serializers.Serializer):
     # Honeypot: real users never see or fill this field — any non-blank
     # value means the submitter is an automated client.
     website = serializers.CharField(required=False, allow_blank=True, default="", write_only=True)
+
+    def validate_phone(self, value):
+        canonical = canonicalize_phone(value)
+        az_phone_validator(canonical)
+        if Application.objects.filter(phone=canonical).exists():
+            raise serializers.ValidationError(DUPLICATE_PHONE_ERROR)
+        return canonical
 
     def validate(self, attrs):
         request = self.context["request"]
@@ -375,10 +391,11 @@ class ApplicationCreateSerializer(serializers.Serializer):
         consents_data = validated_data.pop("consents")
 
         role = validated_data["role"]
-        phone = validated_data["phone"]
-        is_duplicate = Application.objects.filter(phone=phone).exists()
 
-        application = Application.objects.create(is_duplicate=is_duplicate, **validated_data)
+        # validate_phone() below already guarantees no other application
+        # has this (canonical) phone, so this can never be True for a new
+        # row anymore — the column itself stays for historical rows.
+        application = Application.objects.create(is_duplicate=False, **validated_data)
 
         headline = ""
         if role == ApplicationRole.PLAYER and player_details_data:
@@ -537,6 +554,20 @@ class ApplicationDetailSerializer(serializers.ModelSerializer):
             "status_history",
             "notes",
         ]
+
+
+class PhoneInputSerializer(serializers.Serializer):
+    """Shared shape for the public phone-availability check and the admin
+    phone-edit endpoint — canonicalizes then re-runs the strict operator
+    regex. Each caller does its own duplicate-exists() check (the admin
+    edit excludes the record being edited, the public check doesn't)."""
+
+    phone = serializers.CharField(max_length=20)
+
+    def validate_phone(self, value):
+        canonical = canonicalize_phone(value)
+        az_phone_validator(canonical)
+        return canonical
 
 
 class StatusUpdateSerializer(serializers.Serializer):
