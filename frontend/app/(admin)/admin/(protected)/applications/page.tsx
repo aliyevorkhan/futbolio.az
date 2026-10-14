@@ -26,10 +26,8 @@ const FILTER_PARAM_KEYS = [
   "status",
   "date_from",
   "date_to",
-  "self_rating",
+  "level",
   "position",
-  "days",
-  "hours",
   "search",
   "ordering",
   "page",
@@ -85,7 +83,7 @@ function ApplicationsPageContent() {
   }
 
   const page = params.page ?? 1;
-  const pageSize = 50;
+  const pageSize = 20;
   const count = data?.count ?? 0;
   const from = count === 0 ? 0 : (page - 1) * pageSize + 1;
   const to = Math.min(page * pageSize, count);

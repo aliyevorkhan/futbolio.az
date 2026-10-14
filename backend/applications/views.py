@@ -14,6 +14,7 @@ from audit.services import log_event
 from common.enums import FileKind
 from common.export import rows_to_csv_bytes, rows_to_xlsx_bytes
 from common.ip import get_client_ip
+from common.pagination import AdminApplicationsPagination
 from common.permissions import IsAdmin
 from common.storage import presign_get_export
 from common.throttling import CloudflareAwareScopedRateThrottle
@@ -71,6 +72,7 @@ class ApplicationFilterSet(FilterSet):
     date_to = django_filters.DateFilter(field_name="created_at", lookup_expr="date__lte")
     position = django_filters.CharFilter(method="filter_position")
     time_slot = django_filters.CharFilter(method="filter_time_slot")
+    level = django_filters.CharFilter(field_name="player_details__experience_level")
 
     class Meta:
         model = Application
@@ -88,6 +90,7 @@ class ApplicationFilterSet(FilterSet):
 class ApplicationListView(generics.ListAPIView):
     permission_classes = [IsAdmin]
     serializer_class = ApplicationListSerializer
+    pagination_class = AdminApplicationsPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_class = ApplicationFilterSet
     search_fields = ["full_name", "phone"]

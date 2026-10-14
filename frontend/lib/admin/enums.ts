@@ -38,11 +38,9 @@ export const PREFERRED_FEET = ["right", "left", "both"] as const;
 /** Shared across years_playing / years_refereeing / work_experience. */
 export const DURATIONS = ["under_1", "1_3", "3_5", "over_5"] as const;
 
-export const LICENSE_STATUSES = [
-  "licensed",
-  "course_completed",
-  "experienced_unlicensed",
-] as const;
+export const PLAYER_EXPERIENCE_LEVELS = ["amateur", "semi_pro", "former_pro"] as const;
+
+export const FIRST_AID_EQUIPMENT_STATUSES = ["yes", "partial", "no"] as const;
 
 export const GAME_TYPES = ["mini_football", "big_football", "futsal", "tournaments"] as const;
 
@@ -52,6 +50,7 @@ export const MEDIC_SPECIALTIES = [
   "paramedic",
   "physiotherapist",
   "nurse",
+  "first_aid_specialist",
 ] as const;
 
 export const WEEKDAYS = [
@@ -64,7 +63,7 @@ export const WEEKDAYS = [
   "sunday",
 ] as const;
 
-export const HOUR_SLOTS = ["18_20", "20_22", "22_00", "weekend_daytime"] as const;
+export const HOUR_SLOTS = ["09_12", "12_15", "15_18", "18_21", "21_24"] as const;
 
 export const FILE_KINDS = ["photo", "video", "document"] as const;
 

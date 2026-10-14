@@ -581,15 +581,14 @@
         "status": "Status",
         "dateFrom": "Tarixdən",
         "dateTo": "Tarixədək",
-        "selfRating": "Özünüqiymətləndirmə",
         "position": "Mövqe",
-        "days": "Günlər",
-        "hours": "Saatlar",
         "allRoles": "Bütün rollar",
         "allDistricts": "Bütün rayonlar",
         "allStatuses": "Bütün statuslar",
         "apply": "Tətbiq et",
-        "reset": "Sıfırla"
+        "reset": "Sıfırla",
+        "level": "Səviyyə",
+        "allLevels": "Bütün səviyyələr"
       },
       "sort": {
         "label": "Sırala",
@@ -607,12 +606,14 @@
         "name": "Ad",
         "role": "Rol",
         "position": "Mövqe",
+        "level": "Səviyyə",
         "age": "Yaş",
         "district": "Rayon",
         "phone": "Telefon",
         "status": "Status",
         "date": "Tarix",
-        "duplicate": "Təkrar"
+        "duplicate": "Təkrar",
+        "photo": "Şəkil"
       },
       "pagination": {
         "pageInfo": "{count} nəticədən {from}-{to}",
@@ -629,10 +630,11 @@
         "personal": "Şəxsi məlumatlar",
         "roleDetails": "Rol üzrə məlumatlar",
         "availability": "Uyğunluq",
-        "files": "Fayllar",
+        "files": "Media və sənədlər",
         "consents": "Razılıqlar",
         "statusHistory": "Status tarixçəsi",
-        "notes": "Qeydlər"
+        "notes": "Qeydlər",
+        "professionalPeriods": "Peşəkar oynadığı dövrlər"
       },
       "fields": {
         "fullName": "Ad, soyad",
@@ -650,18 +652,28 @@
         "preferredFoot": "Üstün ayaq",
         "yearsPlaying": "Təcrübə",
         "clubExperience": "Klub təcrübəsi",
-        "selfRating": "Özünüqiymətləndirmə",
-        "licenseStatus": "Lisenziya statusu",
         "yearsRefereeing": "Hakimlik təcrübəsi",
         "gameTypes": "Oyun növləri",
         "refereeExperience": "Təcrübə qeydi",
         "specialty": "İxtisas",
-        "firstAidCert": "İlk yardım sertifikatı",
         "workExperience": "İş təcrübəsi",
         "workplace": "İş yeri",
-        "days": "Günlər",
-        "hours": "Saatlar",
-        "districts": "Rayonlar"
+        "districts": "Rayonlar",
+        "dateOfBirth": "Doğum tarixi",
+        "isUniversityStudent": "Tələbədir?",
+        "universityName": "Universitet",
+        "courseYear": "Kurs",
+        "experienceLevel": "Təcrübə səviyyəsi",
+        "hasProExperience": "Peşəkar səviyyədə oynayıb?",
+        "hourlyRate": "1 oyun üçün qiymət",
+        "hasOfficialCertification": "Rəsmi sertifikatı var?",
+        "certificationName": "Sertifikatın adı",
+        "certificationLink": "Sertifikat linki",
+        "equipmentStatus": "İlk yardım avadanlığı",
+        "equipmentMissingText": "Çatışmayan avadanlıq",
+        "timeSlots": "Uyğun vaxtlar",
+        "periodClub": "Klub",
+        "noPeriods": "Dövr qeyd edilməyib."
       },
       "status": {
         "label": "Status",
@@ -678,7 +690,18 @@
         "scanClean": "təmiz",
         "scanPending": "yoxlanılır",
         "scanInfected": "yoluxmuş, silinib",
-        "scanError": "xəta"
+        "scanError": "xəta",
+        "notFound": "Fayl tapılmadı.",
+        "openOriginal": "Orijinalda aç",
+        "fullscreen": "Tam ekranda bax",
+        "videoSpeed": "Sürət",
+        "photoTab": "Şəkillər",
+        "videoTab": "Videolar",
+        "documentTab": "Sənədlər",
+        "videoLinkTab": "Video linki",
+        "pdfPreviewHint": "Sənəd aşağıda önizlənir.",
+        "sensitiveForbidden": "Bu sənəd yalnız səlahiyyətli adminlər üçündür.",
+        "sensitiveBadge": "Həssas sənəd"
       },
       "consents": {
         "accepted": "Qəbul edilib",
@@ -707,7 +730,9 @@
         "success": "Müraciət silindi.",
         "error": "Müraciəti silmək mümkün olmadı."
       },
-      "loadError": "Müraciət tapılmadı."
+      "loadError": "Müraciət tapılmadı.",
+      "callAction": "Zəng et",
+      "whatsappAction": "WhatsApp"
     },
     "settings": {
       "title": "Tənzimləmələr",
@@ -827,11 +852,6 @@
         "3_5": "3-5 il",
         "over_5": "5+ il"
       },
-      "licenseStatus": {
-        "licensed": "Lisenziyalı",
-        "course_completed": "Kurs bitirib",
-        "experienced_unlicensed": "Təcrübəli (lisenziyasız)"
-      },
       "gameType": {
         "mini_football": "Mini-futbol",
         "big_football": "Böyük futbol",
@@ -843,7 +863,8 @@
         "doctor": "Həkim",
         "paramedic": "Feldşer/Paramedik",
         "physiotherapist": "Fizioterapevt",
-        "nurse": "Tibb bacısı"
+        "nurse": "Tibb bacısı",
+        "first_aid_specialist": "İlk yardım mütəxəssisi"
       },
       "weekday": {
         "monday": "Bazar ertəsi",
@@ -855,10 +876,11 @@
         "sunday": "Bazar"
       },
       "hourSlot": {
-        "18_20": "18:00-20:00",
-        "20_22": "20:00-22:00",
-        "22_00": "22:00-00:00",
-        "weekend_daytime": "Həftə sonu gündüz"
+        "09_12": "09:00-12:00",
+        "12_15": "12:00-15:00",
+        "15_18": "15:00-18:00",
+        "18_21": "18:00-21:00",
+        "21_24": "21:00-24:00"
       },
       "fileKind": {
         "photo": "Şəkil",
@@ -873,6 +895,16 @@
       "adminRole": {
         "admin": "Admin",
         "super_admin": "Super admin"
+      },
+      "experienceLevel": {
+        "amateur": "Həvəskar",
+        "semi_pro": "Yarı-peşəkar",
+        "former_pro": "Keçmiş peşəkar"
+      },
+      "equipmentStatus": {
+        "yes": "Bəli",
+        "partial": "Qismən",
+        "no": "Xeyr"
       }
     }
   },

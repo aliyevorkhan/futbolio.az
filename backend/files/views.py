@@ -116,11 +116,22 @@ class ApplicationFileURLView(APIView):
         if file_obj.is_sensitive and not CanViewSensitiveFiles().has_permission(request, self):
             return Response({"detail": "Forbidden."}, status=status.HTTP_403_FORBIDDEN)
 
-        url = presign_get(
+        content_type = file_obj.detected_mime or file_obj.declared_mime
+        # `url` has no Content-Disposition override, so browsers render it
+        # inline (img/video/audio tags always do this regardless; iframe/
+        # object — used for the admin PDF preview — only renders inline
+        # when there's no "attachment" disposition). `download_url` forces
+        # a save-as, for the explicit "Yüklə" button.
+        view_url = presign_get(
+            file_obj.storage_key,
+            ttl=settings.FILE_PRESIGN_VIEW_TTL_SECONDS,
+            content_type=content_type,
+        )
+        download_url = presign_get(
             file_obj.storage_key,
             ttl=settings.FILE_PRESIGN_VIEW_TTL_SECONDS,
             download_filename=file_obj.original_name,
-            content_type=file_obj.detected_mime or file_obj.declared_mime,
+            content_type=content_type,
         )
         log_event(
             actor=request.user,
@@ -131,7 +142,8 @@ class ApplicationFileURLView(APIView):
         )
         return Response(
             {
-                "url": url,
+                "url": view_url,
+                "download_url": download_url,
                 "scan_status": file_obj.scan_status,
                 "original_name": file_obj.original_name,
                 "kind": file_obj.kind,

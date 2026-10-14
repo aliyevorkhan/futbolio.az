@@ -17,10 +17,8 @@ import {
   APPLICATION_STATUSES,
   DISTRICTS,
   MAIN_POSITIONS,
-  LICENSE_STATUSES,
   MEDIC_SPECIALTIES,
-  WEEKDAYS,
-  HOUR_SLOTS,
+  PLAYER_EXPERIENCE_LEVELS,
 } from "@/lib/admin/enums";
 
 const FILTER_KEYS = [
@@ -29,10 +27,8 @@ const FILTER_KEYS = [
   "status",
   "date_from",
   "date_to",
-  "self_rating",
+  "level",
   "position",
-  "days",
-  "hours",
 ] as const;
 
 type FilterKey = (typeof FILTER_KEYS)[number];
@@ -104,30 +100,18 @@ export function ApplicationsFilters() {
         onChange={(v) => setField("position", v)}
         options={[
           ...MAIN_POSITIONS.map((p) => ({ value: p, label: tEnums(`mainPosition.${p}`) })),
-          ...LICENSE_STATUSES.map((p) => ({ value: p, label: tEnums(`licenseStatus.${p}`) })),
           ...MEDIC_SPECIALTIES.map((p) => ({ value: p, label: tEnums(`specialty.${p}`) })),
         ]}
       />
       <FilterSelect
-        label={t("selfRating")}
-        placeholder={t("selfRating")}
-        value={draft.self_rating}
-        onChange={(v) => setField("self_rating", v)}
-        options={[1, 2, 3, 4, 5].map((n) => ({ value: String(n), label: String(n) }))}
-      />
-      <FilterSelect
-        label={t("days")}
-        placeholder={t("days")}
-        value={draft.days}
-        onChange={(v) => setField("days", v)}
-        options={WEEKDAYS.map((d) => ({ value: d, label: tEnums(`weekday.${d}`) }))}
-      />
-      <FilterSelect
-        label={t("hours")}
-        placeholder={t("hours")}
-        value={draft.hours}
-        onChange={(v) => setField("hours", v)}
-        options={HOUR_SLOTS.map((h) => ({ value: h, label: tEnums(`hourSlot.${h}`) }))}
+        label={t("level")}
+        placeholder={t("allLevels")}
+        value={draft.level}
+        onChange={(v) => setField("level", v)}
+        options={PLAYER_EXPERIENCE_LEVELS.map((lvl) => ({
+          value: lvl,
+          label: tEnums(`experienceLevel.${lvl}`),
+        }))}
       />
       <label className="flex flex-col gap-1.5 text-sm font-medium text-foreground">
         {t("dateFrom")}

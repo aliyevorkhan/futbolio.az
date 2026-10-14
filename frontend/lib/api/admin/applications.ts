@@ -3,11 +3,13 @@ import { adminApiFetch } from "@/lib/api/client";
 /**
  * Admin applications endpoints. Types below mirror
  * `applications/serializers.py` on the backend exactly (verified against
- * source, not guessed): the list endpoint exposes a single flattened
- * `position` string (the backend's own "headline position" concept,
- * resolved server-side via `headline_position()` from whichever of
- * player_details/referee_details/medic_details applies) rather than the
- * raw per-role objects — those only appear on the detail endpoint.
+ * a live production response, not guessed): the list endpoint exposes a
+ * single flattened `position` string (the backend's own "headline
+ * position" concept, resolved server-side via `headline_position()` from
+ * whichever of player_details/referee_details/medic_details applies —
+ * player: main_position code, referee: years_refereeing duration code,
+ * medic: comma-joined specialty codes) rather than the raw per-role
+ * objects — those only appear on the detail endpoint.
  */
 
 export interface PaginatedResponse<T> {
@@ -43,15 +45,25 @@ export interface ApplicationListItem {
   id: string;
   full_name: string;
   role: ApplicationRole;
-  age: number;
+  date_of_birth: string;
   district: string;
   phone: string;
   status: ApplicationStatus;
   created_at: string;
   is_duplicate: boolean;
-  /** Headline role-specific field (main_position / license_status / specialty). */
+  /** Headline role-specific field — see the module doc for the shape per role. */
   position: string;
+  /** Player-only `experience_level` code; empty string for referee/medic. */
+  level: string;
   files: FileListSummary[];
+  /** Signed, short-lived thumbnail URL; null until a clean photo exists. */
+  photo_thumbnail_url: string | null;
+}
+
+export interface PlayerProfessionalPeriod {
+  start_year: number;
+  end_year: number;
+  club: string;
 }
 
 export interface PlayerDetails {
@@ -60,26 +72,35 @@ export interface PlayerDetails {
   preferred_foot: string;
   years_playing: string;
   club_experience_text: string;
-  self_rating: number;
+  experience_level: string;
+  has_pro_experience: boolean;
+  hourly_rate_azn: number;
+  is_university_student: boolean;
+  university_name: string;
+  course_year: number | null;
+  professional_periods: PlayerProfessionalPeriod[];
 }
 
 export interface RefereeDetails {
-  license_status: string;
+  has_official_certification: boolean;
+  certification_name: string;
+  certification_link: string;
   years_refereeing: string;
   game_types: string[];
   experience_text: string;
 }
 
 export interface MedicDetails {
-  specialty: string;
-  first_aid_cert: boolean;
+  specialty: string[];
+  equipment_status: string;
+  equipment_missing_text: string;
   work_experience: string;
   workplace: string;
 }
 
 export interface Availability {
-  days: string[];
-  hours: string[];
+  /** Composite "weekday:hour_slot" strings, e.g. "monday:09_12". */
+  time_slots: string[];
   districts: string[];
 }
 
@@ -119,7 +140,7 @@ export interface ApplicationDetail {
   id: string;
   role: ApplicationRole;
   full_name: string;
-  age: number;
+  date_of_birth: string;
   phone: string;
   instagram_handle: string;
   district: string;
@@ -148,10 +169,9 @@ export interface ApplicationListParams {
   status?: string;
   date_from?: string;
   date_to?: string;
-  self_rating?: string;
+  level?: string;
   position?: string;
-  days?: string;
-  hours?: string;
+  time_slot?: string;
   search?: string;
   ordering?: string;
   page?: number;
@@ -229,7 +249,10 @@ export async function exportApplications(
 }
 
 export interface FileUrlResponse {
+  /** Inline-renderable (no forced download) — safe for img/video/iframe src. */
   url: string;
+  /** Forces a save-as dialog — use for the explicit "Yüklə" action. */
+  download_url: string;
   scan_status: ScanStatus;
   original_name: string;
   kind: FileKind;

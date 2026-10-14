@@ -5,8 +5,10 @@ import { format } from "date-fns";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/admin/StatusBadge";
+import { ApplicantAvatar } from "@/components/admin/ApplicationsTable";
 import { formatPhone } from "@/lib/utils";
-import { positionEnumCategory } from "@/lib/admin/labels";
+import { formatHeadlinePosition } from "@/lib/admin/labels";
+import { ageFromDateOfBirth } from "@/lib/admin/age";
 import type { ApplicationListItem } from "@/lib/api/admin/applications";
 
 export function ApplicationsCardList({ applications }: { applications: ApplicationListItem[] }) {
@@ -23,25 +25,33 @@ export function ApplicationsCardList({ applications }: { applications: Applicati
           className="flex flex-col gap-2 rounded-xl border border-brand-dark/10 bg-white p-4"
         >
           <div className="flex items-start justify-between gap-2">
-            <div>
-              <div className="font-semibold text-foreground">
-                {app.full_name}
-                {app.is_duplicate && (
-                  <Badge variant="amber" className="ml-2">
-                    {t("duplicate")}
-                  </Badge>
-                )}
+            <div className="flex items-center gap-3">
+              <ApplicantAvatar src={app.photo_thumbnail_url} name={app.full_name} />
+              <div>
+                <div className="font-semibold text-foreground">
+                  {app.full_name}
+                  {app.is_duplicate && (
+                    <Badge variant="amber" className="ml-2">
+                      {t("duplicate")}
+                    </Badge>
+                  )}
+                </div>
+                <div className="text-sm text-muted">{tEnums(`role.${app.role}`)}</div>
               </div>
-              <div className="text-sm text-muted">{tEnums(`role.${app.role}`)}</div>
             </div>
             <StatusBadge status={app.status} />
           </div>
 
           <dl className="grid grid-cols-2 gap-x-3 gap-y-1 text-sm">
             <Row label={t("position")}>
-              {app.position ? tEnums(`${positionEnumCategory(app.role)}.${app.position}`) : tc("noValue")}
+              {app.position ? formatHeadlinePosition(app.role, app.position, tEnums) : tc("noValue")}
             </Row>
-            <Row label={t("age")}>{app.age}</Row>
+            {app.role === "player" && (
+              <Row label={t("level")}>
+                {app.level ? tEnums(`experienceLevel.${app.level}`) : tc("noValue")}
+              </Row>
+            )}
+            <Row label={t("age")}>{ageFromDateOfBirth(app.date_of_birth)}</Row>
             <Row label={t("district")}>{tEnums(`district.${app.district}`)}</Row>
             <Row label={t("phone")}>{formatPhone(app.phone)}</Row>
             <Row label={t("date")}>{format(new Date(app.created_at), "dd.MM.yyyy HH:mm")}</Row>

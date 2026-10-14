@@ -5,15 +5,17 @@ import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { format } from "date-fns";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Instagram, Phone, MessageCircle, User } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { ApplicationStatusControl } from "@/components/admin/ApplicationStatusControl";
-import { ApplicationFileViewer } from "@/components/admin/ApplicationFileViewer";
+import { MediaSection } from "@/components/admin/ApplicationFileViewer";
+import { VideoLinkEmbed } from "@/components/admin/VideoLinkEmbed";
 import { ApplicationNotes } from "@/components/admin/ApplicationNotes";
 import { DeleteApplicationDialog } from "@/components/admin/DeleteApplicationDialog";
-import { formatPhone } from "@/lib/utils";
-import { getApplication } from "@/lib/api/admin/applications";
+import { formatPhone, buildWhatsAppUrl } from "@/lib/utils";
+import { ageFromDateOfBirth } from "@/lib/admin/age";
+import { getApplication, getApplicationFileUrl } from "@/lib/api/admin/applications";
 
 export default function ApplicationDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -26,6 +28,14 @@ export default function ApplicationDetailPage() {
     queryFn: () => getApplication(id),
   });
 
+  const firstPhoto = app?.files.find((f) => f.kind === "photo" && f.scan_status === "clean");
+  const { data: photoUrl } = useQuery({
+    queryKey: ["admin-application-file-url", id, firstPhoto?.id],
+    queryFn: () => getApplicationFileUrl(id, firstPhoto!.id),
+    enabled: !!firstPhoto,
+    staleTime: 10 * 60 * 1000,
+  });
+
   if (isLoading) {
     return <p className="text-sm text-muted">{tc("loading")}</p>;
   }
@@ -33,12 +43,8 @@ export default function ApplicationDetailPage() {
     return <p className="text-sm text-red-600">{t("loadError")}</p>;
   }
 
-  const headline =
-    app.role === "player"
-      ? app.player_details?.main_position
-      : app.role === "referee"
-        ? app.referee_details?.license_status
-        : app.medic_details?.specialty;
+  const age = ageFromDateOfBirth(app.date_of_birth);
+  const whatsappUrl = buildWhatsAppUrl(app.phone);
 
   return (
     <div className="flex flex-col gap-6">
@@ -56,18 +62,65 @@ export default function ApplicationDetailPage() {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <h1 className="text-2xl font-bold text-foreground">{app.full_name}</h1>
-        {app.is_duplicate && <Badge variant="amber">{t("fields.duplicate")}</Badge>}
-      </div>
+      <section className="flex flex-col gap-4 rounded-xl border border-brand-dark/10 bg-white p-4 sm:flex-row sm:items-center sm:p-6">
+        {photoUrl ? (
+          <a href={photoUrl.url} target="_blank" rel="noopener" className="shrink-0">
+            {/* eslint-disable-next-line @next/next/no-img-element -- signed URL, not an optimizable local asset */}
+            <img
+              src={photoUrl.url}
+              alt={app.full_name}
+              className="h-24 w-24 rounded-full border border-brand-dark/10 object-cover sm:h-28 sm:w-28"
+            />
+          </a>
+        ) : (
+          <span className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-surface text-muted sm:h-28 sm:w-28">
+            <User className="h-9 w-9" aria-hidden="true" />
+          </span>
+        )}
+
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-2xl font-bold text-foreground">{app.full_name}</h1>
+            <Badge>{tEnums(`role.${app.role}`)}</Badge>
+            {app.is_duplicate && <Badge variant="amber">{t("fields.duplicate")}</Badge>}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 text-sm">
+            <a
+              href={`tel:${app.phone}`}
+              className="flex items-center gap-1.5 font-medium text-foreground hover:underline"
+            >
+              <Phone className="h-4 w-4" aria-hidden="true" />
+              {formatPhone(app.phone)}
+            </a>
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener"
+              className="flex items-center gap-1.5 rounded-full bg-brand-green px-3 py-1 font-semibold text-brand-dark"
+            >
+              <MessageCircle className="h-4 w-4" aria-hidden="true" />
+              {t("whatsappAction")}
+            </a>
+            {app.instagram_handle && (
+              <a
+                href={`https://instagram.com/${app.instagram_handle}`}
+                target="_blank"
+                rel="noopener"
+                className="flex items-center gap-1.5 text-muted hover:text-foreground hover:underline"
+              >
+                <Instagram className="h-4 w-4" aria-hidden="true" />@{app.instagram_handle}
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
 
       <Section title={t("sections.personal")}>
-        <Field label={t("fields.role")}>{tEnums(`role.${app.role}`)}</Field>
-        <Field label={t("fields.age")}>{app.age}</Field>
-        <Field label={t("fields.phone")}>{formatPhone(app.phone)}</Field>
-        {app.instagram_handle && (
-          <Field label={t("fields.instagram")}>{app.instagram_handle}</Field>
-        )}
+        <Field label={t("fields.dateOfBirth")}>
+          {format(new Date(app.date_of_birth), "dd.MM.yyyy")}
+        </Field>
+        <Field label={t("fields.age")}>{age}</Field>
         <Field label={t("fields.district")}>{tEnums(`district.${app.district}`)}</Field>
         <Field label={t("fields.createdAt")}>
           {format(new Date(app.created_at), "dd.MM.yyyy HH:mm")}
@@ -75,17 +128,22 @@ export default function ApplicationDetailPage() {
         <Field label={t("fields.updatedAt")}>
           {format(new Date(app.updated_at), "dd.MM.yyyy HH:mm")}
         </Field>
-        {app.video_link_url && (
-          <Field label={t("fields.videoLink")}>
-            <a
-              href={app.video_link_url}
-              target="_blank"
-              rel="noopener"
-              className="text-brand-dark underline-offset-2 hover:underline"
-            >
-              {app.video_link_url}
-            </a>
-          </Field>
+        {app.role === "player" && app.player_details && (
+          <>
+            <Field label={t("fields.isUniversityStudent")}>
+              {app.player_details.is_university_student ? tc("yes") : tc("no")}
+            </Field>
+            {app.player_details.is_university_student && (
+              <>
+                <Field label={t("fields.universityName")}>
+                  {app.player_details.university_name || tc("noValue")}
+                </Field>
+                <Field label={t("fields.courseYear")}>
+                  {app.player_details.course_year ?? tc("noValue")}
+                </Field>
+              </>
+            )}
+          </>
         )}
       </Section>
 
@@ -108,19 +166,42 @@ export default function ApplicationDetailPage() {
             <Field label={t("fields.yearsPlaying")}>
               {tEnums(`duration.${app.player_details.years_playing}`)}
             </Field>
+            <Field label={t("fields.experienceLevel")}>
+              {tEnums(`experienceLevel.${app.player_details.experience_level}`)}
+            </Field>
+            <Field label={t("fields.hourlyRate")}>{app.player_details.hourly_rate_azn} AZN</Field>
+            <Field label={t("fields.hasProExperience")}>
+              {app.player_details.has_pro_experience ? tc("yes") : tc("no")}
+            </Field>
             {app.player_details.club_experience_text && (
               <Field label={t("fields.clubExperience")}>
                 {app.player_details.club_experience_text}
               </Field>
             )}
-            <Field label={t("fields.selfRating")}>{app.player_details.self_rating} / 5</Field>
           </>
         )}
         {app.role === "referee" && app.referee_details && (
           <>
-            <Field label={t("fields.licenseStatus")}>
-              {tEnums(`licenseStatus.${app.referee_details.license_status}`)}
+            <Field label={t("fields.hasOfficialCertification")}>
+              {app.referee_details.has_official_certification ? tc("yes") : tc("no")}
             </Field>
+            {app.referee_details.has_official_certification && (
+              <Field label={t("fields.certificationName")}>
+                {app.referee_details.certification_name || tc("noValue")}
+              </Field>
+            )}
+            {app.referee_details.certification_link && (
+              <Field label={t("fields.certificationLink")}>
+                <a
+                  href={app.referee_details.certification_link}
+                  target="_blank"
+                  rel="noopener"
+                  className="text-brand-dark underline-offset-2 hover:underline"
+                >
+                  {app.referee_details.certification_link}
+                </a>
+              </Field>
+            )}
             <Field label={t("fields.yearsRefereeing")}>
               {tEnums(`duration.${app.referee_details.years_refereeing}`)}
             </Field>
@@ -137,11 +218,16 @@ export default function ApplicationDetailPage() {
         {app.role === "medic" && app.medic_details && (
           <>
             <Field label={t("fields.specialty")}>
-              {tEnums(`specialty.${app.medic_details.specialty}`)}
+              {app.medic_details.specialty.map((s) => tEnums(`specialty.${s}`)).join(", ")}
             </Field>
-            <Field label={t("fields.firstAidCert")}>
-              {app.medic_details.first_aid_cert ? tc("yes") : tc("no")}
+            <Field label={t("fields.equipmentStatus")}>
+              {tEnums(`equipmentStatus.${app.medic_details.equipment_status}`)}
             </Field>
+            {app.medic_details.equipment_status === "partial" && (
+              <Field label={t("fields.equipmentMissingText")}>
+                {app.medic_details.equipment_missing_text || tc("noValue")}
+              </Field>
+            )}
             <Field label={t("fields.workExperience")}>
               {tEnums(`duration.${app.medic_details.work_experience}`)}
             </Field>
@@ -150,16 +236,40 @@ export default function ApplicationDetailPage() {
             )}
           </>
         )}
-        {!headline && <p className="text-sm text-muted">{tc("noValue")}</p>}
       </Section>
+
+      {app.role === "player" &&
+        app.player_details?.has_pro_experience && (
+          <Section title={t("sections.professionalPeriods")} columns={1}>
+            {app.player_details.professional_periods.length === 0 ? (
+              <p className="text-sm text-muted">{t("fields.noPeriods")}</p>
+            ) : (
+              <ul className="flex flex-col gap-2">
+                {app.player_details.professional_periods.map((period, idx) => (
+                  <li
+                    key={idx}
+                    className="flex items-center justify-between rounded-lg border border-brand-dark/10 px-3 py-2 text-sm"
+                  >
+                    <span className="font-medium text-foreground">
+                      {period.start_year}-{period.end_year}
+                    </span>
+                    {period.club && <span className="text-muted">{period.club}</span>}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Section>
+        )}
 
       {app.availability && (
         <Section title={t("sections.availability")}>
-          <Field label={t("fields.days")}>
-            {app.availability.days.map((d) => tEnums(`weekday.${d}`)).join(", ")}
-          </Field>
-          <Field label={t("fields.hours")}>
-            {app.availability.hours.map((h) => tEnums(`hourSlot.${h}`)).join(", ")}
+          <Field label={t("fields.timeSlots")}>
+            {app.availability.time_slots
+              .map((slot) => {
+                const [day, hour] = slot.split(":");
+                return `${tEnums(`weekday.${day}`)} ${tEnums(`hourSlot.${hour}`)}`;
+              })
+              .join(", ")}
           </Field>
           <Field label={t("fields.districts")}>
             {app.availability.districts.map((d) => tEnums(`district.${d}`)).join(", ")}
@@ -167,17 +277,19 @@ export default function ApplicationDetailPage() {
         </Section>
       )}
 
-      <Section title={t("sections.files")}>
-        {app.files.length === 0 ? (
-          <p className="text-sm text-muted">{t("files.noFiles")}</p>
-        ) : (
-          <div className="flex flex-col gap-2">
-            {app.files.map((file) => (
-              <ApplicationFileViewer key={file.id} applicationId={app.id} file={file} />
-            ))}
+      <section className="flex flex-col gap-4 rounded-xl border border-brand-dark/10 bg-white p-4 sm:p-6">
+        <h2 className="text-lg font-semibold text-foreground">{t("sections.files")}</h2>
+        <Separator />
+        <MediaSection applicationId={app.id} files={app.files} />
+        {app.video_link_url && (
+          <div className="flex flex-col gap-2.5">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-2">
+              {t("fields.videoLink")}
+            </h3>
+            <VideoLinkEmbed url={app.video_link_url} />
           </div>
         )}
-      </Section>
+      </section>
 
       <Section title={t("sections.consents")}>
         <div className="flex flex-col gap-2">
@@ -234,12 +346,22 @@ export default function ApplicationDetailPage() {
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({
+  title,
+  columns = 2,
+  children,
+}: {
+  title: string;
+  columns?: 1 | 2;
+  children: React.ReactNode;
+}) {
   return (
     <section className="flex flex-col gap-3 rounded-xl border border-brand-dark/10 bg-white p-4 sm:p-6">
       <h2 className="text-lg font-semibold text-foreground">{title}</h2>
       <Separator />
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">{children}</div>
+      <div className={columns === 1 ? "flex flex-col gap-3" : "grid grid-cols-1 gap-3 sm:grid-cols-2"}>
+        {children}
+      </div>
     </section>
   );
 }

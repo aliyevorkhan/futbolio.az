@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.conf import settings
 from django.core.validators import MinLengthValidator
 from django.utils import timezone
 from rest_framework import serializers
@@ -16,9 +17,11 @@ from common.enums import (
     MainPosition,
     MedicSpecialty,
     PlayerExperienceLevel,
+    ScanStatus,
     Weekday,
 )
 from common.ip import get_client_ip, hash_ip
+from common.storage import presign_get
 from common.turnstile import verify_turnstile
 from common.validators import (
     az_phone_validator,
@@ -414,6 +417,8 @@ class ApplicationCreateSerializer(serializers.Serializer):
 class ApplicationListSerializer(serializers.ModelSerializer):
     files = FileListSummarySerializer(many=True, read_only=True)
     position = serializers.SerializerMethodField()
+    level = serializers.SerializerMethodField()
+    photo_thumbnail_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Application
@@ -428,11 +433,29 @@ class ApplicationListSerializer(serializers.ModelSerializer):
             "created_at",
             "is_duplicate",
             "position",
+            "level",
             "files",
+            "photo_thumbnail_url",
         ]
 
     def get_position(self, obj):
         return headline_position(obj)
+
+    def get_level(self, obj):
+        # Player-only, per spec section 2's list columns ("mövqe və
+        # səviyyə") — referee/medic have no equivalent single level field.
+        details = getattr(obj, "player_details", None)
+        return details.experience_level if details else ""
+
+    def get_photo_thumbnail_url(self, obj):
+        photo = next(
+            (f for f in obj.files.all() if f.kind == FileKind.PHOTO and f.scan_status == ScanStatus.CLEAN),
+            None,
+        )
+        if not photo:
+            return None
+        key = photo.thumbnail_key or photo.storage_key
+        return presign_get(key, ttl=settings.FILE_PRESIGN_LIST_THUMBNAIL_TTL_SECONDS)
 
 
 class ConsentSerializer(serializers.ModelSerializer):
