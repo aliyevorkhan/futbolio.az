@@ -90,6 +90,7 @@ export default function ApplicationDetailPage() {
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-2xl font-bold text-foreground">{app.full_name}</h1>
             <Badge>{tEnums(`role.${app.role}`)}</Badge>
+            <span className="font-mono text-sm text-muted">{app.display_id}</span>
             {app.is_duplicate && <Badge variant="amber">{t("fields.duplicate")}</Badge>}
           </div>
 

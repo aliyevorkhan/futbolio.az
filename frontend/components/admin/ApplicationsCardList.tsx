@@ -51,7 +51,9 @@ export function ApplicationsCardList({
                       </Badge>
                     )}
                   </div>
-                  <div className="text-sm text-muted">{tEnums(`role.${app.role}`)}</div>
+                  <div className="text-sm text-muted">
+                    {tEnums(`role.${app.role}`)} · <span className="font-mono">{app.display_id}</span>
+                  </div>
                 </div>
               </Link>
             </div>

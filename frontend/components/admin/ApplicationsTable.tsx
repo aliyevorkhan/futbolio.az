@@ -59,6 +59,7 @@ export function ApplicationsTable({
                 aria-label={tApplications("selectAll")}
               />
             </TableHead>
+            <TableHead>{t("id")}</TableHead>
             <TableHead className="w-12">{t("photo")}</TableHead>
             <TableHead>{t("name")}</TableHead>
             <TableHead>{t("role")}</TableHead>
@@ -90,6 +91,7 @@ export function ApplicationsTable({
                   aria-label={tApplications("selectRow", { name: app.full_name })}
                 />
               </TableCell>
+              <TableCell className="font-mono text-xs text-muted">{app.display_id}</TableCell>
               <TableCell>
                 <Link
                   href={`/admin/applications/${app.id}`}

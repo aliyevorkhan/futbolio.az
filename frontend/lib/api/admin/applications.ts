@@ -43,6 +43,8 @@ export interface FileDetailSummary extends FileListSummary {
 
 export interface ApplicationListItem {
   id: string;
+  /** Stable, human-readable per-role ID (e.g. "F0001"), never reused. */
+  display_id: string;
   full_name: string;
   role: ApplicationRole;
   date_of_birth: string;
@@ -140,6 +142,7 @@ export interface AdminNoteCreateResponse {
 
 export interface ApplicationDetail {
   id: string;
+  display_id: string;
   role: ApplicationRole;
   full_name: string;
   date_of_birth: string;
@@ -317,6 +320,7 @@ export async function updateApplicationPhone(
 
 export interface DuplicatePhoneApplication {
   id: string;
+  display_id: string;
   full_name: string;
   role: ApplicationRole;
   status: ApplicationStatus;

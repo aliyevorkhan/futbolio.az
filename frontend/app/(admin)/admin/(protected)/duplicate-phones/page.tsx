@@ -42,6 +42,7 @@ export default function DuplicatePhonesPage() {
                 <table className="w-full text-left text-sm">
                   <thead>
                     <tr className="text-xs font-semibold uppercase text-muted">
+                      <th className="px-4 py-2">{t("columns.id")}</th>
                       <th className="px-4 py-2">{t("columns.name")}</th>
                       <th className="px-4 py-2">{t("columns.role")}</th>
                       <th className="px-4 py-2">{t("columns.status")}</th>
@@ -52,6 +53,9 @@ export default function DuplicatePhonesPage() {
                   <tbody>
                     {group.applications.map((application) => (
                       <tr key={application.id} className="border-t border-brand-dark/5">
+                        <td className="px-4 py-2.5 font-mono text-xs text-muted">
+                          {application.display_id}
+                        </td>
                         <td className="px-4 py-2.5">
                           <Link
                             href={`/admin/applications/${application.id}`}

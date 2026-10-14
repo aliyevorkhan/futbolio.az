@@ -642,6 +642,7 @@
         "exporting": "Hazırlanır..."
       },
       "table": {
+        "id": "ID",
         "name": "Ad",
         "role": "Rol",
         "position": "Mövqe",
@@ -828,6 +829,7 @@
       "empty": "Dublikat nömrə yoxdur.",
       "phoneLabel": "Nömrə",
       "columns": {
+        "id": "ID",
         "name": "Ad soyad",
         "role": "Rol",
         "status": "Status",
