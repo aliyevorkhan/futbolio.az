@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -14,6 +14,10 @@ const OG_LOCALE: Record<AppLocale, string> = {
   az: "az_AZ",
   ru: "ru_RU",
   en: "en_US",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#00B85C",
 };
 
 export function generateStaticParams() {
@@ -34,10 +38,13 @@ export async function generateMetadata({
     icons: {
       icon: [
         { url: "/favicon.ico", sizes: "any" },
-        { url: "/icon-256.png", type: "image/png", sizes: "256x256" },
+        { url: "/favicon.svg", type: "image/svg+xml" },
+        { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+        { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
       ],
       apple: "/apple-touch-icon.png",
     },
+    manifest: "/site.webmanifest",
     openGraph: {
       siteName: "Futbolio",
       locale: OG_LOCALE[locale as AppLocale] ?? "az_AZ",
