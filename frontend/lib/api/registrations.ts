@@ -55,3 +55,17 @@ export function submitRegistration(
     body: JSON.stringify(payload),
   });
 }
+
+/**
+ * Checked when the candidate advances past Step 1 (not on blur, not only
+ * at final submit) — one phone number may have at most one registration
+ * across every role. The final `POST /api/public/applications/` above
+ * still re-checks this itself (`ApplicationCreateSerializer.validate_phone`)
+ * as a backstop against a direct API call bypassing this earlier check.
+ */
+export function checkPhoneAvailability(phone: string): Promise<{ available: boolean }> {
+  return apiFetch<{ available: boolean }>("/api/public/applications/check-phone/", {
+    method: "POST",
+    body: JSON.stringify({ phone }),
+  });
+}

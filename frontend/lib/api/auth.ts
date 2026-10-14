@@ -1,4 +1,4 @@
-import { adminApiFetch, apiFetch } from "@/lib/api/client";
+import { adminApiFetch } from "@/lib/api/client";
 
 /**
  * STUB wrappers for the admin auth endpoints. The admin-panel agent
@@ -34,9 +34,13 @@ export async function login(
   email: string,
   password: string,
 ): Promise<AdminUser> {
-  return apiFetch<AdminUser>("/api/admin/auth/login/", {
+  // Was calling the plain apiFetch() directly, which never attaches the
+  // X-CSRFToken header (only adminApiFetch does) — every login attempt
+  // was unconditionally rejected with a CSRF 403 regardless of
+  // credentials, pre-existing and unrelated to this change, found while
+  // live-verifying the admin panel.
+  return adminApiFetch<AdminUser>("/api/admin/auth/login/", {
     method: "POST",
-    credentials: "include",
     body: JSON.stringify({ email, password }),
   });
 }

@@ -11,7 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DistrictSelect } from "@/components/wizard/fields/DistrictSelect";
 import { StepFooter } from "@/components/wizard/StepFooter";
-import { cn } from "@/lib/utils";
+import { cn, buildWhatsAppUrl } from "@/lib/utils";
+import { useSettingsQuery } from "@/lib/queries/useSettingsQuery";
+import { checkPhoneAvailability } from "@/lib/api/registrations";
 import { formatNationalPart, toCanonicalPhone } from "@/lib/validation/shared/phone";
 import { getMinBirthDateString, getMaxBirthDateString } from "@/lib/validation/shared/dateOfBirth";
 import {
@@ -67,6 +69,15 @@ export function Step1({ defaultValues, onValid, onChange }: Step1Props) {
   });
 
   const role = form.watch("role");
+  const phoneValue = form.watch("phone");
+
+  const { data: settings } = useSettingsQuery();
+  // Set once a step-advance check finds the phone already registered
+  // (any role) — cleared the moment the candidate edits the phone field
+  // again, so a stale block doesn't linger after a correction.
+  const [phoneDuplicate, setPhoneDuplicate] = useState(false);
+  const [checkingPhone, setCheckingPhone] = useState(false);
+  useEffect(() => setPhoneDuplicate(false), [phoneValue]);
 
   // Recomputes whenever `role` changes so the picker's bounds update live
   // (per-role age limits — player 18-45, referee 18-55, medic 18-75).
@@ -109,10 +120,30 @@ export function Step1({ defaultValues, onValid, onChange }: Step1Props) {
 
   const RoleIcon = role ? ROLE_ICONS[role] : null;
 
+  // One phone number = one registration across every role, checked here
+  // (step-advance) rather than on blur or only at final submit. The real
+  // registration POST's own serializer-level check is the backstop if
+  // this check itself fails to run (network blip) or is bypassed.
+  const handleValid = async (data: Step1Data) => {
+    setCheckingPhone(true);
+    try {
+      const { available } = await checkPhoneAvailability(data.phone);
+      if (!available) {
+        setPhoneDuplicate(true);
+        return;
+      }
+      onValid(data);
+    } catch {
+      onValid(data);
+    } finally {
+      setCheckingPhone(false);
+    }
+  };
+
   return (
     <form
       noValidate
-      onSubmit={form.handleSubmit(onValid)}
+      onSubmit={form.handleSubmit(handleValid)}
       className="space-y-6"
     >
       <div ref={liveRegionRef} aria-live="assertive" role="alert" className="sr-only" />
@@ -210,7 +241,7 @@ export function Step1({ defaultValues, onValid, onChange }: Step1Props) {
               <div
                 className={cn(
                   "flex h-11 overflow-hidden rounded-lg border border-brand-dark/15 bg-white focus-within:ring-2 focus-within:ring-brand-dark focus-within:ring-offset-2",
-                  Boolean(form.formState.errors.phone) && "border-red-500",
+                  (Boolean(form.formState.errors.phone) || phoneDuplicate) && "border-red-500",
                 )}
               >
                 <span className="flex shrink-0 select-none items-center border-r border-brand-dark/15 bg-brand-dark/5 px-3 text-sm font-medium text-muted">
@@ -220,7 +251,7 @@ export function Step1({ defaultValues, onValid, onChange }: Step1Props) {
                   id="phone"
                   inputMode="tel"
                   placeholder="XX XXX XX XX"
-                  aria-invalid={Boolean(form.formState.errors.phone)}
+                  aria-invalid={Boolean(form.formState.errors.phone) || phoneDuplicate}
                   value={formatNationalPart(field.value ?? "")}
                   onChange={(event) => field.onChange(toCanonicalPhone(`994${event.target.value}`))}
                   onBlur={field.onBlur}
@@ -233,7 +264,20 @@ export function Step1({ defaultValues, onValid, onChange }: Step1Props) {
               </div>
             )}
           />
-          {errorMessage("phone") ? (
+          {phoneDuplicate ? (
+            <p className="mt-1.5 text-sm text-red-600">
+              {t("phoneDuplicateErrorPrefix")}{" "}
+              <a
+                href={buildWhatsAppUrl(settings?.whatsapp_number ?? "")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold underline"
+              >
+                {t("phoneDuplicateWhatsAppLink")}
+              </a>
+              .
+            </p>
+          ) : errorMessage("phone") ? (
             <p className="mt-1.5 text-sm text-red-600">{errorMessage("phone")}</p>
           ) : null}
         </div>
@@ -285,7 +329,7 @@ export function Step1({ defaultValues, onValid, onChange }: Step1Props) {
         </div>
       </div>
 
-      <StepFooter />
+      <StepFooter isSubmitting={checkingPhone} />
     </form>
   );
 }

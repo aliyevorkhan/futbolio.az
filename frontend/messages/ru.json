@@ -303,6 +303,8 @@
       "instagramPlaceholder": "имя_пользователя",
       "districtLabel": "Район проживания",
       "districtPlaceholder": "Выберите район",
+      "phoneDuplicateErrorPrefix": "Регистрация с этим номером уже существует. Если хотите изменить данные,",
+      "phoneDuplicateWhatsAppLink": "напишите нам в WhatsApp",
       "dateOfBirthLabel": "Дата рождения"
     },
     "districts": {
@@ -530,6 +532,7 @@
     "nav": {
       "brand": "Futbolio Admin",
       "applications": "Müraciətlər",
+      "duplicatePhones": "Dublikat nömrələr",
       "settings": "Tənzimləmələr",
       "adminUsers": "Adminlər",
       "logout": "Çıxış"
@@ -733,9 +736,32 @@
         "success": "Müraciət silindi.",
         "error": "Müraciəti silmək mümkün olmadı."
       },
+      "editPhone": {
+        "trigger": "Nömrəni dəyiş",
+        "title": "Telefon nömrəsini dəyiş",
+        "description": "Yeni nömrə başqa bir namizədə aiddirsə, yadda saxlamaq mümkün olmayacaq.",
+        "label": "Yeni nömrə",
+        "save": "Yadda saxla",
+        "saving": "Yadda saxlanılır...",
+        "cancel": "İmtina et",
+        "success": "Nömrə yeniləndi.",
+        "error": "Nömrəni yeniləmək mümkün olmadı."
+      },
       "loadError": "Müraciət tapılmadı.",
       "callAction": "Zəng et",
       "whatsappAction": "WhatsApp"
+    },
+    "duplicatePhones": {
+      "title": "Dublikat nömrələr",
+      "description": "Eyni nömrə ilə qeydiyyatdan keçən namizədlər. Heç nə avtomatik silinmir, yalnız nömrəni redaktə edərək həll edə bilərsən.",
+      "empty": "Dublikat nömrə yoxdur.",
+      "phoneLabel": "Nömrə",
+      "columns": {
+        "name": "Ad soyad",
+        "role": "Rol",
+        "status": "Status",
+        "date": "Qeydiyyat tarixi"
+      }
     },
     "settings": {
       "title": "Tənzimləmələr",

@@ -231,6 +231,33 @@ export async function addApplicationNote(
   });
 }
 
+export async function updateApplicationPhone(
+  id: string,
+  phone: string,
+): Promise<ApplicationDetail> {
+  return adminApiFetch<ApplicationDetail>(`/api/admin/applications/${id}/`, {
+    method: "PATCH",
+    body: JSON.stringify({ phone }),
+  });
+}
+
+export interface DuplicatePhoneApplication {
+  id: string;
+  full_name: string;
+  role: ApplicationRole;
+  status: ApplicationStatus;
+  created_at: string;
+}
+
+export interface DuplicatePhoneGroup {
+  phone: string;
+  applications: DuplicatePhoneApplication[];
+}
+
+export async function listDuplicatePhoneGroups(): Promise<DuplicatePhoneGroup[]> {
+  return adminApiFetch<DuplicatePhoneGroup[]>("/api/admin/applications/duplicate-phones/");
+}
+
 export async function deleteApplication(id: string): Promise<void> {
   await adminApiFetch(`/api/admin/applications/${id}/`, {
     method: "DELETE",

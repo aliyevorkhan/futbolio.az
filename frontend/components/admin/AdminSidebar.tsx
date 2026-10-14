@@ -3,19 +3,20 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { LayoutList, Settings, Users, LogOut } from "lucide-react";
+import { LayoutList, PhoneMissed, Settings, Users, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { AdminUser } from "@/lib/api/auth";
 
 interface NavItem {
   href: string;
-  labelKey: "applications" | "settings" | "adminUsers";
+  labelKey: "applications" | "duplicatePhones" | "settings" | "adminUsers";
   icon: React.ComponentType<{ className?: string }>;
   superAdminOnly?: boolean;
 }
 
 const NAV_ITEMS: NavItem[] = [
   { href: "/admin/applications", labelKey: "applications", icon: LayoutList },
+  { href: "/admin/duplicate-phones", labelKey: "duplicatePhones", icon: PhoneMissed },
   { href: "/admin/settings", labelKey: "settings", icon: Settings },
   { href: "/admin/admin-users", labelKey: "adminUsers", icon: Users, superAdminOnly: true },
 ];
