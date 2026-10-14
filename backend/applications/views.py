@@ -25,6 +25,14 @@ from files.models import ApplicationFile
 from files.services import delete_files_for_application
 from notifications.tasks import notify_admins_new_application_task
 
+from .export_labels import (
+    district_label,
+    experience_level_label,
+    main_position_label,
+    medic_specialty_label,
+    role_label,
+    status_label,
+)
 from .models import AdminNote, Application, StatusChange
 from .serializers import (
     AdminFieldsUpdateSerializer,
@@ -242,7 +250,7 @@ class ApplicationListView(generics.ListAPIView):
     pagination_class = AdminApplicationsPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_class = ApplicationFilterSet
-    search_fields = ["full_name", "phone"]
+    search_fields = ["full_name", "phone", "display_id"]
     ordering_fields = ["created_at", "full_name", "status"]
     ordering = ["-created_at"]
     queryset = Application.objects.select_related(*APPLICATION_RELATED).prefetch_related("files")
@@ -546,25 +554,25 @@ def _export_photo_link(application):
 
 def _export_main_position(application):
     details = getattr(application, "player_details", None)
-    return details.main_position if details else ""
+    return main_position_label(details.main_position) if details else ""
 
 
 def _export_extra_positions(application):
     details = getattr(application, "player_details", None)
     if details:
-        return ",".join(details.extra_positions)
+        return ", ".join(main_position_label(p) for p in details.extra_positions)
     medic = getattr(application, "medic_details", None)
-    return ",".join(medic.specialty) if medic else ""
+    return ", ".join(medic_specialty_label(s) for s in medic.specialty) if medic else ""
 
 
 def _export_level_self(application):
     details = getattr(application, "player_details", None)
-    return details.experience_level if details else ""
+    return experience_level_label(details.experience_level) if details else ""
 
 
 def _export_level_admin(application):
     details = getattr(application, "player_details", None)
-    return (details.admin_experience_level or "") if details else ""
+    return experience_level_label(details.admin_experience_level) if details else ""
 
 
 def _export_price(application):
@@ -648,8 +656,9 @@ def _export_admin_note(application):
 # Column headers use real Azerbaijani letters (ə/ğ/ı/ö/ü/ş/ç) — CSV is
 # written utf-8-sig (BOM) so they render correctly in Excel.
 EXPORT_COLUMN_REGISTRY = [
+    ("display_id", "ID", lambda a: a.display_id),
     ("full_name", "Ad soyad", lambda a: a.full_name),
-    ("role", "Rol", lambda a: a.role),
+    ("role", "Rol", lambda a: role_label(a.role)),
     ("phone", "Telefon", lambda a: a.phone),
     ("date_of_birth", "Doğum tarixi", lambda a: a.date_of_birth),
     ("age", "Yaş", lambda a: calculate_age(a.date_of_birth)),
@@ -666,11 +675,11 @@ EXPORT_COLUMN_REGISTRY = [
     ("certificate_status", "Sertifikat/Diplom", _export_certificate_status),
     ("certificate_link", "Sertifikat/Diplom linki", _export_certificate_link),
     ("video_links", "Video linkləri", _export_video_links),
-    ("status", "Status", lambda a: a.status),
+    ("status", "Status", lambda a: status_label(a.status)),
     ("admin_rating", "Admin reytinqi", lambda a: a.admin_rating or ""),
     ("admin_note", "Admin qeydi", _export_admin_note),
     ("created_at", "Qeydiyyat tarixi", lambda a: a.created_at.isoformat()),
-    ("district", "Rayon", lambda a: a.district),
+    ("district", "Rayon", lambda a: district_label(a.district)),
     ("photo_link", "Şəkil linki", _export_photo_link),
 ]
 EXPORT_COLUMN_KEYS = [key for key, _, _ in EXPORT_COLUMN_REGISTRY]

@@ -5,6 +5,7 @@ import pytest
 from django.utils import timezone
 
 from applications.models import Application, Consent
+from applications.services import generate_display_id
 from applications.tasks import purge_expired_applications_task
 from common.enums import ApplicationStatus
 
@@ -50,6 +51,7 @@ def test_consent_ip_hash_never_equals_raw_client_ip(api_client):
 def test_purge_task_stages_stale_rejected_application():
     application = Application.objects.create(
         role="player",
+        display_id=generate_display_id("player"),
         full_name="Kamran Aslanov",
         date_of_birth=date(1996, 1, 1),
         phone="+994551234567",

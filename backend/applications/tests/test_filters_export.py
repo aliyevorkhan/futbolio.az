@@ -158,10 +158,12 @@ def test_medic_has_document_filter(api_client):
     # get a comparison row for the filter, matching the pattern already
     # used in test_duplicate_phone_report.py.
     from applications.models import Application
+    from applications.services import generate_display_id
     from common.enums import ApplicationRole, District
 
     no_doc_app = Application.objects.create(
         role=ApplicationRole.MEDIC,
+        display_id=generate_display_id(ApplicationRole.MEDIC),
         full_name="No Document Medic",
         date_of_birth="1990-01-01",
         phone="+994501110010",
@@ -251,3 +253,61 @@ def test_export_all_columns_includes_azerbaijani_headers(api_client):
     header_line = content.splitlines()[0]
     for expected in ["Ad soyad", "Doğum tarixi", "Yaş", "Səviyyə (özü)", "Tələbə", "Qeydiyyat tarixi"]:
         assert expected in header_line
+
+
+def test_export_resolves_enum_codes_to_azerbaijani_labels_not_raw_codes(api_client):
+    """Regression test: district/role/status/position/level used to export
+    as their raw stored codes (e.g. "binegedi") instead of the proper
+    Azerbaijani label ("Binəqədi")."""
+    admin = make_admin()
+    resp = api_client.post(
+        REGISTER_URL,
+        valid_player_payload(
+            phone="+994501110015",
+            district="binegedi",
+            player_details={
+                "main_position": "forward",
+                "extra_positions": ["midfielder"],
+                "preferred_foot": "right",
+                "years_playing": "3_5",
+                "club_experience_text": "",
+                "experience_level": "semi_pro",
+                "has_pro_experience": False,
+                "hourly_rate_azn": 20,
+                "is_university_student": False,
+            },
+        ),
+        format="json",
+    )
+    assert resp.status_code == 201, resp.data
+    app_id = resp.data["id"]
+
+    api_client.force_authenticate(user=admin)
+    api_client.patch(
+        f"/api/admin/applications/{app_id}/status/", {"status": "accepted"}, format="json"
+    )
+
+    export_resp = api_client.get(
+        EXPORT_URL,
+        {"format": "csv", "columns": "role,district,main_position,extra_positions,level_self,status"},
+    )
+    assert export_resp.status_code == 200
+    content = export_resp.content.decode("utf-8-sig")
+    lines = content.splitlines()
+    # Column order always follows EXPORT_COLUMN_REGISTRY's own fixed
+    # order, not the order columns were requested in.
+    assert lines[0] == "Rol,Əsas mövqe,Oynaya bildiyi zonalar,Səviyyə (özü),Status,Rayon"
+    data_line = lines[1]
+    assert "Futbolçu" in data_line
+    assert "Binəqədi" in data_line
+    assert "Hücumçu" in data_line
+    assert "Yarımmüdafiəçi" in data_line
+    assert "Yarı-peşəkar" in data_line
+    assert "Qəbul edilib" in data_line
+    # None of the raw codes should leak through.
+    assert "binegedi" not in content
+    assert "player" not in content
+    assert "forward" not in content
+    assert "midfielder" not in content
+    assert "semi_pro" not in content
+    assert "accepted" not in content

@@ -32,6 +32,12 @@ from common.validators import (
 
 class Application(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    # Human-readable, stable per-role sequence number (e.g. "F0001" for a
+    # player, "R0001" for a referee, "M0001" for a medic) — assigned once
+    # at creation via ApplicationIdCounter (see below) and never reused,
+    # even if this row is later hard-deleted. Distinct from the UUID `id`
+    # above, which stays the real primary key.
+    display_id = models.CharField(max_length=10, unique=True, editable=False, null=True)
     role = models.CharField(max_length=20, choices=ApplicationRole.choices)
     full_name = models.CharField(
         max_length=80, validators=[MinLengthValidator(3), full_name_validator]
@@ -70,6 +76,17 @@ class Application(models.Model):
 
     def __str__(self):
         return f"{self.full_name} ({self.role})"
+
+
+class ApplicationIdCounter(models.Model):
+    """One row per role — the only source of the next display_id number
+    for that role. A dedicated counter (not MAX(display_id)+1 or row
+    count) is what guarantees a number is never reused once issued, even
+    after the Application row that held it is hard-deleted.
+    """
+
+    role = models.CharField(max_length=20, choices=ApplicationRole.choices, unique=True)
+    last_number = models.PositiveIntegerField(default=0)
 
 
 class PlayerDetails(models.Model):

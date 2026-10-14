@@ -45,7 +45,7 @@ from .models import (
     RefereeDetails,
     StatusChange,
 )
-from .services import canonicalize_phone
+from .services import canonicalize_phone, generate_display_id
 
 GENERIC_SUBMISSION_ERROR = "Sorğunu göndərmək mümkün olmadı. Məlumatları yoxlayıb yenidən cəhd edin."
 DUPLICATE_PHONE_ERROR = (
@@ -399,7 +399,10 @@ class ApplicationCreateSerializer(serializers.Serializer):
         # validate_phone() below already guarantees no other application
         # has this (canonical) phone, so this can never be True for a new
         # row anymore — the column itself stays for historical rows.
-        application = Application.objects.create(is_duplicate=False, **validated_data)
+        display_id = generate_display_id(role)
+        application = Application.objects.create(
+            is_duplicate=False, display_id=display_id, **validated_data
+        )
 
         headline = ""
         if role == ApplicationRole.PLAYER and player_details_data:
@@ -451,6 +454,7 @@ class ApplicationListSerializer(serializers.ModelSerializer):
         model = Application
         fields = [
             "id",
+            "display_id",
             "full_name",
             "role",
             "date_of_birth",
@@ -535,6 +539,7 @@ class ApplicationDetailSerializer(serializers.ModelSerializer):
         model = Application
         fields = [
             "id",
+            "display_id",
             "role",
             "full_name",
             "date_of_birth",

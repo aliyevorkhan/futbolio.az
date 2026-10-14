@@ -24,7 +24,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING(f"\nPhone: {group['phone']}"))
             for application in group["applications"]:
                 self.stdout.write(
-                    f"  - {application['id']} | {application['full_name']} | "
+                    f"  - {application['display_id']} | {application['full_name']} | "
                     f"{application['role']} | {application['status']} | {application['created_at']}"
                 )
 

@@ -5,7 +5,7 @@ import pytest
 from django.core.management import call_command
 
 from applications.models import Application
-from applications.services import find_duplicate_phone_groups
+from applications.services import find_duplicate_phone_groups, generate_display_id
 
 from .factories import make_admin, valid_player_payload, valid_referee_payload
 
@@ -25,6 +25,7 @@ def _create_application_bypassing_uniqueness(phone, **overrides):
 
     application = Application.objects.create(
         role=payload["role"],
+        display_id=generate_display_id(payload["role"]),
         full_name=payload["full_name"],
         date_of_birth=payload["date_of_birth"],
         phone=phone,

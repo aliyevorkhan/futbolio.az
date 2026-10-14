@@ -5,9 +5,16 @@ sitesettings/services.py; there is no `services/` package anywhere).
 
 from django.db.models import Count
 
-from common.enums import ApplicationStatus
+from common.enums import ApplicationRole, ApplicationStatus
 
-from .models import Application
+from .models import Application, ApplicationIdCounter
+
+# "F0001"/"R0001"/"M0001" — 4-digit zero-padded, one prefix per role.
+DISPLAY_ID_PREFIXES: dict[str, str] = {
+    ApplicationRole.PLAYER: "F",
+    ApplicationRole.REFEREE: "R",
+    ApplicationRole.MEDIC: "M",
+}
 
 # The 3 admin-panel tabs are a grouping over the real status values, not a
 # 4th "waitlist" status some older wording implied — Gözləyir/Pending is
@@ -64,6 +71,7 @@ def find_duplicate_phone_groups() -> list[dict]:
                 "applications": [
                     {
                         "id": str(application.id),
+                        "display_id": application.display_id,
                         "full_name": application.full_name,
                         "role": application.role,
                         "status": application.status,
@@ -74,6 +82,21 @@ def find_duplicate_phone_groups() -> list[dict]:
             }
         )
     return groups
+
+
+def generate_display_id(role: str) -> str:
+    """The next stable, never-reused display ID for `role` — must be
+    called inside the same transaction.atomic() block as the Application
+    creation it belongs to (CreateApplicationView.post already wraps the
+    whole submission in one). select_for_update() makes the
+    read-increment-save race-safe against concurrent registrations for
+    the same role; the counter itself only ever goes up, so hard-
+    deleting an Application later can never free its number back up.
+    """
+    counter, _ = ApplicationIdCounter.objects.select_for_update().get_or_create(role=role)
+    counter.last_number += 1
+    counter.save(update_fields=["last_number"])
+    return f"{DISPLAY_ID_PREFIXES[role]}{counter.last_number:04d}"
 
 
 def resolve_restore_status(application) -> str:

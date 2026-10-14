@@ -120,12 +120,14 @@ def test_hard_delete_only_meaningful_after_soft_delete_frees_phone(api_client):
     deletion loop is exercised separately wherever files really exist."""
     import uuid as uuid_module
 
+    from applications.services import generate_display_id
     from common.enums import ApplicationRole, ApplicationStatus, District
 
     admin = make_admin()
     phone = "+994508888888"
     application = Application.objects.create(
         role=ApplicationRole.PLAYER,
+        display_id=generate_display_id(ApplicationRole.PLAYER),
         full_name="Delete Me",
         date_of_birth="1998-01-01",
         phone=phone,
