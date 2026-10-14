@@ -573,3 +573,9 @@ class PhoneInputSerializer(serializers.Serializer):
 class StatusUpdateSerializer(serializers.Serializer):
     status = serializers.ChoiceField(choices=ApplicationStatus.choices)
     reason = serializers.CharField(required=False, allow_blank=True, default="")
+
+
+class BulkStatusUpdateSerializer(serializers.Serializer):
+    ids = serializers.ListField(child=serializers.UUIDField(), allow_empty=False)
+    status = serializers.ChoiceField(choices=ApplicationStatus.choices)
+    reason = serializers.CharField(required=False, allow_blank=True, default="")

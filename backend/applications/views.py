@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from audit.services import log_event
-from common.enums import FileKind
+from common.enums import ApplicationStatus, FileKind
 from common.export import rows_to_csv_bytes, rows_to_xlsx_bytes
 from common.ip import get_client_ip
 from common.pagination import AdminApplicationsPagination
@@ -28,11 +28,12 @@ from .serializers import (
     ApplicationCreateSerializer,
     ApplicationDetailSerializer,
     ApplicationListSerializer,
+    BulkStatusUpdateSerializer,
     PhoneInputSerializer,
     StatusUpdateSerializer,
     headline_position,
 )
-from .services import find_duplicate_phone_groups
+from .services import PENDING_STATUSES, find_duplicate_phone_groups, resolve_restore_status
 
 DUPLICATE_PHONE_ADMIN_ERROR = "Bu nömrə artıq başqa namizədə aiddir."
 
@@ -94,6 +95,10 @@ class ApplicationFilterSet(FilterSet):
     position = django_filters.CharFilter(method="filter_position")
     time_slot = django_filters.CharFilter(method="filter_time_slot")
     level = django_filters.CharFilter(field_name="player_details__experience_level")
+    # Admin-panel tab grouping (Gözləyir/Qəbul edildi/Silindi) — kept
+    # separate from the raw `status` filter so the Pending tab's own
+    # sub-status chip (Yeni/Baxılıb/...) still works alongside it.
+    tab = django_filters.CharFilter(method="filter_tab")
 
     class Meta:
         model = Application
@@ -107,6 +112,15 @@ class ApplicationFilterSet(FilterSet):
     def filter_time_slot(self, queryset, name, value):
         return queryset.filter(availability__time_slots__contains=[value])
 
+    def filter_tab(self, queryset, name, value):
+        if value == "pending":
+            return queryset.filter(status__in=PENDING_STATUSES)
+        if value == "accepted":
+            return queryset.filter(status=ApplicationStatus.ACCEPTED)
+        if value == "deleted":
+            return queryset.filter(status=ApplicationStatus.REJECTED)
+        return queryset
+
 
 class ApplicationListView(generics.ListAPIView):
     permission_classes = [IsAdmin]
@@ -118,6 +132,102 @@ class ApplicationListView(generics.ListAPIView):
     ordering_fields = ["created_at", "full_name", "status"]
     ordering = ["-created_at"]
     queryset = Application.objects.select_related(*APPLICATION_RELATED).prefetch_related("files")
+
+
+class ApplicationCountsView(APIView):
+    """The 3 tab badge counts, computed under whatever filters (role,
+    district, search, etc.) are currently applied — minus `tab` itself,
+    which this computes once per bucket — so the counts shown next to
+    each tab always match what that tab would actually return."""
+
+    permission_classes = [IsAdmin]
+
+    def get(self, request):
+        base_queryset = Application.objects.all()
+        counts = {}
+        for tab in ("pending", "accepted", "deleted"):
+            params = request.query_params.copy()
+            params["tab"] = tab
+            counts[tab] = ApplicationFilterSet(params, queryset=base_queryset).qs.count()
+        return Response(counts)
+
+
+class ApplicationBulkStatusView(APIView):
+    """Bulk accept/delete from the admin list — same per-row StatusChange
+    + audit-log write `ApplicationStatusUpdateView` does, just looped
+    inside one transaction so a bulk action produces the identical audit
+    trail individual actions do."""
+
+    permission_classes = [IsAdmin]
+
+    def post(self, request):
+        serializer = BulkStatusUpdateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        ids = serializer.validated_data["ids"]
+        new_status = serializer.validated_data["status"]
+        reason = serializer.validated_data.get("reason", "")
+
+        applications = list(Application.objects.filter(id__in=ids))
+        updated_ids = []
+        with transaction.atomic():
+            for application in applications:
+                old_status = application.status
+                StatusChange.objects.create(
+                    application=application,
+                    from_status=old_status,
+                    to_status=new_status,
+                    changed_by=request.user,
+                    reason=reason,
+                )
+                application.status = new_status
+                application.save(update_fields=["status", "updated_at"])
+                updated_ids.append(str(application.id))
+
+        for app_id in updated_ids:
+            log_event(
+                actor=request.user,
+                action="admin.application.status_changed",
+                target_type="application",
+                target_id=app_id,
+                ip=get_client_ip(request),
+                meta={"to": new_status, "bulk": True},
+            )
+        return Response({"updated": updated_ids})
+
+
+class ApplicationRestoreView(APIView):
+    """"Bərpa et" (from the Deleted tab) / "Gözləyənlərə qaytar" (from the
+    Accepted tab) — both just move the application back to the pending
+    bucket, restoring whatever pending sub-status it had before being
+    accepted/rejected rather than flatly resetting it to "new"."""
+
+    permission_classes = [IsAdmin]
+
+    def post(self, request, pk):
+        application = get_object_or_404(Application, pk=pk)
+        new_status = resolve_restore_status(application)
+        old_status = application.status
+
+        with transaction.atomic():
+            StatusChange.objects.create(
+                application=application,
+                from_status=old_status,
+                to_status=new_status,
+                changed_by=request.user,
+                reason="restored",
+            )
+            application.status = new_status
+            application.save(update_fields=["status", "updated_at"])
+
+        log_event(
+            actor=request.user,
+            action="admin.application.status_changed",
+            target_type="application",
+            target_id=str(pk),
+            ip=get_client_ip(request),
+            meta={"from": old_status, "to": new_status, "restored": True},
+        )
+        return Response(ApplicationDetailSerializer(application).data)
 
 
 class DuplicatePhonesView(APIView):

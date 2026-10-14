@@ -5,7 +5,22 @@ sitesettings/services.py; there is no `services/` package anywhere).
 
 from django.db.models import Count
 
+from common.enums import ApplicationStatus
+
 from .models import Application
+
+# The 3 admin-panel tabs are a grouping over the real status values, not a
+# 4th "waitlist" status some older wording implied — Gözləyir/Pending is
+# simply "not yet a final decision" (new/reviewed/contacted/archived),
+# Qəbul edildi/Accepted is accepted, Silindi/Deleted (soft-deleted) is
+# rejected, reusing the existing status field rather than adding a new
+# boolean.
+PENDING_STATUSES = [
+    ApplicationStatus.NEW,
+    ApplicationStatus.REVIEWED,
+    ApplicationStatus.CONTACTED,
+    ApplicationStatus.ARCHIVED,
+]
 
 
 def canonicalize_phone(raw: str) -> str:
@@ -59,3 +74,18 @@ def find_duplicate_phone_groups() -> list[dict]:
             }
         )
     return groups
+
+
+def resolve_restore_status(application) -> str:
+    """The status to restore an accepted/rejected application back to
+    the pending bucket — its last pending-bucket status from
+    StatusChange history ("Bərpa et"/"Gözləyənlərə qaytar" put it back
+    where it was, not just always "Yeni"), or NEW if it was accepted or
+    rejected straight from creation with no such history.
+    """
+    last_change = (
+        application.status_history.filter(to_status__in=PENDING_STATUSES)
+        .order_by("-changed_at")
+        .first()
+    )
+    return last_change.to_status if last_change else ApplicationStatus.NEW
