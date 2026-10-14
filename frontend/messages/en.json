@@ -180,7 +180,7 @@
         },
         "q8": {
           "question": "Is there an age limit for registration?",
-          "answer": "Yes, people between 18 and 45 years old can register."
+          "answer": "Yes, it depends on the role: players and goalkeepers must be 18-45, referees 18-55, and medics 18-75."
         },
         "q9": {
           "question": "Can I order a referee or medic too?",
@@ -274,7 +274,10 @@
       "fileTooLarge": "This file is too large",
       "uploadFailed": "The file didn't upload, try again",
       "genericSubmitError": "Please check your details",
-      "dateOfBirthRange": "Registration is for people aged 18 to 45.",
+      "dateOfBirthRange": "Enter a valid date of birth.",
+      "dateOfBirthRangePlayer": "Player registration is for people aged 18 to 45.",
+      "dateOfBirthRangeReferee": "Referee registration is for people aged 18 to 55.",
+      "dateOfBirthRangeMedic": "Medic registration is for people aged 18 to 75.",
       "minSelectionTimeSlots": "Select at least one time slot",
       "minSelectionSpecialty": "Select at least one specialty",
       "professionalPeriodsRequired": "Add at least one period",

@@ -180,7 +180,7 @@
         },
         "q8": {
           "question": "Qeydiyyat üçün yaş həddi var?",
-          "answer": "Bəli, 18 ilə 45 yaş arasında olan şəxslər qeydiyyatdan keçə bilər."
+          "answer": "Bəli, rola görə dəyişir: futbolçu və qapıçılar üçün 18-45, hakimlər üçün 18-55, həkimlər üçün isə 18-75 yaş aralığı tələb olunur."
         },
         "q9": {
           "question": "Hakim və həkim də sifariş etmək olar?",
@@ -274,7 +274,10 @@
       "fileTooLarge": "Fayl həddindən artıq böyükdür",
       "uploadFailed": "Fayl yüklənmədi, yenidən cəhd et",
       "genericSubmitError": "Məlumatları yoxlayın",
-      "dateOfBirthRange": "Qeydiyyat 18-45 yaş arası şəxslər üçündür.",
+      "dateOfBirthRange": "Doğum tarixini düzgün daxil et.",
+      "dateOfBirthRangePlayer": "Futbolçu qeydiyyatı 18-45 yaş arası üçündür.",
+      "dateOfBirthRangeReferee": "Hakim qeydiyyatı 18-55 yaş arası üçündür.",
+      "dateOfBirthRangeMedic": "Həkim qeydiyyatı 18-75 yaş arası üçündür.",
       "minSelectionTimeSlots": "Ən azı bir vaxt aralığı seç",
       "minSelectionSpecialty": "Ən azı bir ixtisas seç",
       "professionalPeriodsRequired": "Ən azı bir dövr əlavə et",

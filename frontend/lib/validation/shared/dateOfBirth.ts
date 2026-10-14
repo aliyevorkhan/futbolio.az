@@ -1,13 +1,21 @@
 /**
  * Age-as-of-today calculation shared between Step 1's date-of-birth
  * field and its `min`/`max` picker bounds. Must stay in exact lockstep
- * with the backend's `common.validators.validate_date_of_birth`
+ * with the backend's `common.age_limits.AGE_LIMITS`/`is_age_in_range_for_role`
  * (`today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))`)
  * — the implementation below is equivalent tuple-comparison logic, just
  * spelled out without relying on JS tuple comparisons.
  */
-export const MIN_AGE = 18;
-export const MAX_AGE = 45;
+// Not imported from step1.schema.ts (which itself imports from this file)
+// to avoid a circular dependency — kept as a literal union mirroring that
+// file's own `Role` type.
+export type RegistrationRole = "player" | "referee" | "medic";
+
+export const AGE_LIMITS: Record<RegistrationRole, { min: number; max: number }> = {
+  player: { min: 18, max: 45 },
+  referee: { min: 18, max: 55 },
+  medic: { min: 18, max: 75 },
+};
 
 /** Age in whole years as of `today`, matching the backend's calculation exactly. */
 export function calculateAgeAtDate(dob: Date, today: Date): number {
@@ -26,17 +34,17 @@ function toIsoDateString(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-/** The oldest allowed birth date (today - MAX_AGE years), as `YYYY-MM-DD`. */
-export function getMinBirthDateString(today: Date): string {
+/** The oldest allowed birth date for `role` (today - max age years), as `YYYY-MM-DD`. */
+export function getMinBirthDateString(role: RegistrationRole, today: Date): string {
   const date = new Date(today);
-  date.setFullYear(date.getFullYear() - MAX_AGE);
+  date.setFullYear(date.getFullYear() - AGE_LIMITS[role].max);
   return toIsoDateString(date);
 }
 
-/** The youngest allowed birth date (today - MIN_AGE years), as `YYYY-MM-DD`. */
-export function getMaxBirthDateString(today: Date): string {
+/** The youngest allowed birth date for `role` (today - min age years), as `YYYY-MM-DD`. */
+export function getMaxBirthDateString(role: RegistrationRole, today: Date): string {
   const date = new Date(today);
-  date.setFullYear(date.getFullYear() - MIN_AGE);
+  date.setFullYear(date.getFullYear() - AGE_LIMITS[role].min);
   return toIsoDateString(date);
 }
 
@@ -56,7 +64,8 @@ export function parseIsoDateLocal(value: string): Date | null {
   return date;
 }
 
-export function isAgeInRange(dob: Date, today: Date): boolean {
+export function isAgeInRange(role: RegistrationRole, dob: Date, today: Date): boolean {
   const age = calculateAgeAtDate(dob, today);
-  return age >= MIN_AGE && age <= MAX_AGE;
+  const { min, max } = AGE_LIMITS[role];
+  return age >= min && age <= max;
 }

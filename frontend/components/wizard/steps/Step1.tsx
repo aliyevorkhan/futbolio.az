@@ -52,10 +52,6 @@ export function Step1({ defaultValues, onValid, onChange }: Step1Props) {
   // localStorage-restore pattern elsewhere).
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  const [minBirthDate, maxBirthDate] = useMemo(() => {
-    const today = new Date();
-    return [getMinBirthDateString(today), getMaxBirthDateString(today)];
-  }, []);
 
   const form = useForm<Step1Data>({
     resolver: zodResolver(step1Schema),
@@ -71,6 +67,15 @@ export function Step1({ defaultValues, onValid, onChange }: Step1Props) {
   });
 
   const role = form.watch("role");
+
+  // Recomputes whenever `role` changes so the picker's bounds update live
+  // (per-role age limits — player 18-45, referee 18-55, medic 18-75).
+  // Falls back to the player range before a role has been picked yet.
+  const [minBirthDate, maxBirthDate] = useMemo(() => {
+    const today = new Date();
+    const effectiveRole = role ?? "player";
+    return [getMinBirthDateString(effectiveRole, today), getMaxBirthDateString(effectiveRole, today)];
+  }, [role]);
 
   useEffect(() => {
     const subscription = form.watch((values) => onChange(values as Partial<Step1Data>));
