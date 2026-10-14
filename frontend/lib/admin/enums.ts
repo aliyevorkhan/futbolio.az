@@ -68,3 +68,12 @@ export const HOUR_SLOTS = ["09_12", "12_15", "15_18", "18_21", "21_24"] as const
 export const FILE_KINDS = ["photo", "video", "document"] as const;
 
 export const ADMIN_ROLES = ["admin", "super_admin"] as const;
+
+export const COURSE_YEARS = ["1", "2", "3", "4"] as const;
+
+export const ADMIN_RATING_VALUES = ["1", "2", "3", "4", "5"] as const;
+
+/** Filter-only values — not real enums the backend stores on a model. */
+export const YES_NO_FILTER_VALUES = ["yes", "no"] as const;
+export const LEVEL_SOURCE_VALUES = ["self", "admin"] as const;
+export const POSITION_MODE_VALUES = ["main_only", "main_and_extra"] as const;

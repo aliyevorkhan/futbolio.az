@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ApplicationsFilters } from "@/components/admin/ApplicationsFilters";
+import { ActiveFilterChips } from "@/components/admin/ActiveFilterChips";
 import { ApplicationsTable } from "@/components/admin/ApplicationsTable";
 import { ApplicationsCardList } from "@/components/admin/ApplicationsCardList";
 import { ExportApplicationsButton } from "@/components/admin/ExportApplicationsButton";
@@ -36,19 +37,45 @@ const FILTER_PARAM_KEYS = [
   "date_from",
   "date_to",
   "level",
+  "level_source",
   "position",
+  "position_mode",
+  "price_min",
+  "price_max",
+  "is_student",
+  "university",
+  "course_year",
+  "referee_certified",
+  "medic_has_document",
+  "age_min",
+  "age_max",
+  "has_pro_experience",
+  "has_video",
+  "admin_rating_min",
   "search",
   "ordering",
   "page",
 ] as const;
+
+const NUMERIC_KEYS = new Set([
+  "price_min",
+  "price_max",
+  "course_year",
+  "age_min",
+  "age_max",
+  "admin_rating_min",
+]);
 
 function buildParams(searchParams: URLSearchParams): ApplicationListParams {
   const params: ApplicationListParams = {};
   for (const key of FILTER_PARAM_KEYS) {
     const value = searchParams.get(key);
     if (!value) continue;
-    if (key === "page") params.page = Number(value);
-    else (params as Record<string, string>)[key] = value;
+    if (key === "page" || NUMERIC_KEYS.has(key)) {
+      (params as unknown as Record<string, number>)[key] = Number(value);
+    } else {
+      (params as Record<string, string>)[key] = value;
+    }
   }
   const tabParam = searchParams.get("tab");
   params.tab = (TABS as string[]).includes(tabParam ?? "") ? (tabParam as ApplicationTab) : "pending";
@@ -81,11 +108,10 @@ function ApplicationsPageContent() {
     placeholderData: keepPreviousData,
   });
 
-  const { role, district, status, date_from, date_to, level, position, search } = params;
+  const { tab: _tab, page: _page, page_size: _pageSize, ...countsFilters } = params;
   const { data: counts } = useQuery({
-    queryKey: ["admin-application-counts", { role, district, status, date_from, date_to, level, position, search }],
-    queryFn: () =>
-      getApplicationCounts({ role, district, status, date_from, date_to, level, position, search }),
+    queryKey: ["admin-application-counts", countsFilters],
+    queryFn: () => getApplicationCounts(countsFilters),
   });
 
   // Selection never carries across a tab switch, a page change, or a
@@ -148,6 +174,8 @@ function ApplicationsPageContent() {
 
       <ApplicationsFilters />
 
+      <ActiveFilterChips />
+
       <div className="flex flex-wrap items-center gap-3">
         <form
           className="flex max-w-sm flex-1 items-center gap-2"
@@ -186,6 +214,8 @@ function ApplicationsPageContent() {
       </div>
 
       <BulkActionBar selectedIds={[...selectedIds]} onDone={() => setSelectedIds(new Set())} />
+
+      {data && <p className="text-sm text-muted">{t("filters.resultsCount", { count })}</p>}
 
       {isLoading && <p className="text-sm text-muted">{tc("loading")}</p>}
       {isError && <p className="text-sm text-red-600">{t("loadError")}</p>}

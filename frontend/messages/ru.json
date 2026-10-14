@@ -582,19 +582,47 @@
       "searchPlaceholder": "Ad və ya telefon üzrə axtar",
       "filters": {
         "title": "Filtrlər",
+        "openMobile": "Filtrlər",
         "role": "Rol",
         "district": "Rayon",
         "status": "Status",
         "dateFrom": "Tarixdən",
         "dateTo": "Tarixədək",
         "position": "Mövqe",
+        "positionMode": {
+          "mainOnly": "Yalnız əsas mövqe",
+          "mainAndExtra": "Əsas mövqe + oynaya bildiyi zonalar"
+        },
         "allRoles": "Bütün rollar",
         "allDistricts": "Bütün rayonlar",
         "allStatuses": "Bütün statuslar",
         "apply": "Tətbiq et",
-        "reset": "Sıfırla",
+        "reset": "Filtrləri sıfırla",
+        "close": "Bağla",
         "level": "Səviyyə",
-        "allLevels": "Bütün səviyyələr"
+        "levelSource": {
+          "self": "Özünün qeyd etdiyi",
+          "admin": "Adminin təyin etdiyi"
+        },
+        "allLevels": "Bütün səviyyələr",
+        "priceMin": "Qiymət (min, AZN)",
+        "priceMax": "Qiymət (maks, AZN)",
+        "isStudent": "Tələbə",
+        "yesNo": {
+          "all": "Hamısı",
+          "yes": "Bəli",
+          "no": "Xeyr"
+        },
+        "university": "Universitet",
+        "courseYear": "Kurs",
+        "refereeCertified": "Sertifikat",
+        "medicHasDocument": "Diplom/sertifikat",
+        "ageMin": "Yaş (min)",
+        "ageMax": "Yaş (maks)",
+        "hasProExperience": "Peşəkar keçmiş",
+        "hasVideo": "Video",
+        "adminRatingMin": "Admin reytinqi (minimum)",
+        "resultsCount": "{count} namizəd tapıldı"
       },
       "sort": {
         "label": "Sırala",
@@ -606,7 +634,12 @@
       "export": {
         "label": "İxrac et",
         "csv": "CSV",
-        "xlsx": "Excel"
+        "xlsx": "Excel",
+        "columnsTitle": "Sütunları seç",
+        "selectAll": "Hamısını seç",
+        "selectNone": "Heç birini seçmə",
+        "cancel": "İmtina et",
+        "exporting": "Hazırlanır..."
       },
       "table": {
         "name": "Ad",

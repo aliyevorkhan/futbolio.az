@@ -51,6 +51,7 @@ export interface ApplicationListItem {
   status: ApplicationStatus;
   created_at: string;
   is_duplicate: boolean;
+  admin_rating: number | null;
   /** Headline role-specific field — see the module doc for the shape per role. */
   position: string;
   /** Player-only `experience_level` code; empty string for referee/medic. */
@@ -73,6 +74,7 @@ export interface PlayerDetails {
   years_playing: string;
   club_experience_text: string;
   experience_level: string;
+  admin_experience_level: string | null;
   has_pro_experience: boolean;
   hourly_rate_azn: number;
   is_university_student: boolean;
@@ -146,6 +148,7 @@ export interface ApplicationDetail {
   district: string;
   status: ApplicationStatus;
   is_duplicate: boolean;
+  admin_rating: number | null;
   video_link_url: string;
   utm_source: string;
   utm_medium: string;
@@ -169,12 +172,29 @@ export interface ApplicationListParams {
   tab?: ApplicationTab;
   role?: string;
   district?: string;
+  /** Comma-separated — OR within this one filter (e.g. "new,reviewed"). */
   status?: string;
   date_from?: string;
   date_to?: string;
+  /** Comma-separated. */
   level?: string;
+  level_source?: "self" | "admin";
+  /** Comma-separated. */
   position?: string;
+  position_mode?: "main_only" | "main_and_extra";
   time_slot?: string;
+  price_min?: number;
+  price_max?: number;
+  is_student?: "yes" | "no";
+  university?: string;
+  course_year?: number;
+  referee_certified?: "yes" | "no";
+  medic_has_document?: "yes" | "no";
+  age_min?: number;
+  age_max?: number;
+  has_pro_experience?: "yes" | "no";
+  has_video?: "yes" | "no";
+  admin_rating_min?: number;
   search?: string;
   ordering?: string;
   page?: number;
@@ -252,6 +272,20 @@ export async function restoreApplication(id: string): Promise<ApplicationDetail>
   });
 }
 
+export async function listUniversities(): Promise<string[]> {
+  return adminApiFetch<string[]>("/api/admin/applications/universities/");
+}
+
+export async function updateApplicationAdminFields(
+  id: string,
+  fields: { admin_rating?: number | null; admin_experience_level?: string | null },
+): Promise<ApplicationDetail> {
+  return adminApiFetch<ApplicationDetail>(`/api/admin/applications/${id}/admin-fields/`, {
+    method: "PATCH",
+    body: JSON.stringify(fields),
+  });
+}
+
 // Paginated like every other admin list endpoint (verified live) — the
 // detail endpoint's embedded `notes` array is what the UI actually
 // renders from, so this standalone wrapper is mostly for completeness.
@@ -306,10 +340,12 @@ export async function deleteApplication(id: string): Promise<void> {
 }
 
 export async function exportApplications(
-  params: ApplicationListParams & { format: "csv" | "xlsx" },
+  params: ApplicationListParams & { format: "csv" | "xlsx"; columns?: string[] },
 ): Promise<Blob> {
+  const { columns, ...rest } = params;
+  const queryParams = columns && columns.length > 0 ? { ...rest, columns: columns.join(",") } : rest;
   const res = await adminApiFetch<Response>(
-    `/api/admin/applications/export/${toQueryString(params)}`,
+    `/api/admin/applications/export/${toQueryString(queryParams)}`,
     { parseJson: false },
   );
   return res.blob();
