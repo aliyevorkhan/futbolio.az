@@ -29,7 +29,7 @@ class Command(BaseCommand):
                 )
 
         self.stdout.write(
-            self.style.ERROR(f"\n{len(groups)} duplicate phone group(s) found — resolve before")
+            self.style.ERROR(f"\n{len(groups)} duplicate phone group(s) found, resolve before")
         )
         self.stdout.write(
             self.style.ERROR("applying the unique-phone constraint migration.")
