@@ -47,15 +47,20 @@ def validate_video_link_domain(url: str) -> None:
         raise ValidationError("Enter a valid video link starting with http:// or https://.")
 
 
-MIN_AGE = 18
-MAX_AGE = 45
+# Loose, role-unaware sanity bound used only as a model-field-level backstop
+# (e.g. via full_clean()) — the real, role-aware bound lives in
+# common.age_limits.AGE_LIMITS and is enforced by
+# ApplicationCreateSerializer.validate(), which has access to the selected
+# role. This just rejects obviously-impossible dates.
+ABSOLUTE_MIN_AGE = 18
+ABSOLUTE_MAX_AGE = 75
 
 
 def validate_date_of_birth(dob: date) -> None:
     today = date.today()
     age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
-    if age < MIN_AGE or age > MAX_AGE:
-        raise ValidationError("Qeydiyyat 18-45 yaş arası şəxslər üçündür.")
+    if age < ABSOLUTE_MIN_AGE or age > ABSOLUTE_MAX_AGE:
+        raise ValidationError("Qeydiyyat 18-75 yaş arası şəxslər üçündür.")
 
 
 def validate_non_empty_list(value: list) -> None:

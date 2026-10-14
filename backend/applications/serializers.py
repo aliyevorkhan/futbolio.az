@@ -5,6 +5,7 @@ from django.core.validators import MinLengthValidator
 from django.utils import timezone
 from rest_framework import serializers
 
+from common.age_limits import ROLE_AGE_LIMIT_MESSAGES, is_age_in_range_for_role
 from common.enums import (
     ApplicationRole,
     ApplicationStatus,
@@ -27,7 +28,6 @@ from common.validators import (
     az_phone_validator,
     full_name_validator,
     instagram_handle_validator,
-    validate_date_of_birth,
     validate_non_empty_list,
     validate_video_link_domain,
 )
@@ -177,7 +177,10 @@ class ApplicationCreateSerializer(serializers.Serializer):
     full_name = serializers.CharField(
         max_length=80, validators=[MinLengthValidator(3), full_name_validator]
     )
-    date_of_birth = serializers.DateField(validators=[validate_date_of_birth])
+    # No field-level validator here — the age bound depends on `role`,
+    # which isn't known until the whole object is assembled, so the real
+    # check lives in validate() below (see common.age_limits).
+    date_of_birth = serializers.DateField()
     phone = serializers.CharField(max_length=20, validators=[az_phone_validator])
     instagram_handle = serializers.CharField(
         max_length=30, required=False, allow_blank=True, default="", validators=[instagram_handle_validator]
@@ -224,6 +227,9 @@ class ApplicationCreateSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 {details_key: ["This field is required for the selected role."]}
             )
+
+        if not is_age_in_range_for_role(role, attrs["date_of_birth"]):
+            raise serializers.ValidationError({"date_of_birth": [ROLE_AGE_LIMIT_MESSAGES[role]]})
 
         if role in (ApplicationRole.REFEREE, ApplicationRole.MEDIC) and attrs.get("instagram_handle"):
             raise serializers.ValidationError(
