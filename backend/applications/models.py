@@ -55,6 +55,9 @@ class Application(models.Model):
     # Internal retention-staging marker for the purge task only — not a
     # general soft-delete flag, so normal querysets never filter on it.
     deleted_at = models.DateTimeField(null=True, blank=True)
+    # Admin-only rating (1-5 stars) — separate from anything candidate-
+    # submitted, never shown/writable on the public serializer.
+    admin_rating = models.PositiveSmallIntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -81,6 +84,12 @@ class PlayerDetails(models.Model):
     years_playing = models.CharField(max_length=20, choices=YearsPlaying.choices)
     club_experience_text = models.CharField(max_length=500, blank=True)
     experience_level = models.CharField(max_length=20, choices=PlayerExperienceLevel.choices)
+    # Admin-assigned level — distinct from the candidate's own self-reported
+    # `experience_level` above; null until an admin sets it. Lets filters
+    # choose which of the two to match against.
+    admin_experience_level = models.CharField(
+        max_length=20, choices=PlayerExperienceLevel.choices, null=True, blank=True
+    )
     has_pro_experience = models.BooleanField()
     # Admin-facing only — never serialized on a public-facing serializer.
     hourly_rate_azn = models.PositiveIntegerField()

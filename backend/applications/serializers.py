@@ -105,6 +105,7 @@ class PlayerDetailsSerializer(serializers.ModelSerializer):
             "years_playing",
             "club_experience_text",
             "experience_level",
+            "admin_experience_level",
             "has_pro_experience",
             "hourly_rate_azn",
             "is_university_student",
@@ -112,6 +113,9 @@ class PlayerDetailsSerializer(serializers.ModelSerializer):
             "course_year",
             "professional_periods",
         ]
+        # Admin-assigned only — never settable via the public registration
+        # endpoint this same serializer also backs.
+        read_only_fields = ["admin_experience_level"]
 
 
 class RefereeDetailsSerializer(serializers.ModelSerializer):
@@ -455,6 +459,7 @@ class ApplicationListSerializer(serializers.ModelSerializer):
             "status",
             "created_at",
             "is_duplicate",
+            "admin_rating",
             "position",
             "level",
             "files",
@@ -538,6 +543,7 @@ class ApplicationDetailSerializer(serializers.ModelSerializer):
             "district",
             "status",
             "is_duplicate",
+            "admin_rating",
             "video_link_url",
             "utm_source",
             "utm_medium",
@@ -579,3 +585,15 @@ class BulkStatusUpdateSerializer(serializers.Serializer):
     ids = serializers.ListField(child=serializers.UUIDField(), allow_empty=False)
     status = serializers.ChoiceField(choices=ApplicationStatus.choices)
     reason = serializers.CharField(required=False, allow_blank=True, default="")
+
+
+class AdminFieldsUpdateSerializer(serializers.Serializer):
+    """Admin-only rating/level — distinct from anything a candidate ever
+    submits. `admin_experience_level` only applies to player rows (the
+    view silently no-ops it for referee/medic, same pattern `level`
+    filtering already uses elsewhere)."""
+
+    admin_rating = serializers.IntegerField(min_value=1, max_value=5, required=False, allow_null=True)
+    admin_experience_level = serializers.ChoiceField(
+        choices=PlayerExperienceLevel.choices, required=False, allow_null=True
+    )
