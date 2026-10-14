@@ -42,21 +42,21 @@ export function HeroSection() {
     <section id="top" className="bg-surface">
       <Container className="pb-[120px] pt-7 lg:grid lg:min-h-[calc(100vh-80px)] lg:grid-cols-2 lg:items-center lg:gap-[72px] lg:py-[90px] lg:pb-[110px]">
         <div>
-          <span className="inline-flex items-center rounded-full bg-brand-mint px-3.5 py-[7px] text-[13px] font-semibold text-foreground lg:px-4 lg:text-[15px]">
+          <span className="inline-flex items-center rounded-full bg-brand-mint px-3.5 py-[7px] text-xs font-semibold text-foreground lg:px-4 lg:text-sm">
             {t("badge")}
           </span>
 
-          <h1 className="mt-4 font-heading text-[44px] font-bold leading-[1.08] tracking-[-1.8px] lg:mt-[22px] lg:text-[clamp(52px,4.6vw,72px)] lg:tracking-[-2.5px]">
+          <h1 className="mt-4 font-heading text-[38px] font-bold leading-[1.08] tracking-[-2px] lg:mt-[22px] lg:text-[56px] lg:tracking-[-2px]">
             {t("titleLine1")}
             <br />
-            <span className="mt-1.5 inline-block rounded-[10px] bg-brand-green px-[0.14em] [box-decoration-break:clone] [-webkit-box-decoration-break:clone]">
+            <span className="mt-1.5 inline-block rounded-lg bg-brand-green px-[0.14em] [box-decoration-break:clone] [-webkit-box-decoration-break:clone]">
               {t("titleLine2")}
             </span>
           </h1>
 
-          <p className="mt-3.5 text-base leading-[1.6] text-muted lg:mt-5 lg:max-w-[600px] lg:text-xl">{t("subtitle")}</p>
+          <p className="mt-3.5 text-[15px] leading-[1.6] text-muted lg:mt-5 lg:max-w-[520px] lg:text-lg">{t("subtitle")}</p>
 
-          <ul className="mt-[18px] flex flex-wrap gap-x-[18px] gap-y-2.5 text-[15px] font-medium text-foreground lg:mt-[26px] lg:gap-x-[26px] lg:gap-y-3 lg:text-[17px]">
+          <ul className="mt-[18px] flex flex-wrap gap-x-[18px] gap-y-2.5 text-sm font-medium text-foreground lg:mt-[26px] lg:gap-x-[26px] lg:gap-y-3 lg:text-base">
             {CHECKLIST_KEYS.map((key) => (
               <li key={key} className="flex items-center gap-[7px]">
                 <Check className="h-4 w-4 text-[#00B35C]" aria-hidden="true" />
@@ -69,7 +69,7 @@ export function HeroSection() {
             <Button
               variant="default"
               size="lg"
-              className="h-[60px] px-[30px] text-lg font-bold"
+              className="h-[52px] px-[30px] text-base font-bold"
               onClick={(event) => openMenu(event.currentTarget.getBoundingClientRect())}
             >
               {t("findPlayerCta")}
@@ -77,7 +77,7 @@ export function HeroSection() {
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
             </Button>
-            <Button asChild variant="outline" size="lg" className="h-[60px] rounded-full px-[30px] text-[17px]">
+            <Button asChild variant="outline" size="lg" className="h-[52px] rounded-full px-[30px] text-base">
               <Link href="/qeydiyyat">{t("joinCta")}</Link>
             </Button>
           </div>
@@ -87,7 +87,7 @@ export function HeroSection() {
 
         <Link
           href="/qeydiyyat"
-          className="mt-3.5 flex h-14 items-center justify-center rounded-full border-[1.5px] border-[#C9D0CC] text-base font-semibold text-foreground lg:hidden"
+          className="mt-3.5 flex h-[52px] items-center justify-center rounded-full border-[1.5px] border-[#C9D0CC] text-base font-semibold text-foreground lg:hidden"
         >
           {t("joinCta")}
         </Link>
@@ -97,7 +97,7 @@ export function HeroSection() {
       <button
         type="button"
         onClick={(event) => openMenu(event.currentTarget.getBoundingClientRect())}
-        className="fixed inset-x-4 bottom-[calc(16px+env(safe-area-inset-bottom))] z-[8] flex h-14 items-center justify-center gap-2.5 rounded-full bg-brand-green text-[17px] font-bold text-brand-dark shadow-[0_10px_30px_rgba(10,20,16,0.2)] lg:hidden"
+        className="fixed inset-x-4 bottom-[calc(16px+env(safe-area-inset-bottom))] z-[8] flex h-[52px] items-center justify-center gap-2.5 rounded-full bg-brand-green text-base font-bold text-brand-dark shadow-[0_10px_30px_rgba(10,20,16,0.2)] lg:hidden"
       >
         <MessageCircle className="h-5 w-5 fill-brand-dark text-brand-dark" aria-hidden="true" />
         {t("findPlayerCta")}

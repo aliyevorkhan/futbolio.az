@@ -65,7 +65,7 @@ export function HeroIllustration({ onOpenRoleMenu }: HeroIllustrationProps) {
   const t = useTranslations("home.hero");
 
   return (
-    <div className="relative mt-7 pb-11 lg:mt-0" style={{ perspective: "1100px" }}>
+    <div className="relative mt-7 max-w-[560px] pb-11 lg:mt-0" style={{ perspective: "1100px" }}>
       <div
         className="relative aspect-[4/3] overflow-hidden rounded-[22px] shadow-[0_30px_50px_-20px_rgba(10,20,16,0.45),0_0_0_6px_#fff] lg:rounded-[28px]"
         style={{ transform: "rotateX(16deg)", transformOrigin: "50% 100%" }}
@@ -117,14 +117,14 @@ export function HeroIllustration({ onOpenRoleMenu }: HeroIllustrationProps) {
           type="button"
           onClick={(event) => onOpenRoleMenu(event.currentTarget.getBoundingClientRect())}
           aria-label={t("slotAriaLabel")}
-          className="group absolute aspect-square w-[15%] -translate-x-1/2 -translate-y-1/2 rounded-full"
+          className="group absolute h-[34px] w-[34px] -translate-x-1/2 -translate-y-1/2 rounded-full lg:h-11 lg:w-11"
           style={{ left: "44.5%", top: "50%" }}
         >
           <span
             aria-hidden="true"
             className="animate-slot-pulse absolute inset-0 rounded-full bg-white/55"
           />
-          <span className="relative flex h-full w-full items-center justify-center rounded-full border-[2.5px] border-dashed border-brand-dark bg-white text-[15px] font-bold text-brand-dark transition-colors group-hover:bg-brand-dark group-hover:text-white lg:text-xl">
+          <span className="relative flex h-full w-full items-center justify-center rounded-full border-[2.5px] border-dashed border-brand-dark bg-white text-[13px] font-bold text-brand-dark transition-colors group-hover:bg-brand-dark group-hover:text-white lg:text-base">
             ?
           </span>
           <em
@@ -140,13 +140,13 @@ export function HeroIllustration({ onOpenRoleMenu }: HeroIllustrationProps) {
 
       {/* Sibling of the tilted stage (not a child) — stays flat while
           visually overlapping the stage's bottom edge. */}
-      <div className="absolute inset-x-[18px] bottom-0 flex items-center gap-3 rounded-2xl bg-white px-3.5 py-2.5 shadow-[0_8px_24px_rgba(10,20,16,0.08)] lg:inset-x-7">
+      <div className="absolute inset-x-[18px] bottom-0 flex items-center gap-3 rounded-2xl bg-white px-4 py-3 shadow-[0_8px_24px_rgba(10,20,16,0.08)] lg:inset-x-7">
         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-green">
           <Check className="h-4 w-4 text-brand-dark" aria-hidden="true" />
         </span>
         <div className="min-w-0">
-          <p className="truncate text-sm font-bold text-foreground lg:text-base">{t("notificationTitle")}</p>
-          <p className="truncate text-xs text-muted lg:text-sm">{t("notificationMeta")}</p>
+          <p className="truncate text-[15px] font-bold text-foreground">{t("notificationTitle")}</p>
+          <p className="truncate text-[13px] text-muted">{t("notificationMeta")}</p>
         </div>
       </div>
     </div>

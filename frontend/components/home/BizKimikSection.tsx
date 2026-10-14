@@ -32,29 +32,29 @@ export async function BizKimikSection() {
   const t = await getTranslations("home.biz");
 
   return (
-    <section id="biz" className="bg-white py-14 lg:py-[110px]">
+    <section id="biz" className="bg-white py-12 lg:py-[72px]">
       <Container className="lg:grid lg:grid-cols-2 lg:items-end lg:gap-20">
-        <div>
-          <p className="text-[15px] font-semibold text-brand-green lg:text-lg">{t("eyebrow")}</p>
-          <h2 className="mt-2.5 font-heading text-[34px] font-bold leading-[1.1] tracking-[-1.2px] text-foreground lg:mt-3 lg:text-[52px] lg:tracking-[-2px]">
+        <div className="max-w-[620px]">
+          <p className="text-sm font-semibold text-brand-green">{t("eyebrow")}</p>
+          <h2 className="mt-2.5 font-heading text-[28px] font-bold leading-[1.15] tracking-[-1.5px] text-foreground lg:mt-3 lg:text-[40px]">
             {t("title")}
           </h2>
         </div>
-        <p className="mt-3.5 text-base leading-[1.6] text-muted lg:mt-0 lg:text-xl">{t("description")}</p>
+        <p className="mt-3.5 text-[15px] leading-[1.6] text-muted lg:mt-0 lg:max-w-[520px] lg:text-[17px]">{t("description")}</p>
 
-        <div className="mt-8 grid gap-3.5 lg:col-span-2 lg:mt-14 lg:grid-cols-2 lg:items-center lg:gap-7">
-          <div className="rounded-[28px] bg-surface p-6 lg:px-10 lg:py-9">
-            <span className="mb-[18px] inline-block rounded-full bg-white px-3.5 py-1.5 text-sm font-bold text-muted lg:text-[15px]">
+        <div className="mt-7 grid gap-5 lg:col-span-2 lg:mt-10 lg:grid-cols-2 lg:items-center">
+          <div className="rounded-[24px] bg-surface p-5 lg:px-8 lg:py-7">
+            <span className="mb-[18px] inline-block rounded-full bg-white px-3 py-[5px] text-[13px] font-bold text-muted">
               {t("noBadge")}
             </span>
             {NO_ITEMS.map((key, index) => (
               <div
                 key={key}
-                className={`flex items-center gap-3 py-[13px] text-base font-medium text-muted lg:py-4 lg:text-lg ${
+                className={`flex items-center gap-3 py-[11px] text-[14.5px] font-medium text-muted lg:text-base ${
                   index > 0 ? "border-t border-brand-dark/[0.08]" : ""
                 }`}
               >
-                <span className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full bg-white">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white lg:h-[26px] lg:w-[26px]">
                   <XIcon />
                 </span>
                 {t(key)}
@@ -62,18 +62,18 @@ export async function BizKimikSection() {
             ))}
           </div>
 
-          <div className="-rotate-[1.5deg] rounded-[28px] bg-brand-green p-6 shadow-[0_30px_60px_-25px_rgba(10,20,16,0.35)] lg:px-10 lg:py-9">
-            <span className="mb-[18px] inline-block rounded-full bg-brand-dark px-3.5 py-1.5 text-sm font-bold text-white lg:text-[15px]">
+          <div className="-rotate-1 rounded-[24px] bg-brand-green p-5 shadow-[0_20px_40px_-20px_rgba(10,20,16,0.2)] lg:px-8 lg:py-7">
+            <span className="mb-[18px] inline-block rounded-full bg-brand-dark px-3 py-[5px] text-[13px] font-bold text-white">
               {t("yesBadge")}
             </span>
             {YES_ITEMS.map((key, index) => (
               <div
                 key={key}
-                className={`flex items-center gap-3 py-[13px] text-base font-semibold text-foreground lg:py-4 lg:text-lg ${
+                className={`flex items-center gap-3 py-[11px] text-[14.5px] font-semibold text-foreground lg:text-base ${
                   index > 0 ? "border-t border-brand-dark/[0.08]" : ""
                 }`}
               >
-                <span className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full bg-white">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white lg:h-[26px] lg:w-[26px]">
                   <CheckIcon />
                 </span>
                 {t(key)}
