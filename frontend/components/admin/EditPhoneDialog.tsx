@@ -46,6 +46,7 @@ export function EditPhoneDialog({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-applications"] });
       queryClient.invalidateQueries({ queryKey: ["admin-application", applicationId] });
+      queryClient.invalidateQueries({ queryKey: ["admin-application-audit-log", applicationId] });
       queryClient.invalidateQueries({ queryKey: ["admin-duplicate-phones"] });
       toast.success(t("success"));
       setOpen(false);

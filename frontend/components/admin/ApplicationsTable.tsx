@@ -14,14 +14,29 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { StatusBadge } from "@/components/admin/StatusBadge";
+import { ApplicationRowActions } from "@/components/admin/ApplicationRowActions";
 import { formatPhone } from "@/lib/utils";
 import { formatHeadlinePosition } from "@/lib/admin/labels";
 import { ageFromDateOfBirth } from "@/lib/admin/age";
-import type { ApplicationListItem } from "@/lib/api/admin/applications";
+import type { ApplicationListItem, ApplicationTab } from "@/lib/api/admin/applications";
 
-export function ApplicationsTable({ applications }: { applications: ApplicationListItem[] }) {
+export function ApplicationsTable({
+  applications,
+  tab,
+  selectedIds,
+  onToggleSelect,
+  onToggleSelectAll,
+}: {
+  applications: ApplicationListItem[];
+  tab: ApplicationTab;
+  selectedIds: Set<string>;
+  onToggleSelect: (id: string) => void;
+  onToggleSelectAll: (checked: boolean) => void;
+}) {
   const t = useTranslations("admin.applications.table");
+  const tApplications = useTranslations("admin.applications");
   const tEnums = useTranslations("admin.enums");
   const tc = useTranslations("admin.common");
   const router = useRouter();
@@ -30,11 +45,20 @@ export function ApplicationsTable({ applications }: { applications: ApplicationL
     router.push(`/admin/applications/${id}`);
   }
 
+  const allSelected = applications.length > 0 && applications.every((a) => selectedIds.has(a.id));
+
   return (
     <div className="hidden overflow-x-auto rounded-xl border border-brand-dark/10 bg-white md:block">
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead className="w-10">
+              <Checkbox
+                checked={allSelected}
+                onCheckedChange={(checked) => onToggleSelectAll(checked === true)}
+                aria-label={tApplications("selectAll")}
+              />
+            </TableHead>
             <TableHead className="w-12">{t("photo")}</TableHead>
             <TableHead>{t("name")}</TableHead>
             <TableHead>{t("role")}</TableHead>
@@ -45,6 +69,7 @@ export function ApplicationsTable({ applications }: { applications: ApplicationL
             <TableHead>{t("phone")}</TableHead>
             <TableHead>{t("status")}</TableHead>
             <TableHead>{t("date")}</TableHead>
+            <TableHead className="w-24" />
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -58,6 +83,13 @@ export function ApplicationsTable({ applications }: { applications: ApplicationL
               }}
               className="cursor-pointer focus-visible:bg-surface"
             >
+              <TableCell onClick={(e) => e.stopPropagation()}>
+                <Checkbox
+                  checked={selectedIds.has(app.id)}
+                  onCheckedChange={() => onToggleSelect(app.id)}
+                  aria-label={tApplications("selectRow", { name: app.full_name })}
+                />
+              </TableCell>
               <TableCell>
                 <Link
                   href={`/admin/applications/${app.id}`}
@@ -95,6 +127,9 @@ export function ApplicationsTable({ applications }: { applications: ApplicationL
                 <StatusBadge status={app.status} />
               </TableCell>
               <TableCell>{format(new Date(app.created_at), "dd.MM.yyyy HH:mm")}</TableCell>
+              <TableCell>
+                <ApplicationRowActions applicationId={app.id} applicationName={app.full_name} tab={tab} />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

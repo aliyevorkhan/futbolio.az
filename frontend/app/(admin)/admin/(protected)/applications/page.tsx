@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
@@ -13,12 +13,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ApplicationsFilters } from "@/components/admin/ApplicationsFilters";
 import { ApplicationsTable } from "@/components/admin/ApplicationsTable";
 import { ApplicationsCardList } from "@/components/admin/ApplicationsCardList";
 import { ExportApplicationsButton } from "@/components/admin/ExportApplicationsButton";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { Button } from "@/components/ui/button";
-import { listApplications, type ApplicationListParams } from "@/lib/api/admin/applications";
+import {
+  listApplications,
+  getApplicationCounts,
+  type ApplicationListParams,
+  type ApplicationTab,
+} from "@/lib/api/admin/applications";
+
+const TABS: ApplicationTab[] = ["pending", "accepted", "deleted"];
 
 const FILTER_PARAM_KEYS = [
   "role",
@@ -41,6 +50,8 @@ function buildParams(searchParams: URLSearchParams): ApplicationListParams {
     if (key === "page") params.page = Number(value);
     else (params as Record<string, string>)[key] = value;
   }
+  const tabParam = searchParams.get("tab");
+  params.tab = (TABS as string[]).includes(tabParam ?? "") ? (tabParam as ApplicationTab) : "pending";
   return params;
 }
 
@@ -59,14 +70,31 @@ function ApplicationsPageContent() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [searchDraft, setSearchDraft] = useState(searchParams.get("search") ?? "");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const params = buildParams(searchParams);
+  const tab = params.tab ?? "pending";
 
   const { data, isLoading, isError, isPlaceholderData } = useQuery({
     queryKey: ["admin-applications", params],
     queryFn: () => listApplications(params),
     placeholderData: keepPreviousData,
   });
+
+  const { role, district, status, date_from, date_to, level, position, search } = params;
+  const { data: counts } = useQuery({
+    queryKey: ["admin-application-counts", { role, district, status, date_from, date_to, level, position, search }],
+    queryFn: () =>
+      getApplicationCounts({ role, district, status, date_from, date_to, level, position, search }),
+  });
+
+  // Selection never carries across a tab switch, a page change, or a
+  // filter change — stale ids from a different result set would silently
+  // no-op against the bulk-status endpoint.
+  useEffect(() => {
+    setSelectedIds(new Set());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams.toString()]);
 
   function updateParam(key: string, value: string) {
     const next = new URLSearchParams(searchParams.toString());
@@ -82,6 +110,19 @@ function ApplicationsPageContent() {
     router.replace(`${pathname}?${next.toString()}`);
   }
 
+  function toggleSelect(id: string) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleSelectAll(checked: boolean) {
+    setSelectedIds(checked ? new Set(data?.results.map((a) => a.id) ?? []) : new Set());
+  }
+
   const page = params.page ?? 1;
   const pageSize = 20;
   const count = data?.count ?? 0;
@@ -94,6 +135,16 @@ function ApplicationsPageContent() {
         <h1 className="text-2xl font-bold text-foreground">{t("title")}</h1>
         <ExportApplicationsButton filters={params} />
       </div>
+
+      <Tabs value={tab} onValueChange={(value) => updateParam("tab", value)}>
+        <TabsList>
+          {TABS.map((tabValue) => (
+            <TabsTrigger key={tabValue} value={tabValue}>
+              {t(`tabs.${tabValue}`)} ({counts?.[tabValue] ?? "…"})
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
 
       <ApplicationsFilters />
 
@@ -134,6 +185,8 @@ function ApplicationsPageContent() {
         </label>
       </div>
 
+      <BulkActionBar selectedIds={[...selectedIds]} onDone={() => setSelectedIds(new Set())} />
+
       {isLoading && <p className="text-sm text-muted">{tc("loading")}</p>}
       {isError && <p className="text-sm text-red-600">{t("loadError")}</p>}
 
@@ -145,8 +198,19 @@ function ApplicationsPageContent() {
 
       {data && data.results.length > 0 && (
         <div className={isPlaceholderData ? "opacity-60 transition-opacity" : undefined}>
-          <ApplicationsTable applications={data.results} />
-          <ApplicationsCardList applications={data.results} />
+          <ApplicationsTable
+            applications={data.results}
+            tab={tab}
+            selectedIds={selectedIds}
+            onToggleSelect={toggleSelect}
+            onToggleSelectAll={toggleSelectAll}
+          />
+          <ApplicationsCardList
+            applications={data.results}
+            tab={tab}
+            selectedIds={selectedIds}
+            onToggleSelect={toggleSelect}
+          />
         </div>
       )}
 

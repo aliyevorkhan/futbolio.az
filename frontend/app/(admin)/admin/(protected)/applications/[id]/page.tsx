@@ -13,9 +13,11 @@ import { MediaSection } from "@/components/admin/ApplicationFileViewer";
 import { VideoLinkEmbed } from "@/components/admin/VideoLinkEmbed";
 import { ApplicationNotes } from "@/components/admin/ApplicationNotes";
 import { DeleteApplicationDialog } from "@/components/admin/DeleteApplicationDialog";
+import { EditPhoneDialog } from "@/components/admin/EditPhoneDialog";
 import { formatPhone, buildWhatsAppUrl } from "@/lib/utils";
 import { ageFromDateOfBirth } from "@/lib/admin/age";
 import { getApplication, getApplicationFileUrl } from "@/lib/api/admin/applications";
+import { listAuditLogForApplication } from "@/lib/api/admin/auditLog";
 
 export default function ApplicationDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -34,6 +36,11 @@ export default function ApplicationDetailPage() {
     queryFn: () => getApplicationFileUrl(id, firstPhoto!.id),
     enabled: !!firstPhoto,
     staleTime: 10 * 60 * 1000,
+  });
+
+  const { data: auditLog } = useQuery({
+    queryKey: ["admin-application-audit-log", id],
+    queryFn: () => listAuditLogForApplication(id),
   });
 
   if (isLoading) {
@@ -58,6 +65,7 @@ export default function ApplicationDetailPage() {
         </Link>
         <div className="flex flex-wrap items-center gap-3">
           <ApplicationStatusControl applicationId={app.id} status={app.status} />
+          <EditPhoneDialog applicationId={app.id} currentPhone={app.phone} />
           <DeleteApplicationDialog applicationId={app.id} applicationName={app.full_name} />
         </div>
       </div>
@@ -308,35 +316,80 @@ export default function ApplicationDetailPage() {
       </Section>
 
       <Section title={t("sections.statusHistory")}>
-        {app.status_history.length === 0 ? (
-          <p className="text-sm text-muted">{t("statusHistory.empty")}</p>
-        ) : (
-          <ul className="flex flex-col gap-2">
-            {[...app.status_history]
-              .sort((a, b) => new Date(b.changed_at).getTime() - new Date(a.changed_at).getTime())
-              .map((change, idx) => (
-                <li key={idx} className="rounded-lg border border-brand-dark/10 p-3 text-sm">
+        {(() => {
+          const statusEvents = app.status_history.map((change) => ({
+            timestamp: change.changed_at,
+            node: (
+              <>
+                <p className="font-medium text-foreground">
+                  {t("statusHistory.entry", {
+                    from: tEnums(`status.${change.from_status}`),
+                    to: tEnums(`status.${change.to_status}`),
+                  })}
+                </p>
+                <p className="mt-1 text-xs text-muted">
+                  {t("statusHistory.by", {
+                    email: change.changed_by_email ?? t("statusHistory.systemActor"),
+                  })}{" "}
+                  · {format(new Date(change.changed_at), "dd.MM.yyyy HH:mm")}
+                </p>
+                {change.reason && (
+                  <p className="mt-1 text-xs text-muted">
+                    {t("statusHistory.reason")}: {change.reason}
+                  </p>
+                )}
+              </>
+            ),
+          }));
+          // Every other audit event type for this application (phone
+          // edits, etc.) — "viewed" is excluded as pure noise, and
+          // "status_changed" is excluded since status_history above
+          // already covers it, so the timeline never shows a status
+          // change twice.
+          const auditEvents = (auditLog?.results ?? [])
+            .filter(
+              (entry) =>
+                entry.action !== "admin.application.viewed" &&
+                entry.action !== "admin.application.status_changed",
+            )
+            .map((entry) => ({
+              timestamp: entry.created_at,
+              node: (
+                <>
                   <p className="font-medium text-foreground">
-                    {t("statusHistory.entry", {
-                      from: tEnums(`status.${change.from_status}`),
-                      to: tEnums(`status.${change.to_status}`),
-                    })}
+                    {entry.action === "admin.application.phone_updated"
+                      ? t("statusHistory.phoneUpdated", {
+                          from: String(entry.metadata.from ?? ""),
+                          to: String(entry.metadata.to ?? ""),
+                        })
+                      : entry.action}
                   </p>
                   <p className="mt-1 text-xs text-muted">
                     {t("statusHistory.by", {
-                      email: change.changed_by_email ?? t("statusHistory.systemActor"),
+                      email: entry.actor_email ?? t("statusHistory.systemActor"),
                     })}{" "}
-                    · {format(new Date(change.changed_at), "dd.MM.yyyy HH:mm")}
+                    · {format(new Date(entry.created_at), "dd.MM.yyyy HH:mm")}
                   </p>
-                  {change.reason && (
-                    <p className="mt-1 text-xs text-muted">
-                      {t("statusHistory.reason")}: {change.reason}
-                    </p>
-                  )}
+                </>
+              ),
+            }));
+          const timeline = [...statusEvents, ...auditEvents].sort(
+            (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+          );
+
+          if (timeline.length === 0) {
+            return <p className="text-sm text-muted">{t("statusHistory.empty")}</p>;
+          }
+          return (
+            <ul className="flex flex-col gap-2">
+              {timeline.map((event, idx) => (
+                <li key={idx} className="rounded-lg border border-brand-dark/10 p-3 text-sm">
+                  {event.node}
                 </li>
               ))}
-          </ul>
-        )}
+            </ul>
+          );
+        })()}
       </Section>
 
       <Section title={t("sections.notes")}>

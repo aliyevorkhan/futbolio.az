@@ -163,7 +163,10 @@ export interface ApplicationDetail {
   notes: AdminNote[];
 }
 
+export type ApplicationTab = "pending" | "accepted" | "deleted";
+
 export interface ApplicationListParams {
+  tab?: ApplicationTab;
   role?: string;
   district?: string;
   status?: string;
@@ -176,6 +179,12 @@ export interface ApplicationListParams {
   ordering?: string;
   page?: number;
   page_size?: number;
+}
+
+export interface ApplicationCounts {
+  pending: number;
+  accepted: number;
+  deleted: number;
 }
 
 function toQueryString(params: object): string {
@@ -209,6 +218,37 @@ export async function updateApplicationStatus(
   return adminApiFetch<ApplicationDetail>(`/api/admin/applications/${id}/status/`, {
     method: "PATCH",
     body: JSON.stringify(reason ? { status, reason } : { status }),
+  });
+}
+
+// Mirrors the list endpoint's own filter params (minus `tab`, computed
+// once per bucket server-side) so a tab's badge count always matches
+// what that tab would actually return under the currently active filters.
+export async function getApplicationCounts(
+  params: Omit<ApplicationListParams, "tab" | "page" | "page_size"> = {},
+): Promise<ApplicationCounts> {
+  return adminApiFetch<ApplicationCounts>(
+    `/api/admin/applications/counts/${toQueryString(params)}`,
+  );
+}
+
+export async function bulkUpdateApplicationStatus(
+  ids: string[],
+  targetStatus: ApplicationStatus,
+  reason?: string,
+): Promise<{ updated: string[] }> {
+  return adminApiFetch<{ updated: string[] }>("/api/admin/applications/bulk-status/", {
+    method: "POST",
+    body: JSON.stringify({ ids, status: targetStatus, ...(reason ? { reason } : {}) }),
+  });
+}
+
+// "Bərpa et" (Deleted tab) / "Gözləyənlərə qaytar" (Accepted tab) — both
+// return the application to its last pending sub-status server-side,
+// rather than the caller picking a fixed target status.
+export async function restoreApplication(id: string): Promise<ApplicationDetail> {
+  return adminApiFetch<ApplicationDetail>(`/api/admin/applications/${id}/restore/`, {
+    method: "POST",
   });
 }
 

@@ -4,40 +4,56 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { ApplicantAvatar } from "@/components/admin/ApplicationsTable";
+import { ApplicationRowActions } from "@/components/admin/ApplicationRowActions";
 import { formatPhone } from "@/lib/utils";
 import { formatHeadlinePosition } from "@/lib/admin/labels";
 import { ageFromDateOfBirth } from "@/lib/admin/age";
-import type { ApplicationListItem } from "@/lib/api/admin/applications";
+import type { ApplicationListItem, ApplicationTab } from "@/lib/api/admin/applications";
 
-export function ApplicationsCardList({ applications }: { applications: ApplicationListItem[] }) {
+export function ApplicationsCardList({
+  applications,
+  tab,
+  selectedIds,
+  onToggleSelect,
+}: {
+  applications: ApplicationListItem[];
+  tab: ApplicationTab;
+  selectedIds: Set<string>;
+  onToggleSelect: (id: string) => void;
+}) {
   const t = useTranslations("admin.applications.table");
+  const tApplications = useTranslations("admin.applications");
   const tEnums = useTranslations("admin.enums");
   const tc = useTranslations("admin.common");
 
   return (
     <div className="flex flex-col gap-3 md:hidden">
       {applications.map((app) => (
-        <Link
-          key={app.id}
-          href={`/admin/applications/${app.id}`}
-          className="flex flex-col gap-2 rounded-xl border border-brand-dark/10 bg-white p-4"
-        >
+        <div key={app.id} className="flex flex-col gap-2 rounded-xl border border-brand-dark/10 bg-white p-4">
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-3">
-              <ApplicantAvatar src={app.photo_thumbnail_url} name={app.full_name} />
-              <div>
-                <div className="font-semibold text-foreground">
-                  {app.full_name}
-                  {app.is_duplicate && (
-                    <Badge variant="amber" className="ml-2">
-                      {t("duplicate")}
-                    </Badge>
-                  )}
+              <Checkbox
+                checked={selectedIds.has(app.id)}
+                onCheckedChange={() => onToggleSelect(app.id)}
+                aria-label={tApplications("selectRow", { name: app.full_name })}
+              />
+              <Link href={`/admin/applications/${app.id}`} className="flex items-center gap-3">
+                <ApplicantAvatar src={app.photo_thumbnail_url} name={app.full_name} />
+                <div>
+                  <div className="font-semibold text-foreground">
+                    {app.full_name}
+                    {app.is_duplicate && (
+                      <Badge variant="amber" className="ml-2">
+                        {t("duplicate")}
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="text-sm text-muted">{tEnums(`role.${app.role}`)}</div>
                 </div>
-                <div className="text-sm text-muted">{tEnums(`role.${app.role}`)}</div>
-              </div>
+              </Link>
             </div>
             <StatusBadge status={app.status} />
           </div>
@@ -56,7 +72,11 @@ export function ApplicationsCardList({ applications }: { applications: Applicati
             <Row label={t("phone")}>{formatPhone(app.phone)}</Row>
             <Row label={t("date")}>{format(new Date(app.created_at), "dd.MM.yyyy HH:mm")}</Row>
           </dl>
-        </Link>
+
+          <div className="flex justify-end border-t border-brand-dark/5 pt-2">
+            <ApplicationRowActions applicationId={app.id} applicationName={app.full_name} tab={tab} />
+          </div>
+        </div>
       ))}
     </div>
   );

@@ -628,7 +628,44 @@
       },
       "empty": "Heç bir müraciət tapılmadı.",
       "loadError": "Müraciətlər yüklənə bilmədi.",
-      "viewDetail": "Bax"
+      "viewDetail": "Bax",
+      "tabs": {
+        "pending": "Gözləyənlər",
+        "accepted": "Qəbul edilənlər",
+        "deleted": "Silinənlər"
+      },
+      "selectAll": "Hamısını seç",
+      "selectRow": "{name} seç",
+      "rowActions": {
+        "accept": "Qəbul et",
+        "acceptedToast": "Qəbul edildi",
+        "delete": "Sil",
+        "deleteConfirmTitle": "{name} silinsin?",
+        "deleteConfirm": "Sil",
+        "deleteCancel": "Ləğv et",
+        "deletedToast": "Silindi",
+        "undo": "Geri al",
+        "returnToPending": "Gözləyənlərə qaytar",
+        "restore": "Bərpa et",
+        "restoredToast": "Bərpa edildi",
+        "permanentDelete": "Həmişəlik sil",
+        "permanentDeleteConfirmTitle": "{name} həmişəlik silinsin?",
+        "permanentDeleteWarning": "Bu əməliyyat geri qaytarılmır. Namizədin bütün faylları da silinəcək.",
+        "permanentDeleteConfirm": "Bəli, həmişəlik sil",
+        "permanentDeletedToast": "Həmişəlik silindi",
+        "error": "Əməliyyat uğursuz oldu."
+      },
+      "bulk": {
+        "selectedCount": "{count} seçildi",
+        "accept": "Qəbul et",
+        "delete": "Sil",
+        "deleteConfirmTitle": "{count} müraciət silinsin?",
+        "deleteConfirm": "Sil",
+        "cancel": "Ləğv et",
+        "acceptedToast": "{count} müraciət qəbul edildi",
+        "deletedToast": "{count} müraciət silindi",
+        "error": "Əməliyyat uğursuz oldu."
+      }
     },
     "applicationDetail": {
       "back": "Müraciətlərə qayıt",
@@ -719,7 +756,8 @@
         "entry": "{from} → {to}",
         "by": "{email} tərəfindən",
         "systemActor": "Sistem",
-        "reason": "Səbəb"
+        "reason": "Səbəb",
+        "phoneUpdated": "Telefon nömrəsi dəyişdirildi: {from} → {to}"
       },
       "notes": {
         "empty": "Qeyd yoxdur.",
