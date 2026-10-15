@@ -79,14 +79,14 @@ export function Step1({ defaultValues, onValid, onChange }: Step1Props) {
   const [checkingPhone, setCheckingPhone] = useState(false);
   useEffect(() => setPhoneDuplicate(false), [phoneValue]);
 
-  // Recomputes whenever `role` changes so the picker's bounds update live
-  // (per-role age limits — player 18-45, referee 18-55, medic 18-75).
-  // Falls back to the player range before a role has been picked yet.
+  // One fixed, generous range for the native picker's own min/max —
+  // deliberately NOT role-specific (see dateOfBirth.ts's comment on why);
+  // the real per-role age limit is enforced by the zod schema below and
+  // again by the backend, both already role-aware.
   const [minBirthDate, maxBirthDate] = useMemo(() => {
     const today = new Date();
-    const effectiveRole = role ?? "player";
-    return [getMinBirthDateString(effectiveRole, today), getMaxBirthDateString(effectiveRole, today)];
-  }, [role]);
+    return [getMinBirthDateString(today), getMaxBirthDateString(today)];
+  }, []);
 
   useEffect(() => {
     const subscription = form.watch((values) => onChange(values as Partial<Step1Data>));

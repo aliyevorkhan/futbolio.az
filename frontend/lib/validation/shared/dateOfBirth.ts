@@ -34,17 +34,31 @@ function toIsoDateString(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-/** The oldest allowed birth date for `role` (today - max age years), as `YYYY-MM-DD`. */
-export function getMinBirthDateString(role: RegistrationRole, today: Date): string {
+/**
+ * The native `<input type="date">`'s own `min`/`max` HTML attributes are
+ * deliberately NOT role-specific, even though the real allowed range is
+ * (enforced by isAgeInRange()/the zod schema on submit, and again by the
+ * backend). A role-narrow min/max here previously caused the browser's
+ * own native date-segment-typing behavior to misbehave for some
+ * users/browsers (reported: typing a 4-digit year got cut off after the
+ * 3rd digit) — switching every role to this one shared, generous range
+ * removes that interaction entirely without weakening the real
+ * enforcement, which never depended on this attribute.
+ */
+const WIDEST_MAX_AGE = Math.max(...Object.values(AGE_LIMITS).map((limit) => limit.max));
+const WIDEST_MIN_AGE = Math.min(...Object.values(AGE_LIMITS).map((limit) => limit.min));
+
+/** The oldest birth date across every role's range (today - widest max age), as `YYYY-MM-DD`. */
+export function getMinBirthDateString(today: Date): string {
   const date = new Date(today);
-  date.setFullYear(date.getFullYear() - AGE_LIMITS[role].max);
+  date.setFullYear(date.getFullYear() - WIDEST_MAX_AGE);
   return toIsoDateString(date);
 }
 
-/** The youngest allowed birth date for `role` (today - min age years), as `YYYY-MM-DD`. */
-export function getMaxBirthDateString(role: RegistrationRole, today: Date): string {
+/** The youngest birth date across every role's range (today - narrowest min age), as `YYYY-MM-DD`. */
+export function getMaxBirthDateString(today: Date): string {
   const date = new Date(today);
-  date.setFullYear(date.getFullYear() - AGE_LIMITS[role].min);
+  date.setFullYear(date.getFullYear() - WIDEST_MIN_AGE);
   return toIsoDateString(date);
 }
 
